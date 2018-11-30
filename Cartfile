@@ -1,0 +1,10 @@
+github "RxSwiftCommunity/RxGesture"
+github "NoTests/RxFeedback.swift"
+github "Swinject/Swinject"
+github "airbnb/lottie-ios"
+github "SnapKit/SnapKit"
+github "Quick/Nimble"
+github "uber/ios-snapshot-test-case"
+github "ashfurrow/Nimble-Snapshots"
+github "Alamofire/Alamofire" ~> 4.7
+github "Alamofire/AlamofireImage" ~> 3.4
