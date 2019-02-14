@@ -178,7 +178,7 @@ class LoginDemoRxReduxTests: XCTestCase {
             let recorded = scheduler.record(source: loginViewModel.output)
 
             let expectedEventModels = ["a": initialModel, "c": correctUsernameAndPWModel, "d": performingLoginModel, "e": loggedInModel]
-            let expectedEvents = scheduler.parseEventsAndTimes(timeline: "a-cd--e", values: expectedEventModels)
+            let expectedEvents = scheduler.parseEventsAndTimes(timeline: "a-cde", values: expectedEventModels)
 
             scheduler.start()
 
@@ -285,7 +285,7 @@ class LoginDemoRxReduxTests: XCTestCase {
             let failureModel = LoginView.Model(isLoginButtonEnabled: true, isPasswordHidden: true, isSpinning: false, state: .loginFailed(APIError.wrongCredentials))
 
             let expectedEventModels = ["a": initialModel, "c": correctUsernameAndPWModel, "d": performingLoginModel, "e": failureModel]
-            let expectedEvents = scheduler.parseEventsAndTimes(timeline: "a-cd--e", values: expectedEventModels)
+            let expectedEvents = scheduler.parseEventsAndTimes(timeline: "a-cde", values: expectedEventModels)
 
             scheduler.start()
 
