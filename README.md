@@ -4,3 +4,8 @@ Coding for iOS is evolving more and more. MVVM, Viper, Clean Architecture are pa
 [You can see a video with a presentation of this architecture here](https://www.youtube.com/watch?v=Dp2LQo2DOcg&t=15s)
 
 [Here you can find the presentation used on the video](https://github.com/mytaxi/LoginRxReduxDemo/blob/master/CodingTestableAppsOnSteroids.pdf)
+
+## Setup
+Install dependencies:
+
+`carthage bootstrap --platform iOS --no-use-binaries`
