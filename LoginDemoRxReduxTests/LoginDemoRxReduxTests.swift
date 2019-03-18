@@ -24,6 +24,7 @@ class LoginDemoRxReduxTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
+        DependencyRetriever.setupDependencies()
         loginView.snp.makeConstraints { make in
             make.width.equalTo(UIScreen.main.bounds.width)
             make.height.equalTo(UIScreen.main.bounds.height)
@@ -51,12 +52,12 @@ class LoginDemoRxReduxTests: XCTestCase {
         let usernameSignal: Signal<String> = scheduler.createHotObservable(usernameEvent).asSignal(onErrorJustReturn: "")
         let passwordSignal: Signal<String> = scheduler.createHotObservable(passwordEvents).asSignal(onErrorJustReturn: "")
 
-        var loginViewModel = LoginStore(inputs: LoginView.Outputs(usernameField: usernameSignal,
-                                                                      passwordField: passwordSignal,
-                                                                      loginButton: .empty(),
-                                                                      registerButton: .empty(),
-                                                                      showPasswordButton: .empty()), alertInput: .empty())
-        let recorded = scheduler.record(source: loginViewModel.output)
+        let recorded = scheduler.record(source: LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
+                                                                                            passwordField: passwordSignal,
+                                                                                            loginButton: .empty(),
+                                                                                            registerButton: .empty(),
+                                                                                            showPasswordButton: .empty()),
+                                                                  alertInput: .empty()))
 
 
 
@@ -84,12 +85,12 @@ class LoginDemoRxReduxTests: XCTestCase {
         let usernameSignal: Signal<String> = scheduler.createHotObservable(usernameEvent).asSignal(onErrorJustReturn: "")
         let passwordSignal: Signal<String> = scheduler.createHotObservable(passwordEvents).asSignal(onErrorJustReturn: "")
 
-        var loginViewModel = LoginStore(inputs: LoginView.Outputs(usernameField: usernameSignal,
-                                                                      passwordField: passwordSignal,
-                                                                      loginButton: .empty(),
-                                                                      registerButton: .empty(),
-                                                                      showPasswordButton: .empty()), alertInput: .empty())
-        let recorded = scheduler.record(source: loginViewModel.output)
+        let recorded = scheduler.record(source: LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
+                                                                                                           passwordField: passwordSignal,
+                                                                                                           loginButton: .empty(),
+                                                                                                           registerButton: .empty(),
+                                                                                                           showPasswordButton: .empty()),
+                                                                  alertInput: .empty()))
 
         let correctUsernameAndPWModel = LoginView.Model(isLoginButtonEnabled: true, isPasswordHidden: true, isSpinning: false, state: .loggedOut)
 
@@ -117,12 +118,12 @@ class LoginDemoRxReduxTests: XCTestCase {
         let usernameSignal: Signal<String> = scheduler.createHotObservable(usernameEvent).asSignal(onErrorJustReturn: "")
         let passwordSignal: Signal<String> = scheduler.createHotObservable(passwordEvents).asSignal(onErrorJustReturn: "")
 
-        var loginViewModel = LoginStore(inputs: LoginView.Outputs(usernameField: usernameSignal,
-                                                                      passwordField: passwordSignal,
-                                                                      loginButton: .empty(),
-                                                                      registerButton: .empty(),
-                                                                      showPasswordButton: .empty()), alertInput: .empty())
-        let recorded = scheduler.record(source: loginViewModel.output)
+        let recorded = scheduler.record(source: LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
+                                                                                            passwordField: passwordSignal,
+                                                                                            loginButton: .empty(),
+                                                                                            registerButton: .empty(),
+                                                                                            showPasswordButton: .empty()),
+                                                                  alertInput: .empty()))
 
         let expectedEventModels = ["a": initialModel]
         let expectedEvents = scheduler.parseEventsAndTimes(timeline: "a", values: expectedEventModels)
@@ -163,19 +164,18 @@ class LoginDemoRxReduxTests: XCTestCase {
             let usernameSignal: Signal<String> = scheduler.createHotObservable(usernameEvent).asSignal(onErrorJustReturn: "")
             let passwordSignal: Signal<String> = scheduler.createHotObservable(passwordEvents).asSignal(onErrorJustReturn: "")
 
-            var loginViewModel = LoginStore(inputs: LoginView.Outputs(usernameField: usernameSignal,
-                                                                          passwordField: passwordSignal,
-                                                                          loginButton: buttonClickSignal,
-                                                                          registerButton: .empty(),
-                                                                          showPasswordButton: .empty()), alertInput: .empty())
-
             let correctUsernameAndPWModel = LoginView.Model(isLoginButtonEnabled: true, isPasswordHidden: true, isSpinning: false, state: .loggedOut)
 
             let performingLoginModel = LoginView.Model(isLoginButtonEnabled: false, isPasswordHidden: true, isSpinning: true, state: .performingLogin)
 
             let loggedInModel = LoginView.Model(isLoginButtonEnabled: true, isPasswordHidden: true, isSpinning: false, state: .loggedIn(User(username: "Hans", age: 1)))
 
-            let recorded = scheduler.record(source: loginViewModel.output)
+            let recorded = scheduler.record(source: LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
+                                                                                         passwordField: passwordSignal,
+                                                                                         loginButton: buttonClickSignal,
+                                                                                         registerButton: .empty(),
+                                                                                         showPasswordButton: .empty()),
+                                                                      alertInput: .empty()))
 
             let expectedEventModels = ["a": initialModel, "c": correctUsernameAndPWModel, "d": performingLoginModel, "e": loggedInModel]
             let expectedEvents = scheduler.parseEventsAndTimes(timeline: "a-cde", values: expectedEventModels)
@@ -219,12 +219,12 @@ class LoginDemoRxReduxTests: XCTestCase {
             let usernameSignal: Signal<String> = scheduler.createHotObservable(usernameEvent).asSignal(onErrorJustReturn: "")
             let passwordSignal: Signal<String> = scheduler.createHotObservable(passwordEvents).asSignal(onErrorJustReturn: "")
 
-            var loginViewModel = LoginStore(inputs: LoginView.Outputs(usernameField: usernameSignal,
-                                                                          passwordField: passwordSignal,
-                                                                          loginButton: .empty(),
-                                                                          registerButton: .empty(),
-                                                                          showPasswordButton: toggleSignal), alertInput:.empty())
-            let recorded = scheduler.record(source: loginViewModel.output)
+            let recorded = scheduler.record(source: LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
+                                                                                         passwordField: passwordSignal,
+                                                                                         loginButton: .empty(),
+                                                                                         registerButton: .empty(),
+                                                                                         showPasswordButton: toggleSignal),
+                                                                      alertInput:.empty()))
 
             let correctUsernameAndPWModelPasswordHidden = LoginView.Model(isLoginButtonEnabled: true, isPasswordHidden: true, isSpinning: false, state: .loggedOut)
 
@@ -271,12 +271,11 @@ class LoginDemoRxReduxTests: XCTestCase {
             let usernameSignal: Signal<String> = scheduler.createHotObservable(usernameEvent).asSignal(onErrorJustReturn: "")
             let passwordSignal: Signal<String> = scheduler.createHotObservable(passwordEvents).asSignal(onErrorJustReturn: "")
 
-            var loginViewModel = LoginStore(inputs: LoginView.Outputs(usernameField: usernameSignal,
-                                                                          passwordField: passwordSignal,
-                                                                          loginButton: buttonClickSignal,
-                                                                          registerButton: .empty(),
-                                                                          showPasswordButton: .empty()), alertInput:.empty())
-            let recorded = scheduler.record(source: loginViewModel.output)
+            let recorded = scheduler.record(source: LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
+                                                                                         passwordField: passwordSignal,
+                                                                                         loginButton: buttonClickSignal,
+                                                                                         registerButton: .empty(),
+                                                                                         showPasswordButton: .empty()), alertInput:.empty()))
 
             let correctUsernameAndPWModel = LoginView.Model(isLoginButtonEnabled: true, isPasswordHidden: true, isSpinning: false, state: .loggedOut)
 

@@ -41,6 +41,9 @@
 		B5BD0070217E0DA70001BE98 /* Nimble_Snapshots.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5BD006F217E0DA70001BE98 /* Nimble_Snapshots.framework */; };
 		B5BD0072217E13980001BE98 /* FBSnapshotTestCase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5BD0071217E13980001BE98 /* FBSnapshotTestCase.framework */; };
 		B5D3BEC4217F17C9003B6903 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B006CC3620DD055700492055 /* RxCocoa.framework */; };
+		D78907782236BB370094671A /* UseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78907772236BB370094671A /* UseCase.swift */; };
+		D789077A2236BB600094671A /* LoginUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78907792236BB600094671A /* LoginUseCase.swift */; };
+		D789077F2236C1810094671A /* CharactersUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D789077E2236C1810094671A /* CharactersUseCase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +97,9 @@
 		B5BD006D217E0DA40001BE98 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = "<group>"; };
 		B5BD006F217E0DA70001BE98 /* Nimble_Snapshots.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble_Snapshots.framework; path = Carthage/Build/iOS/Nimble_Snapshots.framework; sourceTree = "<group>"; };
 		B5BD0071217E13980001BE98 /* FBSnapshotTestCase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSnapshotTestCase.framework; path = Carthage/Build/iOS/FBSnapshotTestCase.framework; sourceTree = "<group>"; };
+		D78907772236BB370094671A /* UseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UseCase.swift; sourceTree = "<group>"; };
+		D78907792236BB600094671A /* LoginUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginUseCase.swift; sourceTree = "<group>"; };
+		D789077E2236C1810094671A /* CharactersUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharactersUseCase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,14 +150,6 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		59B50F53219AC1AF001286B1 /* UseCase */ = {
-			isa = PBXGroup;
-			children = (
-				59B50F54219AC1D6001286B1 /* GOTService.swift */,
-			);
-			path = UseCase;
-			sourceTree = "<group>";
-		};
 		7479B38920ED2BBC00EA3B00 /* RxTools */ = {
 			isa = PBXGroup;
 			children = (
@@ -190,8 +188,9 @@
 				B07785182033045700976A2F /* Assets.xcassets */,
 				B077851A2033045700976A2F /* LaunchScreen.storyboard */,
 				B077851D2033045700976A2F /* Info.plist */,
-				B085623E20345C8800F9C606 /* Login */,
-				B521A0A52191C24000BF1C6E /* TableView */,
+				D789077B2236C0610094671A /* Services */,
+				D78907752236BAEA0094671A /* Features */,
+				D78907762236BAFC0094671A /* Use Cases */,
 			);
 			path = LoginDemoRxRedux;
 			sourceTree = "<group>";
@@ -212,7 +211,6 @@
 				B077853120331DA600976A2F /* LoginView.swift */,
 				B07785132033045700976A2F /* LoginViewController.swift */,
 				B09FA2CA20E289FB002BF342 /* LoginStore.swift */,
-				B085630D2042DB5A00F9C606 /* LoginAPI.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -243,8 +241,6 @@
 		B521A0A52191C24000BF1C6E /* TableView */ = {
 			isa = PBXGroup;
 			children = (
-				B551EA3021AD4ACF00EBDC61 /* DomainModel */,
-				59B50F53219AC1AF001286B1 /* UseCase */,
 				59B50F52219ABF6F001286B1 /* ViewModel */,
 				B521A0A62191C26100BF1C6E /* DemoTableViewController.swift */,
 				B521A0AA2191C2C000BF1C6E /* DemoTableStore.swift */,
@@ -254,12 +250,49 @@
 			path = TableView;
 			sourceTree = "<group>";
 		};
-		B551EA3021AD4ACF00EBDC61 /* DomainModel */ = {
+		D78907752236BAEA0094671A /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				B085623E20345C8800F9C606 /* Login */,
+				B521A0A52191C24000BF1C6E /* TableView */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		D78907762236BAFC0094671A /* Use Cases */ = {
+			isa = PBXGroup;
+			children = (
+				D78907772236BB370094671A /* UseCase.swift */,
+				D78907792236BB600094671A /* LoginUseCase.swift */,
+				D789077E2236C1810094671A /* CharactersUseCase.swift */,
+			);
+			path = "Use Cases";
+			sourceTree = "<group>";
+		};
+		D789077B2236C0610094671A /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				D789077C2236C1090094671A /* Login */,
+				D789077D2236C1110094671A /* GOT */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		D789077C2236C1090094671A /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				B085630D2042DB5A00F9C606 /* LoginAPI.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		D789077D2236C1110094671A /* GOT */ = {
 			isa = PBXGroup;
 			children = (
 				B551EA3121AD4D3100EBDC61 /* GOTCharacter.swift */,
+				59B50F54219AC1D6001286B1 /* GOTService.swift */,
 			);
-			path = DomainModel;
+			path = GOT;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -396,6 +429,7 @@
 				B551EA3221AD4D3100EBDC61 /* GOTCharacter.swift in Sources */,
 				59B50F5B219B31D6001286B1 /* DemoTableView.swift in Sources */,
 				59B50F51219ABD19001286B1 /* RandomColorHelper.swift in Sources */,
+				D78907782236BB370094671A /* UseCase.swift in Sources */,
 				59B50F4D2199D38E001286B1 /* DemoCellModel.swift in Sources */,
 				59B50F55219AC1D6001286B1 /* GOTService.swift in Sources */,
 				B0B0A12821809974005F1441 /* DependencyRetriever.swift in Sources */,
@@ -405,6 +439,8 @@
 				B07785142033045700976A2F /* LoginViewController.swift in Sources */,
 				597E2FC921A323130011D2B9 /* UIAlertController+Rx.swift in Sources */,
 				B07785122033045700976A2F /* AppDelegate.swift in Sources */,
+				D789077A2236BB600094671A /* LoginUseCase.swift in Sources */,
+				D789077F2236C1810094671A /* CharactersUseCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
