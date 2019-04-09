@@ -73,7 +73,7 @@ extension ReducibleStateWithEffects {
 
         let inputFeedback: Feedback<StateAndEffects<Self>, Event> = { _ in return Signal<Event>.merge(inputEvents) }
         let reactFeedback: Feedback<StateAndEffects<Self>, Event> =
-            react(query: { (stateAndEffects: StateAndEffects<Self>) -> Set<StateAndEffect<Self>> in
+            react(requests: { (stateAndEffects: StateAndEffects<Self>) -> Set<StateAndEffect<Self>> in
                 let mappedStates = stateAndEffects.effects.map { (effect: Effect) -> StateAndEffect<Self> in
                     return StateAndEffect<Self>(state: stateAndEffects.state, effect: effect)
                 }

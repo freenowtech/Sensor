@@ -59,7 +59,7 @@ public extension TestScheduler {
                 continue
             }
 
-            if event.index(of: "(") == event.startIndex && event.index(of: ")") == event.index(event.endIndex, offsetBy: -1) {
+            if event.firstIndex(of: "(") == event.startIndex && event.firstIndex(of: ")") == event.index(event.endIndex, offsetBy: -1) {
                 for i in event.indices[event.startIndex..<event.endIndex] {
                     let sameTimeEvent = String(event[i])
                     if sameTimeEvent == "(" || sameTimeEvent == ")" {

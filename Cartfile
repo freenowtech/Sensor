@@ -6,5 +6,5 @@ github "SnapKit/SnapKit"
 github "Quick/Nimble"
 github "uber/ios-snapshot-test-case"
 github "ashfurrow/Nimble-Snapshots"
-github "Alamofire/Alamofire" ~> 4.7
-github "Alamofire/AlamofireImage" ~> 3.4
+github "Alamofire/Alamofire"
+github "Alamofire/AlamofireImage"
