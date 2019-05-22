@@ -1,6 +1,6 @@
 //
 //  TestDSL.swift
-//  mytaxiDriver Tests
+//  SensorTest
 //
 //  Created by Ferran Pujol Camins on 26/03/2019.
 //  Copyright © 2019 Intelligent Apps GmbH. All rights reserved.

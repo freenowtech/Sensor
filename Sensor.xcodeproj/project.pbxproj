@@ -1679,15 +1679,15 @@
          isa = "PBXGroup";
          children = (
             "Sensor::SensorUnitTests::Product",
+            "RxSwift::RxCocoa::Product",
+            "RxSwift::RxRelay::Product",
+            "Sensor::Sensor::Product",
+            "RxFeedback::RxFeedback::Product",
+            "RxSwift::RxCocoaRuntime::Product",
             "RxSwift::RxSwift::Product",
             "RxSwift::RxTest::Product",
-            "Sensor::Sensor::Product",
             "Sensor::SensorTestUnitTests::Product",
-            "RxFeedback::RxFeedback::Product",
-            "RxSwift::RxRelay::Product",
-            "Sensor::SensorTest::Product",
-            "RxSwift::RxCocoa::Product",
-            "RxSwift::RxCocoaRuntime::Product"
+            "Sensor::SensorTest::Product"
          );
          name = "Products";
          path = "";
@@ -4518,11 +4518,11 @@
       };
       "OBJ_727" = {
          isa = "PBXTargetDependency";
-         target = "Sensor::SensorUnitTests";
+         target = "Sensor::SensorTestUnitTests";
       };
       "OBJ_729" = {
          isa = "PBXTargetDependency";
-         target = "Sensor::SensorTestUnitTests";
+         target = "Sensor::SensorUnitTests";
       };
       "OBJ_73" = {
          isa = "PBXFileReference";

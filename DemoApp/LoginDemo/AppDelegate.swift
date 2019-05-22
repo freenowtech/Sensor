@@ -1,9 +1,9 @@
 //
 //  AppDelegate.swift
-//  LoginDemoRxRedux
+//  LoginDemo
 //
 //  Created by Mounir Dellagi on 13.02.18.
-//  Copyright © 2018 Mounir Dellagi. All rights reserved.
+//  Copyright © 2019 Intelligent Apps GmbH. All rights reserved.
 //
 
 import UIKit

@@ -1,9 +1,9 @@
 //
-//  LoginDemoRxReduxTests.swift
-//  LoginDemoRxReduxTests
+//  LoginDemoTests.swift
+//  LoginDemoTests
 //
 //  Created by Mounir Dellagi on 13.02.18.
-//  Copyright © 2018 Mounir Dellagi. All rights reserved.
+//  Copyright © 2019 Intelligent Apps GmbH. All rights reserved.
 //
 
 import XCTest
@@ -15,9 +15,9 @@ import RxCocoa
 import UIKit
 import Swinject
 
-@testable import LoginDemoRxRedux
+@testable import LoginDemo
 
-class LoginDemoRxReduxTests: XCTestCase {
+class LoginDemoTests: XCTestCase {
     
     private let loginView = LoginView()
     let initialModel = LoginView.Model(isLoginButtonEnabled: false, isPasswordHidden: true, isSpinning: false, state: .loggedOut)
@@ -299,7 +299,7 @@ class LoginDemoRxReduxTests: XCTestCase {
     static let recordSnapshots = false
 
     func recordOrAssertSnapshot(on view: UIView) {
-        if LoginDemoRxReduxTests.recordSnapshots {
+        if LoginDemoTests.recordSnapshots {
             expect(view).to(recordDeviceAgnosticSnapshot())
         } else {
             expect(view).to(haveValidDeviceAgnosticSnapshot())

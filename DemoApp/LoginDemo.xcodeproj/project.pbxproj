@@ -27,7 +27,7 @@
 		B07785142033045700976A2F /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07785132033045700976A2F /* LoginViewController.swift */; };
 		B07785192033045700976A2F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B07785182033045700976A2F /* Assets.xcassets */; };
 		B077851C2033045700976A2F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B077851A2033045700976A2F /* LaunchScreen.storyboard */; };
-		B07785272033045700976A2F /* LoginDemoRxReduxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07785262033045700976A2F /* LoginDemoRxReduxTests.swift */; };
+		B07785272033045700976A2F /* LoginDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07785262033045700976A2F /* LoginDemoTests.swift */; };
 		B077853220331DA600976A2F /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B077853120331DA600976A2F /* LoginView.swift */; };
 		B085630E2042DB5A00F9C606 /* LoginAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B085630D2042DB5A00F9C606 /* LoginAPI.swift */; };
 		B09FA2CB20E289FB002BF342 /* LoginStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09FA2CA20E289FB002BF342 /* LoginStore.swift */; };
@@ -53,7 +53,7 @@
 			containerPortal = B07785062033045700976A2F /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = B077850D2033045700976A2F;
-			remoteInfo = LoginDemoRxRedux;
+			remoteInfo = LoginDemo;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -86,7 +86,7 @@
 		B077851B2033045700976A2F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B077851D2033045700976A2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B07785222033045700976A2F /* LoginDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LoginDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B07785262033045700976A2F /* LoginDemoRxReduxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDemoRxReduxTests.swift; sourceTree = "<group>"; };
+		B07785262033045700976A2F /* LoginDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDemoTests.swift; sourceTree = "<group>"; };
 		B07785282033045700976A2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B077853120331DA600976A2F /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		B085630D2042DB5A00F9C606 /* LoginAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginAPI.swift; sourceTree = "<group>"; };
@@ -210,7 +210,7 @@
 			isa = PBXGroup;
 			children = (
 				B0BA6D2A2174D993003AED4B /* TestScheduler+MarbleTests.swift */,
-				B07785262033045700976A2F /* LoginDemoRxReduxTests.swift */,
+				B07785262033045700976A2F /* LoginDemoTests.swift */,
 				B07785282033045700976A2F /* Info.plist */,
 			);
 			path = LoginDemoTests;
@@ -326,7 +326,7 @@
 			dependencies = (
 			);
 			name = LoginDemo;
-			productName = LoginDemoRxRedux;
+			productName = LoginDemo;
 			productReference = B077850E2033045700976A2F /* LoginDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -345,7 +345,7 @@
 				B07785242033045700976A2F /* PBXTargetDependency */,
 			);
 			name = LoginDemoTests;
-			productName = LoginDemoRxReduxTests;
+			productName = LoginDemoTests;
 			productReference = B07785222033045700976A2F /* LoginDemoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -357,7 +357,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
 				LastUpgradeCheck = 1000;
-				ORGANIZATIONNAME = "Mounir Dellagi";
+				ORGANIZATIONNAME = "Intelligent Apps GmbH.";
 				TargetAttributes = {
 					B077850D2033045700976A2F = {
 						CreatedOnToolsVersion = 9.2;
@@ -547,7 +547,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0BA6D2B2174D993003AED4B /* TestScheduler+MarbleTests.swift in Sources */,
-				B07785272033045700976A2F /* LoginDemoRxReduxTests.swift in Sources */,
+				B07785272033045700976A2F /* LoginDemoTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -697,7 +697,7 @@
 				);
 				INFOPLIST_FILE = LoginDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.test.LoginDemoRxRedux;
+				PRODUCT_BUNDLE_IDENTIFIER = com.test.LoginDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -717,7 +717,7 @@
 				);
 				INFOPLIST_FILE = LoginDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.test.LoginDemoRxRedux;
+				PRODUCT_BUNDLE_IDENTIFIER = com.test.LoginDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -738,11 +738,11 @@
 				);
 				INFOPLIST_FILE = LoginDemoTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(FRAMEWORK_SEARCH_PATHS)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.test.LoginDemoRxReduxTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.test.LoginDemoTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LoginDemoRxRedux.app/LoginDemoRxRedux";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LoginDemo.app/LoginDemo";
 			};
 			name = Debug;
 		};
@@ -760,11 +760,11 @@
 				);
 				INFOPLIST_FILE = LoginDemoTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(FRAMEWORK_SEARCH_PATHS)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.test.LoginDemoRxReduxTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.test.LoginDemoTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LoginDemoRxRedux.app/LoginDemoRxRedux";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LoginDemo.app/LoginDemo";
 			};
 			name = Release;
 		};

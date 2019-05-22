@@ -1,6 +1,6 @@
 //
 //  SensorTestCase.swift
-//  mytaxiDriver
+//  SensorTest
 //
 //  Created by Ferran Pujol Camins on 05/04/2019.
 //  Copyright © 2019 Intelligent Apps GmbH. All rights reserved.

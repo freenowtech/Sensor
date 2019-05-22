@@ -1,9 +1,9 @@
 //
 //  DemoTableViewController.swift
-//  LoginDemoRxRedux
+//  LoginDemo
 //
 //  Created by Ferran Pujol Camins on 06/11/2018.
-//  Copyright © 2018 Mounir Dellagi. All rights reserved.
+//  Copyright © 2019 Intelligent Apps GmbH. All rights reserved.
 //
 
 import UIKit

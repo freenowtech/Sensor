@@ -1,6 +1,6 @@
 //
 //  Observable+Debug.swift
-//  mytaxiDriver
+//  SensorTest
 //
 //  Created by Ferran Pujol Camins on 10/12/2018.
 //  Copyright © 2019 Intelligent Apps GmbH. All rights reserved.

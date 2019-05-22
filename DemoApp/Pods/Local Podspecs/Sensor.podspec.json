@@ -1,43 +1,55 @@
 {
   "name": "Sensor",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "summary": "WIP",
   "description": "WIP...",
-  "homepage": "http://sensor-swift.github.io",
+  "homepage": "https://github.com/mytaxi/Sensor",
   "license": {
     "type": "Apache License",
     "file": "LICENSE"
   },
-  "authors": {
-    "Ferran Pujol Camins": "ferran.pujol@mytaxi.com"
-  },
+  "authors": "Intelligent Apps GmbH.",
   "swift_version": "5.0",
   "platforms": {
     "ios": "10.0"
   },
   "source": {
-    "git": ".",
-    "branch": "frameworks"
+    "git": "https://github.com/mytaxi/Sensor.git",
+    "branch": "master"
   },
-  "dependencies": {
-    "RxSwift": [
-
-    ],
-    "RxCocoa": [
-
-    ],
-    "RxFeedback": [
-
-    ]
-  },
+  "default_subspecs": "Core",
   "subspecs": [
     {
-      "name": "Sensor",
-      "source_files": "Sensor/Sources"
+      "name": "Core",
+      "source_files": "Sensor/Sources",
+      "frameworks": "Foundation",
+      "dependencies": {
+        "RxSwift": [
+          "~> 5.0.0"
+        ],
+        "RxCocoa": [
+          "~> 5.0.0"
+        ],
+        "RxFeedback": [
+          "~> 3.0.0"
+        ]
+      }
     },
     {
       "name": "SensorTest",
-      "source_files": "SensorTest/Sources"
+      "source_files": "SensorTest/Sources",
+      "frameworks": [
+        "Foundation",
+        "XCTest"
+      ],
+      "dependencies": {
+        "Sensor/Core": [
+          "~> 0.1.0"
+        ],
+        "RxTest": [
+          "~> 5.0.0"
+        ]
+      }
     }
   ]
 }

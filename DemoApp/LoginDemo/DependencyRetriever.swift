@@ -1,9 +1,9 @@
 //
 //  DependencyRetriever.swift
-//  LoginDemoRxRedux
+//  LoginDemo
 //
 //  Created by Mounir Dellagi on 24.10.18.
-//  Copyright © 2018 Mounir Dellagi. All rights reserved.
+//  Copyright © 2019 Intelligent Apps GmbH. All rights reserved.
 //
 
 import Foundation

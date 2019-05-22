@@ -1,6 +1,6 @@
 //
 //  Driver+Reducible.swift
-//  mytaxiDriver
+//  Sensor
 //
 //  Created by David Cortés Fulla on 3/10/18.
 //  Copyright © 2019 Intelligent Apps GmbH. All rights reserved.

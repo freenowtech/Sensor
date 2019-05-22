@@ -8,7 +8,7 @@ target 'LoginDemo' do
   use_frameworks!
 
   # Pods for LoginDemo
-  pod "Sensor/Sensor", :path => ".."
+  pod "Sensor/Sensor", "0.1.0"
   pod "Alamofire"
   pod "AlamofireImage"
   pod "lottie-ios"

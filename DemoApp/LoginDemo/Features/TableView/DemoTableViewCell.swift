@@ -1,9 +1,9 @@
 //
 //  DemoTableViewCell.swift
-//  LoginDemoRxRedux
+//  LoginDemo
 //
 //  Created by Fabio Cuomo on 12/11/2018.
-//  Copyright © 2018 Mounir Dellagi. All rights reserved.
+//  Copyright © 2019 Intelligent Apps GmbH. All rights reserved.
 //
 
 import UIKit
