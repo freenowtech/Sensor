@@ -1,0 +1,29 @@
+project 'LoginDemo.xcodeproj/'
+
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'LoginDemo' do
+  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for LoginDemo
+  pod "Sensor/Sensor", :path => ".."
+  pod "Alamofire"
+  pod "AlamofireImage"
+  pod "lottie-ios"
+  pod "RxSwift"
+  pod "RxCocoa"
+  pod "RxGesture", "~> 2.2.0"
+  pod "SnapKit"
+  pod "Swinject"
+
+  target 'LoginDemoTests' do
+    inherit! :search_paths
+    # Pods for testing
+    pod "iOSSnapshotTestCase"
+    pod "Nimble"
+    pod "Nimble-Snapshots"
+  end
+
+end

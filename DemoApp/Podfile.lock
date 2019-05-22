@@ -1,0 +1,83 @@
+PODS:
+  - Alamofire (4.8.2)
+  - AlamofireImage (3.5.2):
+    - Alamofire (~> 4.8)
+  - iOSSnapshotTestCase (6.0.3):
+    - iOSSnapshotTestCase/SwiftSupport (= 6.0.3)
+  - iOSSnapshotTestCase/Core (6.0.3)
+  - iOSSnapshotTestCase/SwiftSupport (6.0.3):
+    - iOSSnapshotTestCase/Core
+  - lottie-ios (3.0.4)
+  - Nimble (8.0.1)
+  - Nimble-Snapshots (7.1.0):
+    - Nimble-Snapshots/Core (= 7.1.0)
+  - Nimble-Snapshots/Core (7.1.0):
+    - iOSSnapshotTestCase (~> 6.0)
+    - Nimble (~> 8.0)
+  - RxCocoa (4.5.0):
+    - RxSwift (>= 4.4.2, ~> 4.4)
+  - RxFeedback (2.0.0):
+    - RxCocoa (~> 4.4)
+    - RxSwift (~> 4.4)
+  - RxGesture (2.2.0):
+    - RxCocoa (~> 4.5)
+    - RxSwift (~> 4.5)
+  - RxSwift (4.5.0)
+  - Sensor/Sensor (1.0.0):
+    - RxCocoa
+    - RxFeedback
+    - RxSwift
+  - SnapKit (5.0.0)
+  - Swinject (2.6.0)
+
+DEPENDENCIES:
+  - Alamofire
+  - AlamofireImage
+  - iOSSnapshotTestCase
+  - lottie-ios
+  - Nimble
+  - Nimble-Snapshots
+  - RxCocoa
+  - RxGesture (~> 2.2.0)
+  - RxSwift
+  - Sensor/Sensor (from `..`)
+  - SnapKit
+  - Swinject
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - AlamofireImage
+    - iOSSnapshotTestCase
+    - lottie-ios
+    - Nimble
+    - Nimble-Snapshots
+    - RxCocoa
+    - RxFeedback
+    - RxGesture
+    - RxSwift
+    - SnapKit
+    - Swinject
+
+EXTERNAL SOURCES:
+  Sensor:
+    :path: ".."
+
+SPEC CHECKSUMS:
+  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
+  AlamofireImage: 63cfe3baf1370be6c498149687cf6db3e3b00999
+  iOSSnapshotTestCase: 944a73f6d9676302811a86c0cf35f0e6ef5ab2a0
+  lottie-ios: 55a2de40418f8de2b155efaba4d4d1a025a5c570
+  Nimble: 45f786ae66faa9a709624227fae502db55a8bdd0
+  Nimble-Snapshots: 2ec985281eef0eb9fc69a469deee851363a50d0e
+  RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
+  RxFeedback: 49bb931caf6d05e315d5b5366c0991ad1474ea36
+  RxGesture: c1b7bf17166b0ef9d642a9510f8bac5785f18990
+  RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
+  Sensor: 6ab14e28248fc02faff2264955caf627a71a32fb
+  SnapKit: fd22d10eb9aff484d79a8724eab922c1ddf89bcf
+  Swinject: 48a96cda93633cf2860697b4ce76ab5db9ebaca2
+
+PODFILE CHECKSUM: 052779b1ad981bf49fdf397d8c4b5f26f40d2242
+
+COCOAPODS: 1.6.1
