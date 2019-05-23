@@ -1,5 +1,5 @@
 Pod::Spec.new do |spec|
-  spec.name         = "Sensor"
+  spec.name         = "SensorCore"
   spec.version      = "0.1.0"
   spec.summary      = "WIP"
 
@@ -21,22 +21,9 @@ Pod::Spec.new do |spec|
   #spec.source       = { :git => "https://github.com/mytaxi/Sensor.git", :tag => "#{spec.version}" }
   spec.source       = { :git => "https://github.com/mytaxi/Sensor.git", :branch => "master" }
 
-  spec.default_subspec = "Core"
-
-  spec.subspec 'Core' do |sp|
-    sp.module_name = "SensorCore"
-    sp.source_files = "Sensor/Sources"
-    sp.frameworks = "Foundation"
-    sp.dependency "RxSwift",  "~> 5.0.0"
-    sp.dependency "RxCocoa", "~> 5.0.0"
-    sp.dependency "RxFeedback", "~> 3.0.0"
-  end
-
-  spec.subspec 'SensorTest' do |sp|
-    sp.module_name = "SensorTest"
-    sp.source_files = "SensorTest/Sources"
-    sp.frameworks = "Foundation", "XCTest"
-    sp.dependency "Sensor/Core", "~> #{spec.version}"
-    sp.dependency "RxTest", "~> 5.0.0"
-  end
+  spec.source_files = "Sensor/Sources"
+  spec.frameworks = "Foundation"
+  spec.dependency "RxSwift",  "~> 5.0.0"
+  spec.dependency "RxCocoa", "~> 5.0.0"
+  spec.dependency "RxFeedback", "~> 3.0.0"
 end
