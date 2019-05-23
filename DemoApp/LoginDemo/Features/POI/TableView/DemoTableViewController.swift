@@ -12,20 +12,25 @@ import RxCocoa
 
 class DemoTableViewController: UIViewController {
 
-    private var rootView = DemoTableView()
-    let refreshButton = UIButton(type: .roundedRect)
+    var coordinatorOutputs: DemoTableStore.CoordinatorOutput {
+        return storeOutputs.forCoordinator
+    }
+    
+    // MARK: Private
 
-    let service = POIService()
+    private var rootView = DemoTableView()
+    private let refreshButton = UIButton(type: .roundedRect)
 
     private let disposeBag = DisposeBag()
-    
-    private lazy var feedbackViewModel = {
-        DemoTableStore(refreshButton: refreshButton.rx.tap.asSignal())
-    }()
 
     override func loadView() {
         self.view = rootView
     }
+
+    private lazy var storeOutputs = DemoTableStore.makeOutputs(inputs: (
+        refreshTapped: refreshButton.rx.tap.asSignal(),
+        cellSelected: rootView.outputs
+    ))
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +46,7 @@ class DemoTableViewController: UIViewController {
     }
     
     private func setupBindings() {
-        feedbackViewModel.output
+        storeOutputs.forView
             .drive(rootView.rx.inputs)
             .disposed(by: disposeBag)
     }

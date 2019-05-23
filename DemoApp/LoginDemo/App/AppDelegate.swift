@@ -7,18 +7,25 @@
 //
 
 import UIKit
+import RxSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    private var appCoordinator: AppCoordinator!
+    private let disposeBag = DisposeBag()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         DependencyRetriever.setupDependencies()
         window = UIWindow(frame: UIScreen.main.bounds)
-        let controller = LoginViewController()
-        window?.rootViewController = controller
-        window?.makeKeyAndVisible()
+        let appCoordinatorPayload = UseCase.createAppCoordinatorPayload(window: window!)
+        appCoordinator = AppCoordinator(rootViewController: appCoordinatorPayload.rootViewController, coordinatorPayload: appCoordinatorPayload.coordinatorPayload)
+
+        appCoordinator.start()
+            .subscribe(onNext: { uuid in debugPrint("Route with identifier \(uuid) closed.")})
+            .disposed(by: disposeBag)
+
         return true
     }
 

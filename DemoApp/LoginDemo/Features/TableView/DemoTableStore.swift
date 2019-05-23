@@ -19,7 +19,7 @@ struct DemoTableStore {
 
     var output: Driver<DemoTableView.Model> {
         let initialState = State.presentingData([])
-        let context = Context(getAllCharacters: UseCase.defaultGetAllCharacters)
+        let context = Context(getAllPois: UseCase.defaultGetAllPois)
         
         return State.outputStates(initialState: initialState,
                                   inputEvents: inputEvents.startWith(.refreshTapped),
@@ -35,17 +35,17 @@ struct DemoTableStore {
     }
     
     struct Context {
-        let getAllCharacters: UseCase.GetAllCharacters
+        let getAllPois: UseCase.GetAllPois
     }
 
     enum Effect: TriggerableEffect {
-        case getAllCharacters
+        case getAllPois
         
         func trigger(context: Context) -> Signal<Event> {
             switch self {
-            case .getAllCharacters:
+            case .getAllPois:
                 return context
-                    .getAllCharacters()
+                    .getAllPois()
                     .map { response -> Event in .requestSucceded(response.map{ DemoCellModel($0) }) }
                     .asSignal { error in
                         return Signal.just(Event.requestFailed((error as? APIError)!))
@@ -64,14 +64,14 @@ struct DemoTableStore {
             case (.fetchingData, .requestFailed(let error)):
                 return (.presentingError(error), [])
                 
-            case (.fetchingData, .requestSucceded(let characters)):
-                return (.presentingData(characters), [])
+            case (.fetchingData, .requestSucceded(let pois)):
+                return (.presentingData(pois), [])
 
             case (.presentingData(_), .refreshTapped):
-                return (.fetchingData, [.getAllCharacters])
+                return (.fetchingData, [.getAllPois])
 
             case (.presentingError, .refreshTapped):
-                return (.fetchingData, [.getAllCharacters])
+                return (.fetchingData, [.getAllPois])
 
             default:
                 return (self, [])

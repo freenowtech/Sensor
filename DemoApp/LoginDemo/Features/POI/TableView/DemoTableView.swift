@@ -11,7 +11,15 @@ import SnapKit
 import RxCocoa
 import RxSwift
 
+// TODO: clean this up
 final class DemoTableView: UIView {
+    var outputs: Signal<Int> {
+        return tableView.rx.itemSelected
+            .do(onNext: { [tableView] in tableView.deselectRow(at: $0, animated: true) })
+            .map { $0.row }
+            .asSignal(onErrorSignalWith: Signal.never())
+    }
+
 
     enum Model: Equatable {
         case fetchingData
@@ -20,7 +28,7 @@ final class DemoTableView: UIView {
     }
 
     let disposeBag = DisposeBag()
-    let pois: BehaviorSubject<[DemoCellModel]> = BehaviorSubject(value: [])
+    private let pois: BehaviorSubject<[DemoCellModel]> = BehaviorSubject(value: [])
 
     private let tableView: UITableView = {
         let table = UITableView(frame: .zero)
@@ -101,21 +109,6 @@ final class DemoTableView: UIView {
             errorView.isHidden = false
             spinner.stopAnimating()
             tableView.isHidden = true
-        }
-    }
-}
-
-extension DemoTableView.Model {
-    init(_ state: DemoTableStore.State) {
-        switch state {
-        case .fetchingData:
-            self = .fetchingData
-            
-        case .presentingData(let newPois):
-            self = .presentingData(newPois)
-
-        case .presentingError(_):
-            self = .presentingError
         }
     }
 }

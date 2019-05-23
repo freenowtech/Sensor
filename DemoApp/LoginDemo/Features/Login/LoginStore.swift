@@ -13,7 +13,12 @@ import RxSwift
 import RxCocoa
 
 enum LoginStore {
-    static func makeOutputs(inputs: LoginView.Outputs, alertInput: Signal<RxAlertResult>) -> Driver<LoginView.Model> {
+    struct Outputs<ViewModel, Navigation> {
+        let viewDriver: Driver<ViewModel>
+        let navigationDriver: Signal<Navigation>
+    }
+    
+    static func makeOutputs(inputs: LoginView.Outputs, alertInput: Signal<RxAlertResult>) -> Outputs<LoginView.Model, Navigation> {
         let inputEvents: Signal<Event> = Signal.merge(
             inputs.usernameField.map { .usernameChanged($0) },
             inputs.passwordField.map { .passwordChanged($0) },
@@ -21,15 +26,27 @@ enum LoginStore {
             inputs.showPasswordButton.map { .passwordToggled },
             alertInput.map { _ in .errorMessageDismissed }
         )
-
+        
         let initalStateModel = StateModel(credentials: Credentials(username: "", password: ""), isPasswordHidden: true, state: .loggedOut)
         let context = Context(login: UseCase.defaultLogin)
-
-        return StateModel.outputStates(initialState: initalStateModel,
+        
+        let viewOutput = StateModel.outputStates(initialState: initalStateModel,
                                        inputEvents: inputEvents,
                                        context: context)
             .map { stateModel in LoginView.Model(stateModel: stateModel) }
             .distinctUntilChanged()
+        
+        let navigationOutput = viewOutput.flatMap { model -> Signal<Navigation> in
+            switch model.state {
+            case .loggedIn:
+                return Signal.just(.dismiss)
+            case .loginFailed:
+                return Signal.just(.showError)
+            default:
+                return Signal.empty()
+            }
+        }
+        return Outputs(viewDriver: viewOutput, navigationDriver: navigationOutput)
     }
 
     fileprivate struct Context { // Will be done by David or/and Stefan in Interactor/Use Case Refactor

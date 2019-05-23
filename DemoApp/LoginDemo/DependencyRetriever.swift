@@ -15,10 +15,14 @@ final class DependencyRetriever: NSObject {
     static func setupDependencies() {
         container
             .register(LoginAPIProtocol.self) { _ in LoginAPI() }
-            
             .inObjectScope(.container)
+        
         container
-            .register(GOTServiceProtocol.self) { _ in GOTService() }
+            .register(POIServiceProtocol.self) { _ in POIService() }
+            .inObjectScope(.container)
+        
+        container
+            .register(AuthenticationServiceProtocol.self) { _ in AuthenticationService() }
             .inObjectScope(.container)
     }
 
@@ -26,7 +30,11 @@ final class DependencyRetriever: NSObject {
         return container.resolve(LoginAPIProtocol.self)!
     }
     
-    static func gotServiceAPI() -> GOTServiceProtocol {
-        return container.resolve(GOTServiceProtocol.self)!
+    static func poiServiceAPI() -> POIServiceProtocol {
+        return container.resolve(POIServiceProtocol.self)!
+    }
+    
+    static func authenticationService() -> AuthenticationServiceProtocol {
+        return container.resolve(AuthenticationServiceProtocol.self)!
     }
 }
