@@ -24,6 +24,7 @@ Pod::Spec.new do |spec|
   spec.default_subspec = "Core"
 
   spec.subspec 'Core' do |sp|
+    sp.module_name = "SensorCore"
     sp.source_files = "Sensor/Sources"
     sp.frameworks = "Foundation"
     sp.dependency "RxSwift",  "~> 5.0.0"
@@ -32,6 +33,7 @@ Pod::Spec.new do |spec|
   end
 
   spec.subspec 'SensorTest' do |sp|
+    sp.module_name = "SensorTest"
     sp.source_files = "SensorTest/Sources"
     sp.frameworks = "Foundation", "XCTest"
     sp.dependency "Sensor/Core", "~> #{spec.version}"
