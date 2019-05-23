@@ -1,5 +1,5 @@
 Pod::Spec.new do |spec|
-  spec.name         = "SensorCore"
+  spec.name         = "Sensor"
   spec.version      = "0.1.0"
   spec.summary      = "WIP"
 
