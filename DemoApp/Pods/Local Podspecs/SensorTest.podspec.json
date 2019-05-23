@@ -1,0 +1,36 @@
+{
+  "name": "SensorTest",
+  "version": "0.1.0",
+  "summary": "WIP",
+  "description": "WIP...",
+  "homepage": "https://github.com/mytaxi/Sensor",
+  "license": {
+    "type": "Apache License",
+    "file": "LICENSE"
+  },
+  "authors": "Intelligent Apps GmbH.",
+  "swift_version": "5.0",
+  "platforms": {
+    "ios": "10.0"
+  },
+  "source": {
+    "git": "https://github.com/mytaxi/Sensor.git",
+    "branch": "master"
+  },
+  "source_files": "SensorTest/Sources",
+  "frameworks": [
+    "Foundation",
+    "XCTest"
+  ],
+  "dependencies": {
+    "RxSwift": [
+      "~> 5.0.0"
+    ],
+    "RxCocoa": [
+      "~> 5.0.0"
+    ],
+    "RxTest": [
+      "~> 5.0.0"
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+framework module SensorTest {
+  umbrella header "SensorTest-umbrella.h"
+
+  export *
+  module * { export * }
+}

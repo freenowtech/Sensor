@@ -8,19 +8,20 @@ target 'LoginDemo' do
   use_frameworks!
 
   # Pods for LoginDemo
-  pod "Sensor/Sensor", "0.1.0"
+  pod 'Sensor', :git => 'ssh://git@stash.intapps.it:7999/mi/loginrxreduxdemo.git', :branch => 'master'
   pod "Alamofire"
   pod "AlamofireImage"
   pod "lottie-ios"
   pod "RxSwift"
   pod "RxCocoa"
-  pod "RxGesture", "~> 2.2.0"
+  pod "RxGesture"
   pod "SnapKit"
   pod "Swinject"
 
   target 'LoginDemoTests' do
     inherit! :search_paths
     # Pods for testing
+    pod 'SensorTest', :git => 'ssh://git@stash.intapps.it:7999/mi/loginrxreduxdemo.git', :branch => 'master'
     pod "iOSSnapshotTestCase"
     pod "Nimble"
     pod "Nimble-Snapshots"

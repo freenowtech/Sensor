@@ -7,26 +7,35 @@ PODS:
   - iOSSnapshotTestCase/Core (6.0.3)
   - iOSSnapshotTestCase/SwiftSupport (6.0.3):
     - iOSSnapshotTestCase/Core
-  - lottie-ios (3.0.4)
+  - lottie-ios (3.0.6)
   - Nimble (8.0.1)
   - Nimble-Snapshots (7.1.0):
     - Nimble-Snapshots/Core (= 7.1.0)
   - Nimble-Snapshots/Core (7.1.0):
     - iOSSnapshotTestCase (~> 6.0)
     - Nimble (~> 8.0)
-  - RxCocoa (4.5.0):
-    - RxSwift (>= 4.4.2, ~> 4.4)
-  - RxFeedback (2.0.0):
-    - RxCocoa (~> 4.4)
-    - RxSwift (~> 4.4)
-  - RxGesture (2.2.0):
-    - RxCocoa (~> 4.5)
-    - RxSwift (~> 4.5)
-  - RxSwift (4.5.0)
-  - Sensor/Sensor (1.0.0):
-    - RxCocoa
-    - RxFeedback
-    - RxSwift
+  - RxCocoa (5.0.0):
+    - RxRelay (~> 5)
+    - RxSwift (~> 5)
+  - RxFeedback (3.0.0):
+    - RxCocoa (~> 5.0)
+    - RxSwift (~> 5.0)
+  - RxGesture (3.0.0):
+    - RxCocoa (~> 5.0)
+    - RxSwift (~> 5.0)
+  - RxRelay (5.0.0):
+    - RxSwift (~> 5)
+  - RxSwift (5.0.0)
+  - RxTest (5.0.0):
+    - RxSwift (~> 5)
+  - Sensor (0.1.0):
+    - RxCocoa (~> 5.0.0)
+    - RxFeedback (~> 3.0.0)
+    - RxSwift (~> 5.0.0)
+  - SensorTest (0.1.0):
+    - RxCocoa (~> 5.0.0)
+    - RxSwift (~> 5.0.0)
+    - RxTest (~> 5.0.0)
   - SnapKit (5.0.0)
   - Swinject (2.6.0)
 
@@ -38,9 +47,10 @@ DEPENDENCIES:
   - Nimble
   - Nimble-Snapshots
   - RxCocoa
-  - RxGesture (~> 2.2.0)
+  - RxGesture
   - RxSwift
-  - Sensor/Sensor (from `..`)
+  - "Sensor (from `ssh://git@stash.intapps.it:7999/mi/loginrxreduxdemo.git`, branch `master`)"
+  - "SensorTest (from `ssh://git@stash.intapps.it:7999/mi/loginrxreduxdemo.git`, branch `master`)"
   - SnapKit
   - Swinject
 
@@ -55,29 +65,46 @@ SPEC REPOS:
     - RxCocoa
     - RxFeedback
     - RxGesture
+    - RxRelay
     - RxSwift
+    - RxTest
     - SnapKit
     - Swinject
 
 EXTERNAL SOURCES:
   Sensor:
-    :path: ".."
+    :branch: master
+    :git: "ssh://git@stash.intapps.it:7999/mi/loginrxreduxdemo.git"
+  SensorTest:
+    :branch: master
+    :git: "ssh://git@stash.intapps.it:7999/mi/loginrxreduxdemo.git"
+
+CHECKOUT OPTIONS:
+  Sensor:
+    :commit: 215995471095f42a5a1879070a4fee5fdb1eaf8b
+    :git: "ssh://git@stash.intapps.it:7999/mi/loginrxreduxdemo.git"
+  SensorTest:
+    :commit: 215995471095f42a5a1879070a4fee5fdb1eaf8b
+    :git: "ssh://git@stash.intapps.it:7999/mi/loginrxreduxdemo.git"
 
 SPEC CHECKSUMS:
   Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
   AlamofireImage: 63cfe3baf1370be6c498149687cf6db3e3b00999
   iOSSnapshotTestCase: 944a73f6d9676302811a86c0cf35f0e6ef5ab2a0
-  lottie-ios: 55a2de40418f8de2b155efaba4d4d1a025a5c570
+  lottie-ios: d030b6cda141cfd8bbaa3db89264785e6fdf675a
   Nimble: 45f786ae66faa9a709624227fae502db55a8bdd0
   Nimble-Snapshots: 2ec985281eef0eb9fc69a469deee851363a50d0e
-  RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
-  RxFeedback: 49bb931caf6d05e315d5b5366c0991ad1474ea36
-  RxGesture: c1b7bf17166b0ef9d642a9510f8bac5785f18990
-  RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
-  Sensor: 6ab14e28248fc02faff2264955caf627a71a32fb
+  RxCocoa: fcf32050ac00d801f34a7f71d5e8e7f23026dcd8
+  RxFeedback: 4260d8dad5bba28b182c0b9ff5bce68c260de183
+  RxGesture: 0cd8e37ff9a266e1c31f46bcaed6de1c536bc81e
+  RxRelay: 4f7409406a51a55cd88483f21ed898c234d60f18
+  RxSwift: 8b0671caa829a763bbce7271095859121cbd895f
+  RxTest: 4349afe98f564e0a9bc19063368904622d17d49a
+  Sensor: 093099c024ca9d10e12865ce392c030366037f43
+  SensorTest: 48265269a196b2ce3b7425db2a019bdb8fef0f1e
   SnapKit: fd22d10eb9aff484d79a8724eab922c1ddf89bcf
   Swinject: 48a96cda93633cf2860697b4ce76ab5db9ebaca2
 
-PODFILE CHECKSUM: 052779b1ad981bf49fdf397d8c4b5f26f40d2242
+PODFILE CHECKSUM: 7bf2d9fdafccf9e3e467744e29915c9e9f4a5f05
 
 COCOAPODS: 1.6.1

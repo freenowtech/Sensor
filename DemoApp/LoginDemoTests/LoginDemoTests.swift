@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import SensorTest
 import Nimble
 import Nimble_Snapshots
 import RxTest
@@ -57,7 +58,7 @@ class LoginDemoTests: XCTestCase {
                                                                                             loginButton: .empty(),
                                                                                             registerButton: .empty(),
                                                                                             showPasswordButton: .empty()),
-                                                                  alertInput: .empty()))
+                                                                  alertInput: .empty()).viewDriver)
 
 
 
@@ -90,7 +91,7 @@ class LoginDemoTests: XCTestCase {
                                                                                                            loginButton: .empty(),
                                                                                                            registerButton: .empty(),
                                                                                                            showPasswordButton: .empty()),
-                                                                  alertInput: .empty()))
+                                                                  alertInput: .empty()).viewDriver)
 
         let correctUsernameAndPWModel = LoginView.Model(isLoginButtonEnabled: true, isPasswordHidden: true, isSpinning: false, state: .loggedOut)
 
@@ -123,7 +124,7 @@ class LoginDemoTests: XCTestCase {
                                                                                             loginButton: .empty(),
                                                                                             registerButton: .empty(),
                                                                                             showPasswordButton: .empty()),
-                                                                  alertInput: .empty()))
+                                                                  alertInput: .empty()).viewDriver)
 
         let expectedEventModels = ["a": initialModel]
         let expectedEvents = scheduler.parseEventsAndTimes(timeline: "a", values: expectedEventModels)
@@ -175,7 +176,7 @@ class LoginDemoTests: XCTestCase {
                                                                                          loginButton: buttonClickSignal,
                                                                                          registerButton: .empty(),
                                                                                          showPasswordButton: .empty()),
-                                                                      alertInput: .empty()))
+                                                                      alertInput: .empty()).viewDriver)
 
             let expectedEventModels = ["a": initialModel, "c": correctUsernameAndPWModel, "d": performingLoginModel, "e": loggedInModel]
             let expectedEvents = scheduler.parseEventsAndTimes(timeline: "a-cde", values: expectedEventModels)
@@ -224,7 +225,7 @@ class LoginDemoTests: XCTestCase {
                                                                                          loginButton: .empty(),
                                                                                          registerButton: .empty(),
                                                                                          showPasswordButton: toggleSignal),
-                                                                      alertInput:.empty()))
+                                                                      alertInput:.empty()).viewDriver)
 
             let correctUsernameAndPWModelPasswordHidden = LoginView.Model(isLoginButtonEnabled: true, isPasswordHidden: true, isSpinning: false, state: .loggedOut)
 
@@ -275,7 +276,7 @@ class LoginDemoTests: XCTestCase {
                                                                                          passwordField: passwordSignal,
                                                                                          loginButton: buttonClickSignal,
                                                                                          registerButton: .empty(),
-                                                                                         showPasswordButton: .empty()), alertInput:.empty()))
+                                                                                         showPasswordButton: .empty()), alertInput:.empty()).viewDriver)
 
             let correctUsernameAndPWModel = LoginView.Model(isLoginButtonEnabled: true, isPasswordHidden: true, isSpinning: false, state: .loggedOut)
 
