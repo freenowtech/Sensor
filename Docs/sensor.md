@@ -5,7 +5,7 @@ Nowadays, mobile applications become increasingly powerful and complex, rich of 
 The good news is our **Sensor Architecture**: an elegant and a good way to organise your code when working with complex applications.
 With the ability to define all the possible states, of each feature of a mobile application, the chances to end up in an inconsistent state are most unlikely. Thanks to the concept of the State Machine and its deterministic behaviour, we can be sure that all the transitions from a state to another state are regulated by a finite set of events that can happen.
 
-The **Sensor framework** comes with batteries included so you can start writing safe apps straight away.
+The **Sensor** frameworks comes with batteries included so you can start writing safe apps straight away.
 
 ## A tried and tested architecture for iOS app
 
