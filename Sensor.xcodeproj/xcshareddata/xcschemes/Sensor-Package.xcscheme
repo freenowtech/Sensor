@@ -32,7 +32,7 @@
           <BuildableReference
             BuildableIdentifier = "primary"
             BuildableName = "'$(TARGET_NAME)'"
-            BlueprintName = "SensorUnitTests"
+            BlueprintName = "SensorTestUnitTests"
             ReferencedContainer = "container:Sensor.xcodeproj">
           </BuildableReference>
         </TestableReference>
@@ -41,7 +41,7 @@
           <BuildableReference
             BuildableIdentifier = "primary"
             BuildableName = "'$(TARGET_NAME)'"
-            BlueprintName = "SensorTestUnitTests"
+            BlueprintName = "SensorUnitTests"
             ReferencedContainer = "container:Sensor.xcodeproj">
           </BuildableReference>
         </TestableReference>

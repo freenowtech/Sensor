@@ -79,3 +79,4 @@ LoginDemoRxReduxTests/FailureDiffs
 /.build
 /Packages
 Sensor.xcodeproj/project.xcworkspace/xcuserdata
+Sensor.xcodeproj/xcuserdata

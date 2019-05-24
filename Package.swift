@@ -5,6 +5,9 @@ import PackageDescription
 
 let package = Package(
     name: "Sensor",
+    platforms: [
+       .macOS(.v10_13),
+    ],
     products: [
         // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .library(
@@ -17,7 +20,8 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/ReactiveX/RxSwift.git", from: "5.0.0"),
-        .package(url: "https://github.com/NoTests/RxFeedback.swift.git", from: "3.0.0")
+        .package(url: "https://github.com/NoTests/RxFeedback.swift.git", from: "3.0.0"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.5.0"),
     ],
     targets: [
         .target(
@@ -26,7 +30,7 @@ let package = Package(
             path: "Sensor/Sources"),
         .testTarget(
             name: "SensorUnitTests",
-            dependencies: ["Sensor", "SensorTest"],
+            dependencies: ["Sensor", "SensorTest", "RxSwift", "RxCocoa"],
             path: "Sensor/UnitTests"),
         .target(
             name: "SensorTest",
@@ -34,7 +38,7 @@ let package = Package(
             path: "SensorTest/Sources"),
         .testTarget(
             name: "SensorTestUnitTests",
-            dependencies: ["SensorTest"],
+            dependencies: ["SensorTest", "SnapshotTesting"],
             path: "SensorTest/UnitTests"),
     ]
 )
