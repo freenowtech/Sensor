@@ -73,3 +73,13 @@ let package = Package(
     ]
 )
 ```
+
+## Contributors
+* Stefan Bieschewski
+* [David Cortés](https://github.com/davebcn87)
+* Fabio Cuomo
+* Mounir Dellagi
+* [Lluís Gómez](https://github.com/lluisgh28)
+* Carlos Nuñez
+* [Ferran Pujol](https://github.com/ferranpujolcamins) [<img width="15" alt="@ferranpujolca" src="https://help.twitter.com/content/dam/help-twitter/brand/logo.png">](https://twitter.com/ferranpujolca)
+* Adrian Zdanowicz
