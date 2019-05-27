@@ -76,10 +76,10 @@ let package = Package(
 
 ## Contributors
 * Stefan Bieschewski
-* [David Cortés](https://github.com/davebcn87)
+* David Cortés [<img src="Docs/images/SocialIcons/GitHub-Mark-32px.png" width="15" height="15">](https://github.com/davebcn87)
 * Fabio Cuomo
 * Mounir Dellagi
-* [Lluís Gómez](https://github.com/lluisgh28)
+* Lluís Gómez [<img src="Docs/images/SocialIcons/GitHub-Mark-32px.png" width="15" height="15">](https://github.com/lluisgh28)
 * Carlos Nuñez
-* [Ferran Pujol](https://github.com/ferranpujolcamins) [<img width="15" alt="@ferranpujolca" src="https://help.twitter.com/content/dam/help-twitter/brand/logo.png">](https://twitter.com/ferranpujolca)
+* Ferran Pujol [<img src="Docs/images/SocialIcons/GitHub-Mark-32px.png" width="15" height="15">](https://github.com/ferranpujolcamins) [<img src="Docs/images/SocialIcons/Twitter_Social_Icon_Circle_Color.png" width="15" height="15">](https://twitter.com/ferranpujolca)
 * Adrian Zdanowicz
