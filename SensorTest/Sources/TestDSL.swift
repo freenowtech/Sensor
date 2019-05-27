@@ -68,13 +68,13 @@ public extension SensorTestCase {
 ///
 /// Usage:
 /// ```
-/// withScheduler(testScheduler)
-///     .assert(observable1, isEqualToTimeline: "-x---", withValues: ["x": 1])
+///   assert(observable1, isEqualToTimeline: "-x---", withValues: ["x": 1])
 ///     .assert(observable2, isEqualToTimeline: "--x--", withValues: ["x": 2])
 ///     .assert(observable3, isEqualToTimeline: "---x-", withValues: ["x": 3])
 ///     .assert {
 ///          // custom assertion
 ///     }
+///     .withScheduler(testScheduler)
 /// ```
 public struct TestMethod {
     let assertions: [(TypeErasedPreAssertion, TypeErasedAssertion)]
