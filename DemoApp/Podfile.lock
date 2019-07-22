@@ -49,8 +49,8 @@ DEPENDENCIES:
   - RxCocoa
   - RxGesture
   - RxSwift
-  - Sensor (= 0.1.0)
-  - SensorTest (= 0.1.0)
+  - Sensor (from `..`)
+  - SensorTest (from `..`)
   - SnapKit
   - Swinject
 
@@ -68,10 +68,14 @@ SPEC REPOS:
     - RxRelay
     - RxSwift
     - RxTest
-    - Sensor
-    - SensorTest
     - SnapKit
     - Swinject
+
+EXTERNAL SOURCES:
+  Sensor:
+    :path: ".."
+  SensorTest:
+    :path: ".."
 
 SPEC CHECKSUMS:
   Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
@@ -86,11 +90,11 @@ SPEC CHECKSUMS:
   RxRelay: 4f7409406a51a55cd88483f21ed898c234d60f18
   RxSwift: 8b0671caa829a763bbce7271095859121cbd895f
   RxTest: 4349afe98f564e0a9bc19063368904622d17d49a
-  Sensor: 2b27260d12ee2769ccd42aefce6a53acfc90bae7
-  SensorTest: 906237bb257c361c05da5a7caa298e3690d0d1a9
+  Sensor: 34d6f3eb988d6ec63438334ad2c5ea972978d71d
+  SensorTest: a1c0172f1148720157b9f7586438a5befcb55bfa
   SnapKit: fd22d10eb9aff484d79a8724eab922c1ddf89bcf
   Swinject: 48a96cda93633cf2860697b4ce76ab5db9ebaca2
 
-PODFILE CHECKSUM: efb075b5d866dc441bcf4fd27bd4f1d5123e24de
+PODFILE CHECKSUM: 496f60915ce29447a9ff5b958a34fe6adb90d6a3
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.7.3

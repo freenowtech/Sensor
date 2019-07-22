@@ -14,13 +14,13 @@ Pod::Spec.new do |spec|
   The SensorTest framework comes with batteries included so you can start testing your apps with ease.
   DESC
 
-  spec.homepage     = "https://github.com/mytaxi/Sensor"
+  spec.homepage     = "https://github.com/freenowtech/Sensor"
   spec.license      = { :type => "Apache License", :file => "LICENSE" }
   spec.author    = "Intelligent Apps GmbH."
 
   spec.swift_version = '5.0'
   spec.platform     = :ios, "10.0"
-  spec.source       = { :git => "https://github.com/mytaxi/Sensor.git", :tag => "#{spec.version}" }
+  spec.source       = { :git => "https://github.com/freenowtech/Sensor.git", :tag => "#{spec.version}" }
 
   spec.source_files = "SensorTest/Sources"
   spec.frameworks = "Foundation", "XCTest"

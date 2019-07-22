@@ -40,7 +40,7 @@ class SingleStateStateMachineTests: XCTestCase, SensorTestCase {
                 2: "The event must transition from .theOneState to .theOneState."
             ]
 
-            let inputDefinition            = (timeline: "---i", values: ["i": ()])
+            let inputDefinition            = (timeline: "--i", values: ["i": ()])
             let expectedStatesDefinition   = (timeline: "s-s", values: ["s": SingleState.theOneState], requirements: requirements)
 
             let input = hotSignal(inputDefinition)

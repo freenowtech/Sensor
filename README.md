@@ -19,7 +19,7 @@ The **SensorTest** framework includes some goodies to help you write unit tests 
 
 [Video with a presentation of this architecture](https://www.youtube.com/watch?v=Dp2LQo2DOcg&t=15s)
 
-[Presentation used on the video](https://github.com/mytaxi/LoginRxReduxDemo/blob/master/CodingTestableAppsOnSteroids.pdf)
+[Presentation used on the video](https://github.com/freenowtech/Sensor/blob/master/CodingTestableAppsOnSteroids.pdf)
 
 ## Setup
 ### Cocoapods
@@ -42,7 +42,7 @@ In your tests, add the following import:
 ### Swift Package Manager
 Add the following line to your package dependencies:
 
-`.package(url: "https://github.com/mytaxi/Sensor.git", from: "0.1.0"),`
+`.package(url: "https://github.com/freenowtech/Sensor.git", from: "0.1.0"),`
 
 Add `Sensor` to your main target dependencies. Add `SensorTest` to your test target dependencies.
 
@@ -61,7 +61,7 @@ let package = Package(
        .macOS(.v10_13),
     ],
     dependencies: [
-        .package(url: "https://github.com/mytaxi/Sensor.git", from: "0.1.0"),
+        .package(url: "https://github.com/freenowtech/Sensor.git", from: "0.1.0"),
     ],
     targets: [
         .target(

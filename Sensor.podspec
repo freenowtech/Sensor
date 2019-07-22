@@ -14,13 +14,13 @@ Pod::Spec.new do |spec|
   The Sensor framework comes with batteries included so you can start writing safe apps straight away.
   DESC
 
-  spec.homepage     = "https://github.com/mytaxi/Sensor"
+  spec.homepage     = "https://github.com/freenowtech/Sensor"
   spec.license      = { :type => "Apache License", :file => "LICENSE" }
   spec.author    = "Intelligent Apps GmbH."
 
   spec.swift_version = '5.0'
   spec.platform     = :ios, "10.0"
-  spec.source       = { :git => "https://github.com/mytaxi/Sensor.git", :tag => "#{spec.version}" }
+  spec.source       = { :git => "https://github.com/freenowtech/Sensor.git", :tag => "#{spec.version}" }
 
   spec.source_files = "Sensor/Sources"
   spec.frameworks = "Foundation"
