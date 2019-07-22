@@ -25,7 +25,7 @@ The **SensorTest** framework includes some goodies to help you write unit tests 
 ### Cocoapods
 To use the **Sensor** framework, add the following line to the target of your app on your Podfile:
 
-`pod 'Sensor', '0.1.0'`
+`pod 'Sensor', '0.1.1'`
 
 In your app, add the following import:
 
@@ -33,7 +33,7 @@ In your app, add the following import:
 
 To use the **SensorTest** framework, add the following line to the test target on your Podfile:
 
-`pod 'SensorTest', '0.1.0'`
+`pod 'SensorTest', '0.1.1'`
 
 In your tests, add the following import:
 
@@ -42,7 +42,7 @@ In your tests, add the following import:
 ### Swift Package Manager
 Add the following line to your package dependencies:
 
-`.package(url: "https://github.com/freenowtech/Sensor.git", from: "0.1.0"),`
+`.package(url: "https://github.com/freenowtech/Sensor.git", from: "0.1.1"),`
 
 Add `Sensor` to your main target dependencies. Add `SensorTest` to your test target dependencies.
 
@@ -61,7 +61,7 @@ let package = Package(
        .macOS(.v10_13),
     ],
     dependencies: [
-        .package(url: "https://github.com/freenowtech/Sensor.git", from: "0.1.0"),
+        .package(url: "https://github.com/freenowtech/Sensor.git", from: "0.1.1"),
     ],
     targets: [
         .target(

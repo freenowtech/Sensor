@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = "SensorTest"
-  spec.version      = "0.1.0"
+  spec.version      = "0.1.1"
   spec.summary      = "The SensorTest framework comes with batteries included so you can start testing your apps with ease."
 
   # This description is used to generate tags and improve search results.
