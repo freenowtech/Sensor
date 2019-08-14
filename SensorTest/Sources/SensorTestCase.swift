@@ -17,77 +17,113 @@ public protocol SensorTestCase {
 }
 
 extension SensorTestCase {
-    public func hotObservable<T>(timeline: String, values: [String: T]) -> Observable<T> {
-        return scheduler.hotObservable(timeline: timeline, values: values)
+    // MARK: Hot Observable
+    public func hotObservable<T>(timeline: String, values: [String: T] = [:], errors: [String: Error] = [:]) -> Observable<T> {
+        return scheduler.hotObservable(timeline: timeline, values: values, errors: errors)
     }
 
     public func hotObservable<T>(_ definition: (timeline: String, values: [String: T])) -> Observable<T> {
         return scheduler.hotObservable(timeline: definition.timeline, values: definition.values)
     }
 
-    public func hotSingle<T>(timeline: String, values: [String: T]) -> Single<T> {
-        return scheduler.hotSingle(timeline: timeline, values: values)
+    public func hotObservable<T>(_ definition: (timeline: String, values: [String: T], errors: [String: Error])) -> Observable<T> {
+        return scheduler.hotObservable(timeline: definition.timeline, values: definition.values, errors: definition.errors)
+    }
+
+    // MARK: Hot Single
+    public func hotSingle<T>(timeline: String, values: [String: T] = [:], errors: [String: Error] = [:]) -> Single<T> {
+        return scheduler.hotSingle(timeline: timeline, values: values, errors: errors)
     }
 
     public func hotSingle<T>(_ definition: (timeline: String, values: [String: T])) -> Single<T> {
         return scheduler.hotSingle(timeline: definition.timeline, values: definition.values)
     }
 
-    public func hotSignal<T>(timeline: String, values: [String: T]) -> Signal<T> {
-        return scheduler.hotSignal(timeline: timeline, values: values)
+    public func hotSingle<T>(_ definition: (timeline: String, values: [String: T], errors: [String: Error])) -> Single<T> {
+        return scheduler.hotSingle(timeline: definition.timeline, values: definition.values, errors: definition.errors)
+    }
+
+    // MARK: Hot Signal
+    public func hotSignal<T>(timeline: String, values: [String: T] = [:], errors: [String: Error] = [:]) -> Signal<T> {
+        return scheduler.hotSignal(timeline: timeline, values: values, errors: errors)
     }
 
     public func hotSignal<T>(_ definition: (timeline: String, values: [String: T])) -> Signal<T> {
         return scheduler.hotSignal(timeline: definition.timeline, values: definition.values)
     }
 
-    public func coldObservable<T>(timeline: String, values: [String: T]) -> Observable<T> {
-        return scheduler.hotObservable(timeline: timeline, values: values)
+    public func hotSignal<T>(_ definition: (timeline: String, values: [String: T], errors: [String: Error])) -> Signal<T> {
+        return scheduler.hotSignal(timeline: definition.timeline, values: definition.values, errors: definition.errors)
+    }
+
+    // MARK: Cold Observable
+    public func coldObservable<T>(timeline: String, values: [String: T] = [:], errors: [String: Error] = [:]) -> Observable<T> {
+        return scheduler.hotObservable(timeline: timeline, values: values, errors: errors)
     }
 
     public func coldObservable<T>(_ definition: (timeline: String, values: [String: T])) -> Observable<T> {
         return scheduler.hotObservable(timeline: definition.timeline, values: definition.values)
     }
 
-    public func coldSingle<T>(timeline: String, values: [String: T]) -> Single<T> {
-        return scheduler.coldSingle(timeline: timeline, values: values)
+    public func coldObservable<T>(_ definition: (timeline: String, values: [String: T], errors: [String: Error])) -> Observable<T> {
+        return scheduler.hotObservable(timeline: definition.timeline, values: definition.values, errors: definition.errors)
+    }
+
+    // MARK: Cold Single
+    public func coldSingle<T>(timeline: String, values: [String: T] = [:], errors: [String: Error] = [:]) -> Single<T> {
+        return scheduler.coldSingle(timeline: timeline, values: values, errors: errors)
     }
 
     public func coldSingle<T>(_ definition: (timeline: String, values: [String: T])) -> Single<T> {
         return scheduler.coldSingle(timeline: definition.timeline, values: definition.values)
     }
 
-    public func coldSignal<T>(timeline: String, values: [String: T]) -> Signal<T> {
-        return scheduler.coldSignal(timeline: timeline, values: values)
+    public func coldSingle<T>(_ definition: (timeline: String, values: [String: T], errors: [String: Error])) -> Single<T> {
+        return scheduler.coldSingle(timeline: definition.timeline, values: definition.values, errors: definition.errors)
+    }
+
+    // MARK: Cold Signal
+    public func coldSignal<T>(timeline: String, values: [String: T] = [:], errors: [String: Error] = [:]) -> Signal<T> {
+        return scheduler.coldSignal(timeline: timeline, values: values, errors: errors)
     }
 
     public func coldSignal<T>(_ definition: (timeline: String, values: [String: T])) -> Signal<T> {
         return scheduler.coldSignal(timeline: definition.timeline, values: definition.values)
     }
+
+    public func coldSignal<T>(_ definition: (timeline: String, values: [String: T], errors: [String: Error])) -> Signal<T> {
+        return scheduler.coldSignal(timeline: definition.timeline, values: definition.values, errors: definition.errors)
+    }
 }
 
 extension TestScheduler {
-    public func hotObservable<T>(timeline: String, values: [String: T]) -> Observable<T> {
-        return createHotObservable(parseEventsAndTimes(timeline: timeline, values: values)).asObservable()
+    // MARK: Hot Observable
+    public func hotObservable<T>(timeline: String, values: [String: T] = [:], errors: [String: Error] = [:]) -> Observable<T> {
+        return createHotObservable(parseEventsAndTimes(timeline: timeline, values: values, errors:  errors)).asObservable()
     }
 
-    public func hotSingle<T>(timeline: String, values: [String: T]) -> Single<T> {
-        return createHotObservable(parseEventsAndTimes(timeline: timeline, values: values)).take(1).asSingle()
+    // MARK: Hot Single
+    public func hotSingle<T>(timeline: String, values: [String: T] = [:], errors: [String: Error] = [:]) -> Single<T> {
+        return createHotObservable(parseEventsAndTimes(timeline: timeline, values: values, errors:  errors)).take(1).asSingle()
     }
 
-    public func hotSignal<T>(timeline: String, values: [String: T]) -> Signal<T> {
-        return createHotObservable(parseEventsAndTimes(timeline: timeline, values: values)).asSignal(onErrorSignalWith: Signal.never())
+    // MARK: Hot Signal
+    public func hotSignal<T>(timeline: String, values: [String: T] = [:], errors: [String: Error] = [:]) -> Signal<T> {
+        return createHotObservable(parseEventsAndTimes(timeline: timeline, values: values, errors:  errors)).asSignal(onErrorSignalWith: Signal.never())
     }
 
-    public func coldObservable<T>(timeline: String, values: [String: T]) -> Observable<T> {
-        return createColdObservable(parseEventsAndTimes(timeline: timeline, values: values)).asObservable()
+    // MARK: Cold Observable
+    public func coldObservable<T>(timeline: String, values: [String: T] = [:], errors: [String: Error] = [:]) -> Observable<T> {
+        return createColdObservable(parseEventsAndTimes(timeline: timeline, values: values, errors:  errors)).asObservable()
     }
 
-    public func coldSingle<T>(timeline: String, values: [String: T]) -> Single<T> {
-        return createColdObservable(parseEventsAndTimes(timeline: timeline, values: values)).take(1).asSingle()
+    // MARK: Cold Single
+    public func coldSingle<T>(timeline: String, values: [String: T] = [:], errors: [String: Error] = [:]) -> Single<T> {
+        return createColdObservable(parseEventsAndTimes(timeline: timeline, values: values, errors:  errors)).take(1).asSingle()
     }
 
-    public func coldSignal<T>(timeline: String, values: [String: T]) -> Signal<T> {
-        return createColdObservable(parseEventsAndTimes(timeline: timeline, values: values)).asSignal(onErrorSignalWith: Signal.never())
+    // MARK: Cold Signal
+    public func coldSignal<T>(timeline: String, values: [String: T] = [:], errors: [String: Error] = [:]) -> Signal<T> {
+        return createColdObservable(parseEventsAndTimes(timeline: timeline, values: values, errors:  errors)).asSignal(onErrorSignalWith: Signal.never())
     }
 }

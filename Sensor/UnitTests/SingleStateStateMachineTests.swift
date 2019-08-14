@@ -35,13 +35,13 @@ class SingleStateStateMachineTests: XCTestCase, SensorTestCase {
 
     func testInitialStateEmission() {
         SharingScheduler.mock(scheduler: scheduler) {
-            let requirements = [
-                0: "The initial state must be emited on subscription.",
-                2: "The event must transition from .theOneState to .theOneState."
+            let expectations = [
+                "The initial state must be emited on subscription.": [0],
+                "The event must transition from .theOneState to .theOneState.": [2]
             ]
 
             let inputDefinition            = (timeline: "--i", values: ["i": ()])
-            let expectedStatesDefinition   = (timeline: "s-s", values: ["s": SingleState.theOneState], requirements: requirements)
+            let expectedStatesDefinition   = (timeline: "s-s", values: ["s": SingleState.theOneState], expectations: expectations)
 
             let input = hotSignal(inputDefinition)
             let states = SingleState.outputStates(initialState: .theOneState, inputEvents: input, context: ())

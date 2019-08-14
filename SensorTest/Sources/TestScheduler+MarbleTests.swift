@@ -23,12 +23,6 @@ import RxTest
 import RxCocoa
 import XCTest
 
-extension Dictionary where Key == String, Value: Equatable {
-    func key(for value: Value) -> Key? {
-        return compactMap { value == $1 ? $0 : nil }.first
-    }
-}
-
 public extension TestScheduler {
     /**
      Transformation from this format:
@@ -55,10 +49,10 @@ public extension TestScheduler {
      '-----a---- -----b---c'
 
      You can express that two events happen at the same time by surrounding them with parentheses:
-     '012345   6789'
+     '01234 5  6789'
      '-----(ab)----'
      */
-    func parseEventsAndTimes<T>(timeline: String, values: [String: T], errors: [String: Swift.Error] = [:]) -> [Recorded<Event<T>>] {
+    func parseEventsAndTimes<T>(timeline: String, values: [String: T] = [:], errors: [String: Error] = [:]) -> [Recorded<Event<T>>] {
         typealias RecordedEvent = Recorded<Event<T>>
         var events = [Recorded<Event<T>>]()
         
@@ -79,7 +73,7 @@ public extension TestScheduler {
             }
             
             if event == "#" {
-                let errorEvent = RecordedEvent(time: indexOfSegment, value: Event<T>.error(NSError(domain: "Any error domain", code: -1, userInfo: nil)))
+                let errorEvent = RecordedEvent(time: indexOfSegment, value: Event<T>.error(AnyError()))
                 events.append(errorEvent)
                 continue
             }
@@ -98,7 +92,7 @@ public extension TestScheduler {
                     }
                     
                     if sameTimeEvent == "#" {
-                        let errorEvent = RecordedEvent(time: indexOfSegment, value: Event<T>.error(NSError(domain: "Any error domain", code: -1, userInfo: nil)))
+                        let errorEvent = RecordedEvent(time: indexOfSegment, value: Event<T>.error(AnyError()))
                         events.append(errorEvent)
                         continue
                     }
@@ -110,7 +104,7 @@ public extension TestScheduler {
                     }
                     
                     guard let next = values[sameTimeEvent] else {
-                        guard let error = errors[event] else {
+                        guard let error = errors[sameTimeEvent] else {
                             fatalError("Value with key \(event) not registered as value:\n\(values)\nor error:\n\(errors)")
                         }
                         
@@ -141,7 +135,7 @@ public extension TestScheduler {
     }
     
     /**
-     Builds testable observer for s specific observable sequence, binds it's results and sets up disposal.
+     Builds testable observer for a specific observable sequence, binds it's results and sets up disposal.
      - parameter source: Observable sequence to observe.
      - returns: Observer that records all events for observable sequence.
      */

@@ -12,6 +12,7 @@ import RxSwift
 
 public typealias PreAssertion<V> = (_ scheduler: TestScheduler, _ maxTime: Int) -> V
 public typealias Assertion<V> = (V) -> Void
+public typealias Expectations = [String: [Int]]
 
 internal typealias TypeErasedPreAssertion = (_ scheduler: TestScheduler, _ maxTime: Int) -> Any
 internal typealias TypeErasedAssertion = (Any) -> Void
@@ -35,14 +36,28 @@ public extension SensorTestCase {
     }
 
     func assert<O>(_ subject: O,
-                          isEqualTo definition: (timeline: String, values: [String: O.Element]),
-                          file: StaticString = #file,
-                          line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
+                   isEqualTo definition: (timeline: String, values: [String: O.Element]),
+                   file: StaticString = #file,
+                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
         return TestMethod().assert(subject, isEqualTo: definition, file: file, line: line)
     }
 
     func assert<O>(_ subject: O,
-                   isEqualTo definition: (timeline: String, values: [String: O.Element], requirements: [Int: String]),
+                   isEqualTo definition: (timeline: String, values: [String: O.Element], errors: [String: Error]),
+                   file: StaticString = #file,
+                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
+        return TestMethod().assert(subject, isEqualTo: definition, file: file, line: line)
+    }
+
+    func assert<O>(_ subject: O,
+                   isEqualTo definition: (timeline: String, values: [String: O.Element], expectations: Expectations),
+                   file: StaticString = #file,
+                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
+        return TestMethod().assert(subject, isEqualTo: definition, file: file, line: line)
+    }
+
+    func assert<O>(_ subject: O,
+                   isEqualTo definition: (timeline: String, values: [String: O.Element], errors: [String: Error], expectations: Expectations),
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
         return TestMethod().assert(subject, isEqualTo: definition, file: file, line: line)
@@ -51,10 +66,11 @@ public extension SensorTestCase {
     func assert<O>(_ observable: O,
                    isEqualToTimeline expectedTimeline: String,
                    withValues values: [String: O.Element],
-                   andRequirements requirements: [Int: String] = [:],
+                   errors: [String: Error],
+                   andExpectations expectations: Expectations = [:],
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return TestMethod().assert(observable, isEqualToTimeline: expectedTimeline, withValues: values, andRequirements: requirements, file: file, line: line)
+        return TestMethod().assert(observable, isEqualToTimeline: expectedTimeline, withValues: values, errors: errors, andExpectations: expectations, file: file, line: line)
     }
 }
 
@@ -119,39 +135,69 @@ public extension TestMethod {
                    isEqualTo definition: (timeline: String, values: [String: O.Element]),
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, file: file, line: line)
+        return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, errors: [:], file: file, line: line)
     }
 
     func assert<O>(_ subject: O,
-                   isEqualTo definition: (timeline: String, values: [String: O.Element], requirements: [Int: String]),
+                   isEqualTo definition: (timeline: String, values: [String: O.Element], errors: [String: Error]),
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, andRequirements: definition.requirements, file: file, line: line)
+        return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, errors: definition.errors, file: file, line: line)
+    }
+
+    func assert<O>(_ subject: O,
+                   isEqualTo definition: (timeline: String, values: [String: O.Element], expectations: Expectations),
+                   file: StaticString = #file,
+                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
+        return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, errors: [:], andExpectations: definition.expectations, file: file, line: line)
+    }
+
+    func assert<O>(_ subject: O,
+                   isEqualTo definition: (timeline: String, values: [String: O.Element], errors: [String: Error], expectations: Expectations),
+                   file: StaticString = #file,
+                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
+        return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, errors: definition.errors, andExpectations: definition.expectations, file: file, line: line)
     }
 
     func assert<O>(_ observable: O,
                    isEqualToTimeline expectedTimeline: String,
                    withValues values: [String: O.Element],
-                   andRequirements requirements: [Int: String] = [:],
+                   errors: [String: Error],
+                   andExpectations expectations: Expectations = [:],
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
 
-        return append(preassertion: { (scheduler, maxTime) in
-            return TestMethod.parseAndRecord(observable, expectedTimeline: expectedTimeline, values: values, scheduler: scheduler, maxTime: maxTime)
-        }, assertion: { expectedStates, recordedStates in
-            let failures = TestMethod.checkFailures(expectedStates: expectedStates, recordedStates: recordedStates, expectedTimeline: expectedTimeline, values: values)
-            if failures.count > 0 {
-                XCTFail(failures.joined(separator: "\n"), file: file, line: line)
-            }
+        return append(
+            preassertion: { scheduler, maxTime in
+                return TestMethod.parseAndRecord(
+                    observable, expectedTimeline:
+                    expectedTimeline,
+                    values: values,
+                    errors: errors,
+                    scheduler: scheduler,
+                    maxTime: maxTime)
+            },
+            assertion: { expectedStates, recordedStates in
+                let failures = TestMethod.checkFailures(expectedStates: expectedStates, recordedStates: recordedStates, expectedTimeline: expectedTimeline, values: values, errors: errors)
+                if failures.count > 0 {
+                    XCTFail(failures.joined(separator: "\n"), file: file, line: line)
+                }
         })
     }
 
     // MARK: - Private
 
-    internal static func parseAndRecord<O>(_ observable: O, expectedTimeline: String, values: [String: O.Element], scheduler: TestScheduler, maxTime: Int) -> (expectedStates: [Recorded<Event<O.Element>>], recordedStates:  TestableObserver<O.Element>)
+    internal static func parseAndRecord<O>(
+        _ observable: O,
+        expectedTimeline: String,
+        values: [String: O.Element],
+        errors: [String: Error],
+        scheduler: TestScheduler,
+        maxTime: Int)
+        -> (expectedStates: [Recorded<Event<O.Element>>], recordedStates:  TestableObserver<O.Element>)
         where O: ObservableConvertibleType {
 
-            let expectedStates = scheduler.parseEventsAndTimes(timeline: expectedTimeline, values: values)
+            let expectedStates = scheduler.parseEventsAndTimes(timeline: expectedTimeline, values: values, errors: errors)
             let recordedStates = scheduler.record(source: observable.asObservable(), until: max(maxTime, TestMethod.findMaxTime(in: expectedStates)))
 
             return (
@@ -160,74 +206,107 @@ public extension TestMethod {
             )
     }
 
-    internal static func checkFailures<Element>(expectedStates: [Recorded<Event<Element>>],
-                                         recordedStates: TestableObserver<Element>,
-                                         expectedTimeline: String,
-                                         values: [String: Element],
-                                         requirements: [Int: String] = [:],
-                                         file: StaticString = #file,
-                                         line: UInt = #line) -> [String] where Element: Equatable {
+    internal static func checkFailures<Element>(
+        expectedStates: [Recorded<Event<Element>>],
+        recordedStates: TestableObserver<Element>,
+        expectedTimeline: String,
+        values: [String: Element],
+        errors: [String: Error],
+        expectations: Expectations = [:],
+        file: StaticString = #file,
+        line: UInt = #line) -> [String] where Element: Equatable {
 
-        var recordedValues = [Int: [String]]()
-        var failures = [String]()
+        // assertionTimes are the times when need to check that expectedStates and recordedStates are Equal.
+        let assertionTimes = mergeAndSort(
+            expectedStates.map { $0.time },
+            recordedStates.events.map { $0.time }
+        )
 
-        for (index, event) in recordedStates.events.enumerated() {
-            let time = event.time
-            if recordedValues[time] == nil { recordedValues[time] = [] }
-            if let element = event.value.element, let key = values.key(for: element) {
-                recordedValues[time]?.append(key)
+        let expectedStatesByTime = Dictionary(grouping: expectedStates) { $0.time }
+        let recordedStatesByTime = Dictionary(grouping: recordedStates.events) { $0.time }
+
+        let recordedEventsTimeline = timeline(for: recordedStatesByTime, withValues: values, andErrors: errors)
+
+        let failureMessages: [String] = assertionTimes.flatMap { time -> [String] in
+            let expectedEvents = expectedStatesByTime[time]?.map { $0.value.asCustomEquatable() } ?? []
+            let recordedEvents = recordedStatesByTime[time]?.map { $0.value.asCustomEquatable() } ?? []
+            let (matchedEvents, missingExpectedEvents, unexpectedRecordedEvents) = matchEqualValues(expectedEvents, recordedEvents)
+            // The common events are now in the same order in the beggining of the array
+            let orderedExpectedEvents = (matchedEvents + missingExpectedEvents).map { $0.value }
+            let orderedRecordedEvents = (matchedEvents + unexpectedRecordedEvents).map { $0.value }
+
+            if orderedExpectedEvents != orderedRecordedEvents {
+                let differences = diff(orderedExpectedEvents, orderedRecordedEvents)
+                return differences.map { $0.toString(time) } + expectations.forTime(time)
+            }
+            return []
+        }
+
+        if !failureMessages.isEmpty {
+            let trimmedExpectedTimeline = expectedTimeline.filter { $0 != " " }
+            return ["\(recordedEventsTimeline) is not equal to \(trimmedExpectedTimeline)"] + failureMessages
+        }
+        return []
+    }
+
+    private static func matchEqualValues<Element: Equatable>(_ lhs: [Element], _ rhs: [Element]) -> (matches: [Element], onlyLhs: [Element], onlyRhs: [Element])  {
+        var matches = [Element]()
+        var onlyLhs = [Element]()
+        var rhs = rhs
+        for element in lhs {
+            if let i = rhs.firstIndex(of: element) {
+                matches.append(element)
+                rhs.remove(at: i)
             } else {
-                if let expected = expectedStates[index].value.element,
-                    let value = event.value.element {
-                    let differences  = TestMethod.diff(lhs: value, rhs: expected)
-                    differences.forEach { diff in
-                        var failure: String
-                        switch diff {
-                        case .subElementDifference(let label, let lhs, let rhs):
-                            failure = "Expected \(label) to be \(rhs) at \(time), but got \(lhs)."
-                        case .selfDifference:
-                            failure = "Expected \(expected) at \(time), but got \(value)."
-                        }
-                        if let requirement = requirements[time] {
-                            failure.append(" " + requirement)
-                        }
-                        failures.append(failure)
-                    }
-                }
-                recordedValues[time]?.append("¿")
+                onlyLhs.append(element)
             }
         }
+        return (matches: matches, onlyLhs: onlyLhs, onlyRhs: rhs)
+    }
 
-        let recordedString = TestMethod.string(from: recordedValues, maxTime: TestMethod.findMaxTime(in: recordedStates.events))
-
-        if recordedString != expectedTimeline {
-            failures = ["\(recordedString) is not equal to \(expectedTimeline)"] + failures
-        }
-
-        return failures
+    private static func mergeAndSort(_ lhs: [Int], _ rhs: [Int]) -> [Int] {
+        let lhsSet = Set(lhs)
+        let rhsSet = Set(rhs)
+        return Array(lhsSet.union(rhsSet)).sorted(by: <)
     }
     
     private static func findMaxTime<T>(in events: [Recorded<Event<T>>]) -> Int {
         return events.map { $0.time as Int }.max() ?? 0
     }
     
-    private static func string(from eventsArray: [Int: [String]], maxTime: Int) -> String {
-        return [String](repeating: "-", count: maxTime+1).enumerated().map { (index, dash) in
-            if let elements = eventsArray[index] {
-                return elements.count == 1 ? elements.first! : "(\(elements.joined()))"
-            }
-            return dash
-        }.joined()
-    }
-    
     private enum Difference {
         case subElementDifference(label: String, lhs: Any, rhs: Any)
-        // Indicates that the compared elements
-        case selfDifference
+
+        // Indicates that the compared elements are indivisible and different
+        case selfDifference(expected: Any, value: Any)
+
+        case arrayDifference(expected: String, value: String)
+
+        func toString(_ time: Int) -> String {
+            switch self {
+            case .subElementDifference(let label, let lhs, let rhs):
+                return "Expected \(label) to be \(rhs) at \(time), but got \(lhs)."
+            case .selfDifference(let expected, let value):
+                return "Expected \(expected) at \(time), but got \(value)."
+            case .arrayDifference(let expected, let value):
+                return "Expected \(expected) at \(time), but got \(value)."
+            }
+        }
     }
 
-    // TODO: Test when diffed types are arrays, which can have different number of children?
-    private static func diff<T: Equatable>(lhs: T, rhs: T) -> [Difference] {
+    private static func diff<T: Equatable>(_ lhs: [Event<T>], _ rhs: [Event<T>]) -> [Difference] {
+        if let lhsEvent = lhs.first, let rhsEvent = rhs.first, lhs.count == 1, rhs.count == 1 {
+            switch (lhsEvent, rhsEvent) {
+            case (.next(let lhsElement), .next(let rhsElement)):
+                return diff(lhsElement, rhsElement)
+            default:
+                break
+            }
+        }
+        return [.arrayDifference(expected: "\(lhs)", value: "\(rhs)")]
+    }
+
+    private static func diff<T: Equatable>(_ lhs: T, _ rhs: T) -> [Difference] {
         // TODO: check out swift dump implementation:
         // https://github.com/apple/swift/blob/master/stdlib/public/core/Dump.swift
         let valuesArray = [lhs, rhs].compactMap { Mirror(reflecting: $0).children.filter { $0.label != nil }.map { $0.value } }
@@ -236,12 +315,24 @@ public extension TestMethod {
 
         if Array(values).count > 0 {
             return zip(labels, values).compactMap { label, values in
+                // TODO: description is not a good way to check whether two objects are equal or not
                 let leftDescription = (values.0 as AnyObject).description
                 let rightDescription = (values.1 as AnyObject).description
                 return !(leftDescription?.isEqual(rightDescription) ?? false) ? .subElementDifference(label: label, lhs: values.0, rhs: values.1) : nil
             }
-        } else {
-            return [.selfDifference]
+        }
+        return [.selfDifference(expected: lhs, value: rhs)]
+    }
+}
+
+extension Expectations {
+    func forTime(_ time: Int) -> [String] {
+        return compactMap { arg in
+            let (expectation, expectationTimes) = arg
+            if expectationTimes.contains(time) {
+                return expectation
+            }
+            return nil
         }
     }
 }
