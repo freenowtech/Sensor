@@ -29,48 +29,48 @@ internal func eraseType<V>(_ assertion: @escaping Assertion<V>) -> TypeErasedAss
     }
 }
 
-public extension SensorTestCase {
+extension SensorTestCase {
 
-    func assert<V>(preassertion: @escaping PreAssertion<V>, assertion: @escaping Assertion<V>) -> TestMethod {
-        return TestMethod().assert(preassertion: preassertion, assertion: assertion)
+    public func assert<V>(preassertion: @escaping PreAssertion<V>, assertion: @escaping Assertion<V>) -> TestMethod {
+        return TestMethod(scheduler: scheduler).assert(preassertion: preassertion, assertion: assertion)
     }
 
-    func assert<O>(_ subject: O,
+    public func assert<O>(_ subject: O,
                    isEqualTo definition: (timeline: String, values: [String: O.Element]),
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return TestMethod().assert(subject, isEqualTo: definition, file: file, line: line)
+        return TestMethod(scheduler: scheduler).assert(subject, isEqualTo: definition, file: file, line: line)
     }
 
-    func assert<O>(_ subject: O,
+    public func assert<O>(_ subject: O,
                    isEqualTo definition: (timeline: String, values: [String: O.Element], errors: [String: Error]),
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return TestMethod().assert(subject, isEqualTo: definition, file: file, line: line)
+        return TestMethod(scheduler: scheduler).assert(subject, isEqualTo: definition, file: file, line: line)
     }
 
-    func assert<O>(_ subject: O,
+    public func assert<O>(_ subject: O,
                    isEqualTo definition: (timeline: String, values: [String: O.Element], expectations: Expectations),
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return TestMethod().assert(subject, isEqualTo: definition, file: file, line: line)
+        return TestMethod(scheduler: scheduler).assert(subject, isEqualTo: definition, file: file, line: line)
     }
 
-    func assert<O>(_ subject: O,
+    public func assert<O>(_ subject: O,
                    isEqualTo definition: (timeline: String, values: [String: O.Element], errors: [String: Error], expectations: Expectations),
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return TestMethod().assert(subject, isEqualTo: definition, file: file, line: line)
+        return TestMethod(scheduler: scheduler).assert(subject, isEqualTo: definition, file: file, line: line)
     }
 
-    func assert<O>(_ observable: O,
+    public func assert<O>(_ observable: O,
                    isEqualToTimeline expectedTimeline: String,
                    withValues values: [String: O.Element],
                    errors: [String: Error],
                    andExpectations expectations: Expectations = [:],
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return TestMethod().assert(observable, isEqualToTimeline: expectedTimeline, withValues: values, errors: errors, andExpectations: expectations, file: file, line: line)
+        return TestMethod(scheduler: scheduler).assert(observable, isEqualToTimeline: expectedTimeline, withValues: values, errors: errors, andExpectations: expectations, file: file, line: line)
     }
 }
 
@@ -94,29 +94,32 @@ public extension SensorTestCase {
 /// ```
 public struct TestMethod {
     let assertions: [(TypeErasedPreAssertion, TypeErasedAssertion)]
+    let scheduler: TestScheduler
 
     fileprivate func append<V>(preassertion: @escaping PreAssertion<V>, assertion: @escaping Assertion<V>) -> TestMethod {
-        return TestMethod([(eraseType(preassertion), eraseType(assertion))])
+        return TestMethod(scheduler: scheduler, assertions: assertions + [(eraseType(preassertion), eraseType(assertion))])
     }
 
-    init() {
+    init(scheduler: TestScheduler) {
         self.assertions = []
+        self.scheduler = scheduler
     }
 
-    private init(_ assertions: [(TypeErasedPreAssertion, TypeErasedAssertion)]) {
+    private init(scheduler: TestScheduler, assertions: [(TypeErasedPreAssertion, TypeErasedAssertion)]) {
         self.assertions = assertions
+        self.scheduler = scheduler
     }
 }
 
-public extension TestMethod {
+extension TestMethod: AssertionDSLProtocol {
 
-    func withScheduler(_ scheduler: TestScheduler, testUntil maxTime: TestTime = 100) {
-        let valuesAndAssertions = zip(assertions.map { $0.0(scheduler, maxTime) }, assertions.map { $0.1 })
+    public func runTest(testUntil maxTime: TestTime = 100) {
+        let valuesAndAssertions = assertions.map { ($0.0(scheduler, maxTime), $0.1) }
         scheduler.start()
         valuesAndAssertions.forEach { $0.1($0.0) }
     }
 
-    func assert<V>(preassertion: @escaping PreAssertion<V>, assertion: @escaping Assertion<V>) -> TestMethod {
+    public func assert<V>(preassertion: @escaping PreAssertion<V>, assertion: @escaping Assertion<V>) -> TestMethod {
         return append(preassertion: preassertion, assertion: assertion)
     }
 
@@ -131,35 +134,35 @@ public extension TestMethod {
     /// - Returns: The TestMethod instance where this method was called, so more assertions can be chained.
 
 
-    func assert<O>(_ subject: O,
+    public func assert<O>(_ subject: O,
                    isEqualTo definition: (timeline: String, values: [String: O.Element]),
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
         return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, errors: [:], file: file, line: line)
     }
 
-    func assert<O>(_ subject: O,
+    public func assert<O>(_ subject: O,
                    isEqualTo definition: (timeline: String, values: [String: O.Element], errors: [String: Error]),
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
         return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, errors: definition.errors, file: file, line: line)
     }
 
-    func assert<O>(_ subject: O,
+    public func assert<O>(_ subject: O,
                    isEqualTo definition: (timeline: String, values: [String: O.Element], expectations: Expectations),
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
         return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, errors: [:], andExpectations: definition.expectations, file: file, line: line)
     }
 
-    func assert<O>(_ subject: O,
+    public func assert<O>(_ subject: O,
                    isEqualTo definition: (timeline: String, values: [String: O.Element], errors: [String: Error], expectations: Expectations),
                    file: StaticString = #file,
                    line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
         return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, errors: definition.errors, andExpectations: definition.expectations, file: file, line: line)
     }
 
-    func assert<O>(_ observable: O,
+    public func assert<O>(_ observable: O,
                    isEqualToTimeline expectedTimeline: String,
                    withValues values: [String: O.Element],
                    errors: [String: Error],
@@ -236,15 +239,22 @@ public extension TestMethod {
             let orderedRecordedEvents = (matchedEvents + unexpectedRecordedEvents).map { $0.value }
 
             if orderedExpectedEvents != orderedRecordedEvents {
-                let differences = diff(orderedExpectedEvents, orderedRecordedEvents)
-                return differences.map { $0.toString(time) } + expectations.forTime(time)
+                let differences = diff(orderedExpectedEvents, orderedRecordedEvents, values: values)
+                return differences.map { $0.description(time: time) } + expectations.forTime(time)
             }
             return []
         }
 
         if !failureMessages.isEmpty {
             let trimmedExpectedTimeline = expectedTimeline.filter { $0 != " " }
-            return ["\(recordedEventsTimeline) is not equal to \(trimmedExpectedTimeline)"] + failureMessages
+            let simplifiedExpectedTimeline = simplifyTimeline(trimmedExpectedTimeline, eventNames: values.keys, errorNames: errors.keys)
+            let simplifiedRecordedTimeline = simplifyTimeline(recordedEventsTimeline, eventNames: values.keys, errorNames: errors.keys)
+
+            if (simplifiedExpectedTimeline != simplifiedRecordedTimeline) {
+                return ["Recorded timeline '\(recordedEventsTimeline)' is not equal to expected timeline '\(trimmedExpectedTimeline)'"] + failureMessages
+            } else {
+                return failureMessages
+            }
         }
         return []
     }
@@ -273,56 +283,19 @@ public extension TestMethod {
     private static func findMaxTime<T>(in events: [Recorded<Event<T>>]) -> Int {
         return events.map { $0.time as Int }.max() ?? 0
     }
-    
-    private enum Difference {
-        case subElementDifference(label: String, lhs: Any, rhs: Any)
+}
 
-        // Indicates that the compared elements are indivisible and different
-        case selfDifference(expected: Any, value: Any)
-
-        case arrayDifference(expected: String, value: String)
-
-        func toString(_ time: Int) -> String {
-            switch self {
-            case .subElementDifference(let label, let lhs, let rhs):
-                return "Expected \(label) to be \(rhs) at \(time), but got \(lhs)."
-            case .selfDifference(let expected, let value):
-                return "Expected \(expected) at \(time), but got \(value)."
-            case .arrayDifference(let expected, let value):
-                return "Expected \(expected) at \(time), but got \(value)."
-            }
+fileprivate func diff<T: Equatable>(_ expected: [Event<T>], _ recorded: [Event<T>], values: [String: T]) -> [Difference] {
+    if let expectedEvent = expected.first, let recordedEvent = recorded.first, expected.count == 1, recorded.count == 1 {
+        switch (expectedEvent, recordedEvent) {
+        case (.next(let expectedElement), .next(let recordedElement)):
+            let valueLabel = values.first(where: { $0.value == expectedElement })?.key ?? "¿"
+            return diff(expectedElement, recordedElement, valueLabel: valueLabel)
+        default:
+            break
         }
     }
-
-    private static func diff<T: Equatable>(_ lhs: [Event<T>], _ rhs: [Event<T>]) -> [Difference] {
-        if let lhsEvent = lhs.first, let rhsEvent = rhs.first, lhs.count == 1, rhs.count == 1 {
-            switch (lhsEvent, rhsEvent) {
-            case (.next(let lhsElement), .next(let rhsElement)):
-                return diff(lhsElement, rhsElement)
-            default:
-                break
-            }
-        }
-        return [.arrayDifference(expected: "\(lhs)", value: "\(rhs)")]
-    }
-
-    private static func diff<T: Equatable>(_ lhs: T, _ rhs: T) -> [Difference] {
-        // TODO: check out swift dump implementation:
-        // https://github.com/apple/swift/blob/master/stdlib/public/core/Dump.swift
-        let valuesArray = [lhs, rhs].compactMap { Mirror(reflecting: $0).children.filter { $0.label != nil }.map { $0.value } }
-        let labels = Mirror(reflecting: lhs).children.filter { $0.label != nil }.map { $0.label! }
-        let values = zip(valuesArray.first!, valuesArray.last!)
-
-        if Array(values).count > 0 {
-            return zip(labels, values).compactMap { label, values in
-                // TODO: description is not a good way to check whether two objects are equal or not
-                let leftDescription = (values.0 as AnyObject).description
-                let rightDescription = (values.1 as AnyObject).description
-                return !(leftDescription?.isEqual(rightDescription) ?? false) ? .subElementDifference(label: label, lhs: values.0, rhs: values.1) : nil
-            }
-        }
-        return [.selfDifference(expected: lhs, value: rhs)]
-    }
+    return [.arrayDifference(expected: expected, value: recorded)]
 }
 
 extension Expectations {
@@ -335,4 +308,34 @@ extension Expectations {
             return nil
         }
     }
+}
+
+extension Difference {
+    public func description(time: Int) -> String {
+        switch self {
+        case .primitiveTypeDifference(let valueLabel, let expected, let recorded):
+            return "Expected value '\(valueLabel)' to be '\(expected)' at time \(time), but got '\(recorded)'."
+        case .singlePrimitiveChildrenDifference(let valueLabel, let childrenLabel, let expectedChildren, let children):
+            return "Expected property '\(childrenLabel)' of value '\(valueLabel)' to be '\(expectedChildren)' at time \(time), but got '\(children)'."
+        case .childrenDifference(let expectedLabel):
+            return "value '\(expectedLabel)' is not equal to the expected value at time \(time)"
+        case .arrayDifference(let expected, let value):
+            return "Expected \(expected) at time \(time), but got \(value)."
+        }
+    }
+}
+
+// Replaces all event names with '¿' and all error names with 'x', so two timelines with the same "shape" are equal after being simplified.
+fileprivate func simplifyTimeline<Element>(_ timeline: String, eventNames: Dictionary<String, Element>.Keys, errorNames: Dictionary<String, Error>.Keys) -> String {
+    let eventNames = eventNames.map(Character.init)
+    let errorNames = errorNames.map(Character.init)
+    return timeline.map { char -> String in
+        if eventNames.contains(char) {
+            return "¿"
+        } else if errorNames.contains(char) {
+            return "x"
+        } else {
+            return String(char)
+        }
+    }.reduce("", +)
 }

@@ -21,6 +21,8 @@ The **SensorTest** framework includes some goodies to help you write unit tests 
 
 [Presentation used on the video](https://github.com/freenowtech/Sensor/blob/master/CodingTestableAppsOnSteroids.pdf)
 
+[How to contribute to Sensor](CONTRIBUTING.md)
+
 ## Setup
 ### Cocoapods
 To use the **Sensor** framework, add the following line to the target of your app on your Podfile:

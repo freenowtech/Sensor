@@ -12,7 +12,8 @@ import RxTest
 import RxCocoa
 
 /// Make your XCTestCase class conform to this protocol to get some handy methods to make the tests less verbose.
-public protocol SensorTestCase {
+// TODO: conver to class
+public protocol SensorTestCase: AssertionDSLProtocol {
     var scheduler: TestScheduler! { get }
 }
 
