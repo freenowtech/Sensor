@@ -40,19 +40,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      codeCoverageEnabled = "YES"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "Sensor::SensorTestUnitTests"
-               BuildableName = "SensorTestUnitTests.xctest"
-               BlueprintName = "SensorTestUnitTests"
-               ReferencedContainer = "container:Sensor.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
@@ -60,6 +49,16 @@
                BlueprintIdentifier = "Sensor::SensorUnitTests"
                BuildableName = "SensorUnitTests.xctest"
                BlueprintName = "SensorUnitTests"
+               ReferencedContainer = "container:Sensor.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Sensor::SensorTestUnitTests"
+               BuildableName = "SensorTestUnitTests.xctest"
+               BlueprintName = "SensorTestUnitTests"
                ReferencedContainer = "container:Sensor.xcodeproj">
             </BuildableReference>
          </TestableReference>

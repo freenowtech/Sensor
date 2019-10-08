@@ -316,7 +316,11 @@ extension Difference {
         case .primitiveTypeDifference(let valueLabel, let expected, let recorded):
             return "Expected value '\(valueLabel)' to be '\(expected)' at time \(time), but got '\(recorded)'."
         case .singlePrimitiveChildrenDifference(let valueLabel, let childrenLabel, let expectedChildren, let children):
-            return "Expected property '\(childrenLabel)' of value '\(valueLabel)' to be '\(expectedChildren)' at time \(time), but got '\(children)'."
+            if let childrenLabel = childrenLabel {
+                return "Expected property '\(childrenLabel)' of value '\(valueLabel)' to be '\(expectedChildren)' at time \(time), but got '\(children)'."
+            } else {
+                return "Expected element '\(expectedChildren)' on value '\(valueLabel)' at time \(time), but got '\(children)'."
+            }
         case .childrenDifference(let expectedLabel):
             return "value '\(expectedLabel)' is not equal to the expected value at time \(time)"
         case .arrayDifference(let expected, let value):

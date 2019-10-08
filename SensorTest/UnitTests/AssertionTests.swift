@@ -460,6 +460,142 @@ class AssertionTests: XCTestCase, SensorTestCase {
         """)
     }
 
+    func testArraySingleElementTimeline() {
+        let values: [String: [Int]] = ["a": [1], "b": [2]]
+        let inputTimeline    = "a"
+        let expectedTimeline = "b"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(forExpectedTimeline: expectedTimeline, given: inputTimeline, withValues: values, expectations: expectations)
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected property '0' of value 'b' to be '2' at time 0, but got '1'."
+        ]
+        """)
+    }
+
+    func testSetSingleElementTimeline() {
+        let values: [String: Set<Int>] = ["a": [1], "b": [2]]
+        let inputTimeline    = "a"
+        let expectedTimeline = "b"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(forExpectedTimeline: expectedTimeline, given: inputTimeline, withValues: values, expectations: expectations)
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected property '0' of value 'b' to be '2' at time 0, but got '1'."
+        ]
+        """)
+    }
+
+    func testArraySeveralElementsTimeline() {
+        let values: [String: [Int]] = ["a": [1, 2], "b": [1, 3]]
+        let inputTimeline    = "a"
+        let expectedTimeline = "b"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(forExpectedTimeline: expectedTimeline, given: inputTimeline, withValues: values, expectations: expectations)
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected property '1' of value 'b' to be '3' at time 0, but got '2'."
+        ]
+        """)
+    }
+
+    func testSetSeveralElementsTimeline() {
+        let values: [String: Set<Int>] = ["a": [1, 2], "b": [1, 3]]
+        let inputTimeline    = "a"
+        let expectedTimeline = "b"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(forExpectedTimeline: expectedTimeline, given: inputTimeline, withValues: values, expectations: expectations)
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected property '1' of value 'b' to be '3' at time 0, but got '2'."
+        ]
+        """)
+    }
+
+    func testSetSeveralElementsTimelineAssertionSuccessful() {
+        let values: [String: Set<Int>] = ["a": [1, 2], "b": [2, 1]]
+        let inputTimeline    = "a"
+        let expectedTimeline = "b"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(forExpectedTimeline: expectedTimeline, given: inputTimeline, withValues: values, expectations: expectations)
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+
+        ]
+        """)
+    }
+
+    func testOptionalTimeline() {
+        let values = ["i": 1, "n": nil]
+        let inputTimeline    = "i"
+        let expectedTimeline = "n"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(forExpectedTimeline: expectedTimeline, given: inputTimeline, withValues: values, expectations: expectations)
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected value 'n' to be 'nil' at time 0, but got 'Optional(1)'."
+        ]
+        """)
+    }
+
+    func testOptionalNilTimelineAssertionSuccessful() {
+        let values = ["i": 1, "n": nil]
+        let inputTimeline    = "n"
+        let expectedTimeline = "n"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(forExpectedTimeline: expectedTimeline, given: inputTimeline, withValues: values, expectations: expectations)
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+
+        ]
+        """)
+    }
+
+    func testOptionalValueTimelineAssertionSuccessful() {
+        let values = ["i": 1, "n": nil]
+        let inputTimeline    = "i"
+        let expectedTimeline = "i"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(forExpectedTimeline: expectedTimeline, given: inputTimeline, withValues: values, expectations: expectations)
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+
+        ]
+        """)
+    }
+
     func testSameTimelineDifferentEventNames() {
         let inputValues    = ["i": "x"]
         let expectedValues = ["e": "x"]
