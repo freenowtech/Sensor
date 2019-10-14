@@ -156,7 +156,7 @@ In the above figure, from the state **S2**, it moves to **S3** with a specific e
 Finally the following is a sample implementation of a Store for the above login feature.
 
 ```swift
-enum LoginStore {
+struct LoginStore {
     static func makeOutputs(inputs: LoginView.Outputs, alertInput: Signal<RxAlertResult>) ->
                            (viewOutputs: Driver<LoginView.Model>) {
         let inputEvents: Signal<Event> = Signal.merge(

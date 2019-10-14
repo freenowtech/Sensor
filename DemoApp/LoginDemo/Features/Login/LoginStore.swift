@@ -12,7 +12,7 @@ import RxFeedback
 import RxSwift
 import RxCocoa
 
-enum LoginStore {
+struct LoginStore {
     struct Outputs<ViewModel, Navigation> {
         let viewDriver: Driver<ViewModel>
         let navigationDriver: Signal<Navigation>
