@@ -20,34 +20,13 @@ extension SensorTestCase {
         return d
     }
 
-    func failures<V: Equatable>(forExpectedTimeline expectedTimeline: String, given inputTimeline: String, withValues values: [String: V], andErrors errors: [String: Error] = [:], expectations: Expectations) -> [String] {
-        return failures(
-            forExpectedTimeline: expectedTimeline,
-            withValues: values,
-            andExpectedErrors: errors,
-            given: inputTimeline,
-            withValues: values,
-            andInputErrors: errors,
-            expectations: expectations
-        )
-    }
-
-    func failures<V>(
-        forExpectedTimeline expectedTimeline: String,
-        withValues expectedValues: [String: V],
-        andExpectedErrors expectedErrors: [String: Error] = [:],
-        given inputTimeline: String,
-        withValues inputValues: [String: V],
-        andInputErrors inputErrors: [String: Error] = [:],
-        expectations: Expectations)
-        -> [String] where V: Equatable {
-
-            let observable = hotObservable(timeline: inputTimeline, values: inputValues, errors: inputErrors)
+    func failures<V>(forExpected expected: Definition<V>, given input: Definition<V>)-> [String] where V: Equatable {
+            let observable = hotObservable(input)
             let (expectedStates, recordedStates) = TestMethod.parseAndRecord(
                 observable,
-                expectedTimeline: expectedTimeline,
-                values: expectedValues,
-                errors: expectedErrors,
+                expectedTimeline: expected.timeline,
+                values: expected.values,
+                errors: expected.errors,
                 scheduler: scheduler,
                 maxTime: Int.max
             )
@@ -55,10 +34,10 @@ extension SensorTestCase {
             return TestMethod.checkFailures(
                 expectedStates: expectedStates,
                 recordedStates: recordedStates,
-                expectedTimeline: expectedTimeline,
-                values: expectedValues,
-                errors: expectedErrors,
-                expectations: expectations
+                expectedTimeline: expected.timeline,
+                values: expected.values,
+                errors: expected.errors,
+                expectations: expected.expectations
             )
     }
 }

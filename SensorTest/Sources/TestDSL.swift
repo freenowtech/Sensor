@@ -29,48 +29,39 @@ internal func eraseType<V>(_ assertion: @escaping Assertion<V>) -> TypeErasedAss
     }
 }
 
+public struct Definition<Value> {
+    let timeline: String
+    let values: [String: Value]
+    let errors: [String: Error]
+    let expectations: Expectations
+
+    public init(timeline: String, values: [String: Value] = [:], errors: [String: Error] = [:], expectations: Expectations = [:]) {
+        self.timeline = timeline
+        self.values = values
+        self.errors = errors
+        self.expectations = expectations
+    }
+}
+
 extension SensorTestCase {
 
     public func assert<V>(preassertion: @escaping PreAssertion<V>, assertion: @escaping Assertion<V>) -> TestMethod {
         return TestMethod(scheduler: scheduler).assert(preassertion: preassertion, assertion: assertion)
     }
 
-    public func assert<O>(_ subject: O,
-                   isEqualTo definition: (timeline: String, values: [String: O.Element]),
-                   file: StaticString = #file,
-                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return TestMethod(scheduler: scheduler).assert(subject, isEqualTo: definition, file: file, line: line)
-    }
-
-    public func assert<O>(_ subject: O,
-                   isEqualTo definition: (timeline: String, values: [String: O.Element], errors: [String: Error]),
-                   file: StaticString = #file,
-                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return TestMethod(scheduler: scheduler).assert(subject, isEqualTo: definition, file: file, line: line)
-    }
-
-    public func assert<O>(_ subject: O,
-                   isEqualTo definition: (timeline: String, values: [String: O.Element], expectations: Expectations),
-                   file: StaticString = #file,
-                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return TestMethod(scheduler: scheduler).assert(subject, isEqualTo: definition, file: file, line: line)
-    }
-
-    public func assert<O>(_ subject: O,
-                   isEqualTo definition: (timeline: String, values: [String: O.Element], errors: [String: Error], expectations: Expectations),
-                   file: StaticString = #file,
-                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return TestMethod(scheduler: scheduler).assert(subject, isEqualTo: definition, file: file, line: line)
-    }
-
     public func assert<O>(_ observable: O,
-                   isEqualToTimeline expectedTimeline: String,
-                   withValues values: [String: O.Element],
-                   errors: [String: Error],
-                   andExpectations expectations: Expectations = [:],
-                   file: StaticString = #file,
-                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return TestMethod(scheduler: scheduler).assert(observable, isEqualToTimeline: expectedTimeline, withValues: values, errors: errors, andExpectations: expectations, file: file, line: line)
+                          isEqualTo definition: Definition<O.Element>,
+                          inspectRecordedEvents: (([Recorded<Event<O.Element>>]) -> Void)? = nil,
+                          file: StaticString = #file,
+                          line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
+        return TestMethod(scheduler: scheduler)
+            .assert(
+                observable,
+                isEqualTo: definition,
+                inspectRecordedEvents: inspectRecordedEvents,
+                file: file,
+                line: line
+            )
     }
 }
 
@@ -111,7 +102,7 @@ public struct TestMethod {
     }
 }
 
-extension TestMethod: AssertionDSLProtocol {
+extension TestMethod {
 
     public func runTest(testUntil maxTime: TestTime = 100) {
         let valuesAndAssertions = assertions.map { ($0.0(scheduler, maxTime), $0.1) }
@@ -123,6 +114,7 @@ extension TestMethod: AssertionDSLProtocol {
         return append(preassertion: preassertion, assertion: assertion)
     }
 
+    // TODO: update docs
     /// Records an observable an check the recorded events are the expected ones.
     ///
     /// - Parameters:
@@ -132,56 +124,25 @@ extension TestMethod: AssertionDSLProtocol {
     ///   - ignoreTiming: If true, the assertion succeeds if the events are equal to the expected ones in the correct order, ignoring their specific timing.
     ///                   If false, a correct sequence of events with wrong timing will fail the assertion.
     /// - Returns: The TestMethod instance where this method was called, so more assertions can be chained.
-
-
-    public func assert<O>(_ subject: O,
-                   isEqualTo definition: (timeline: String, values: [String: O.Element]),
-                   file: StaticString = #file,
-                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, errors: [:], file: file, line: line)
-    }
-
-    public func assert<O>(_ subject: O,
-                   isEqualTo definition: (timeline: String, values: [String: O.Element], errors: [String: Error]),
-                   file: StaticString = #file,
-                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, errors: definition.errors, file: file, line: line)
-    }
-
-    public func assert<O>(_ subject: O,
-                   isEqualTo definition: (timeline: String, values: [String: O.Element], expectations: Expectations),
-                   file: StaticString = #file,
-                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, errors: [:], andExpectations: definition.expectations, file: file, line: line)
-    }
-
-    public func assert<O>(_ subject: O,
-                   isEqualTo definition: (timeline: String, values: [String: O.Element], errors: [String: Error], expectations: Expectations),
-                   file: StaticString = #file,
-                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
-        return assert(subject, isEqualToTimeline: definition.timeline, withValues: definition.values, errors: definition.errors, andExpectations: definition.expectations, file: file, line: line)
-    }
-
     public func assert<O>(_ observable: O,
-                   isEqualToTimeline expectedTimeline: String,
-                   withValues values: [String: O.Element],
-                   errors: [String: Error],
-                   andExpectations expectations: Expectations = [:],
-                   file: StaticString = #file,
-                   line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
+                          isEqualTo definition: Definition<O.Element>,
+                          inspectRecordedEvents: (([Recorded<Event<O.Element>>]) -> Void)? = nil,
+                          file: StaticString = #file,
+                          line: UInt = #line) -> TestMethod where O: ObservableConvertibleType, O.Element: Equatable {
 
         return append(
             preassertion: { scheduler, maxTime in
                 return TestMethod.parseAndRecord(
-                    observable, expectedTimeline:
-                    expectedTimeline,
-                    values: values,
-                    errors: errors,
+                    observable,
+                    expectedTimeline: definition.timeline,
+                    values: definition.values,
+                    errors: definition.errors,
                     scheduler: scheduler,
                     maxTime: maxTime)
             },
             assertion: { expectedStates, recordedStates in
-                let failures = TestMethod.checkFailures(expectedStates: expectedStates, recordedStates: recordedStates, expectedTimeline: expectedTimeline, values: values, errors: errors)
+                inspectRecordedEvents?(recordedStates.events)
+                let failures = TestMethod.checkFailures(expectedStates: expectedStates, recordedStates: recordedStates, expectedTimeline: definition.timeline, values: definition.values, errors: definition.errors)
                 if failures.count > 0 {
                     XCTFail(failures.joined(separator: "\n"), file: file, line: line)
                 }

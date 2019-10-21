@@ -59,10 +59,10 @@ class SingleStateStateMachineTests: XCTestCase, SensorTestCase {
                 "The event must trigger the effect when input is received.": [2, 5]
             ]
 
-            let inputDefinition                    = (timeline: "--i--i", values: ["i": ()])
-            let expectedStatesDefinition           = (timeline: "s-s--s", values: ["s": SingleState.theOneState], expectations: expectationsOnState)
-            let expectedEffectsDefinition          = (timeline: "e-f--f", values: ["e": [], "f": Set([Effects.effect])], expectations: expectationsOnEffects)
-            let expectedTriggeredEffectsDefinition = (timeline: "--f--f", values: ["f": Effects.effect], expectations: expectationsOnEffects)
+            let inputDefinition                    = Definition(timeline: "--i--", values: ["i": ()])
+            let expectedStatesDefinition           = Definition(timeline: "s-s--", values: ["s": SingleState.theOneState], expectations: expectationsOnState)
+            let expectedEffectsDefinition          = Definition(timeline: "e-f--", values: ["e": [], "f": Set([Effects.effect])], expectations: expectationsOnEffects)
+            let expectedTriggeredEffectsDefinition = Definition(timeline: "--f--", values: ["f": Effects.effect], expectations: expectationsOnEffects)
 
             let context = Context()
             let input = hotSignal(inputDefinition)

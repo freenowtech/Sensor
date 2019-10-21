@@ -46,9 +46,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "Sensor::SensorUnitTests"
-               BuildableName = "SensorUnitTests.xctest"
-               BlueprintName = "SensorUnitTests"
+               BlueprintIdentifier = "Sensor::SensorTestUnitTests"
+               BuildableName = "SensorTestUnitTests.xctest"
+               BlueprintName = "SensorTestUnitTests"
                ReferencedContainer = "container:Sensor.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -56,9 +56,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "Sensor::SensorTestUnitTests"
-               BuildableName = "SensorTestUnitTests.xctest"
-               BlueprintName = "SensorTestUnitTests"
+               BlueprintIdentifier = "Sensor::SensorUnitTests"
+               BuildableName = "SensorUnitTests.xctest"
+               BlueprintName = "SensorUnitTests"
                ReferencedContainer = "container:Sensor.xcodeproj">
             </BuildableReference>
          </TestableReference>
