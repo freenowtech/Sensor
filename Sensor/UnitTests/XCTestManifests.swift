@@ -6,7 +6,7 @@ extension SingleStateStateMachineTests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__SingleStateStateMachineTests = [
-        ("testInitialStateEmission", testInitialStateEmission),
+        ("testSingleStateStateMachine", testSingleStateStateMachine),
     ]
 }
 
