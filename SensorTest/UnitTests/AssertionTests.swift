@@ -27,17 +27,20 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, given: inputTimeline, withValues: values, expectations: expectations)
-
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
+        
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "- is not equal to e",
-          "Expected [next(e)] at 0, but got [].",
+          "Recorded timeline '-' is not equal to expected timeline 'e'",
+          "Expected [next(e)] at time 0, but got [].",
           "SensorTest must work properly"
         ]
         """)
     }
-
+    
     func testUnexpectedEvents() {
         let values = ["e": "e"]
         let inputTimeline    = "e"
@@ -45,13 +48,16 @@ class AssertionTests: XCTestCase, SensorTestCase {
         let expectations = [
             "SensorTest must work properly": [0]
         ]
-
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, given: inputTimeline, withValues: values, expectations: expectations)
-
+        
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
+        
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "e is not equal to -",
-          "Expected [] at 0, but got [next(e)].",
+          "Recorded timeline 'e' is not equal to expected timeline '-'",
+          "Expected [] at time 0, but got [next(e)].",
           "SensorTest must work properly"
         ]
         """)
@@ -61,17 +67,19 @@ class AssertionTests: XCTestCase, SensorTestCase {
         let inputTimeline    = "e"
         let expectedTimeline = "e"
         let inputValues    = ["e": "x"]
-        let expectedValues = ["e": "e"]
+        let expectedValues = ["e": "v"]
         let expectations = [
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: expectedValues, given: inputTimeline, withValues: inputValues, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "¿ is not equal to e",
-          "Expected e at 0, but got x.",
+          "Expected value 'e' to be 'v' at time 0, but got 'x'.",
           "SensorTest must work properly"
         ]
         """)
@@ -82,17 +90,19 @@ class AssertionTests: XCTestCase, SensorTestCase {
         let inputTimeline    = " e"
         let expectedTimeline = "e "
         let inputValues    = ["e": "x"]
-        let expectedValues = ["e": "e"]
+        let expectedValues = ["e": "v"]
         let expectations = [
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: expectedValues, given: inputTimeline, withValues: inputValues, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "¿ is not equal to e",
-          "Expected e at 0, but got x.",
+          "Expected value 'e' to be 'v' at time 0, but got 'x'.",
           "SensorTest must work properly"
         ]
         """)
@@ -105,17 +115,45 @@ class AssertionTests: XCTestCase, SensorTestCase {
         let inputTimeline   = "e"
         let inputValues    = ["e": S(s: "x")]
         let expectedTimeline = "e"
-        let expectedValues = ["e": S(s: "e")]
+        let expectedValues = ["e": S(s: "v")]
         let expectations = [
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: expectedValues, given: inputTimeline, withValues: inputValues, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "¿ is not equal to e",
-          "Expected s to be x at 0, but got e.",
+          "Expected property 's' of value 'e' to be 'v' at time 0, but got 'x'.",
+          "SensorTest must work properly"
+        ]
+        """)
+    }
+
+    func testDifferentSubValue2() {
+        struct S: Equatable {
+            let s: String
+            let a = "a"
+        }
+        let inputTimeline   = "e"
+        let inputValues    = ["e": S(s: "x")]
+        let expectedTimeline = "e"
+        let expectedValues = ["e": S(s: "v")]
+        let expectations = [
+            "SensorTest must work properly": [0]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected property 's' of value 'e' to be 'v' at time 0, but got 'x'.",
           "SensorTest must work properly"
         ]
         """)
@@ -123,6 +161,7 @@ class AssertionTests: XCTestCase, SensorTestCase {
 
     class O: Equatable {
         let s: String
+        let a = "a"
         init(s: String) { self.s = s }
         static func == (lhs: O, rhs: O) -> Bool { return lhs.s == rhs.s }
     }
@@ -131,17 +170,19 @@ class AssertionTests: XCTestCase, SensorTestCase {
         let inputTimeline   = "e"
         let inputValues    = ["e": O(s: "x")]
         let expectedTimeline = "e"
-        let expectedValues = ["e": O(s: "e")]
+        let expectedValues = ["e": O(s: "v")]
         let expectations = [
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: expectedValues, given: inputTimeline, withValues: inputValues, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "¿ is not equal to e",
-          "Expected s to be x at 0, but got e.",
+          "Expected property 's' of value 'e' to be 'v' at time 0, but got 'x'.",
           "SensorTest must work properly"
         ]
         """)
@@ -157,47 +198,301 @@ class AssertionTests: XCTestCase, SensorTestCase {
         let inputTimeline   = "e"
         let inputValues    = ["e": T(s: S(s: "x"))]
         let expectedTimeline = "e"
-        let expectedValues = ["e": T(s: S(s: "e"))]
+        let expectedValues = ["e": T(s: S(s: "v"))]
         let expectations = [
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: expectedValues, given: inputTimeline, withValues: inputValues, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: #"""
         [
-          "¿ is not equal to e",
-          "Expected s to be S(s: \"x\") at 0, but got S(s: \"e\").",
+          "value 'e' is not equal to the expected value at time 0",
           "SensorTest must work properly"
         ]
         """#)
+    }
+
+    func testDifferentSubSubValue2() {
+        struct S: Equatable {
+            let s: String
+            let a = "a"
+        }
+        struct T: Equatable {
+            let s: S
+            let a = "a"
+        }
+        let inputTimeline   = "e"
+        let inputValues    = ["e": T(s: S(s: "x"))]
+        let expectedTimeline = "e"
+        let expectedValues = ["e": T(s: S(s: "v"))]
+        let expectations = [
+            "SensorTest must work properly": [0]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: #"""
+        [
+          "value 'e' is not equal to the expected value at time 0",
+          "SensorTest must work properly"
+        ]
+        """#)
+    }
+
+
+    func testDifferentSubSubValueWithCustomDescription() {
+        struct WeirdString: Equatable, CustomStringConvertible {
+            let s: String
+            let description: String = "-"
+        }
+
+        struct S: Equatable {
+            let s: WeirdString
+        }
+
+        let inputTimeline   = "e"
+        let inputValues    = ["e": S(s: WeirdString(s: "x"))]
+        let expectedTimeline = "e"
+        let expectedValues = ["e": S(s: WeirdString(s: "v"))]
+        let expectations = [
+            "SensorTest must work properly": [0]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "value 'e' is not equal to the expected value at time 0",
+          "SensorTest must work properly"
+        ]
+        """)
     }
 
     func testDifferentSubValueAndTimeline() {
         let inputTimeline   = "e"
         let inputValues    = ["e": ["s": "x"]]
         let expectedTimeline = "e--i"
-        let expectedValues = ["e": ["s": "e"], "i": [:]]
+        let expectedValues = ["e": ["s": "v"], "i": [:]]
         let expectations = [
             "SensorTest must work properly": [0],
             "SensorTest must be the best": [3]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: expectedValues, given: inputTimeline, withValues: inputValues, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: #"""
         [
-          "¿ is not equal to e--i",
-          "Expected [\"s\": \"e\"] at 0, but got [\"s\": \"x\"].",
+          "Recorded timeline '¿' is not equal to expected timeline 'e--i'",
+          "Expected property 's' of value 'e' to be 'v' at time 0, but got 'x'.",
           "SensorTest must work properly",
-          "Expected [next([:])] at 3, but got [].",
+          "Expected [next([:])] at time 3, but got [].",
           "SensorTest must be the best"
         ]
         """#)
     }
 
-    func testEnumSubvalues() {
-        XCTFail()
+    func testEnumDifferentCases() {
+        enum S: Equatable {
+            case a(String)
+            case b(String)
+        }
+        let inputTimeline   = "e"
+        let inputValues    = ["e": S.a("v")]
+        let expectedTimeline = "e"
+        let expectedValues = ["e": S.b("v")]
+        let expectations = [
+            "SensorTest must work properly": [0]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected value 'e' to be 'b' at time 0, but got 'a'.",
+          "SensorTest must work properly"
+        ]
+        """)
+    }
+
+    func testEnumDifferentSubvalues() {
+        enum S: Equatable {
+            case s(String)
+        }
+        let inputTimeline   = "e"
+        let inputValues    = ["e": S.s("x")]
+        let expectedTimeline = "e"
+        let expectedValues = ["e": S.s("v")]
+        let expectations = [
+            "SensorTest must work properly": [0]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected property 's' of value 'e' to be 'v' at time 0, but got 'x'.",
+          "SensorTest must work properly"
+        ]
+        """)
+    }
+
+    func testEnumEqualSeveralSubvalues() {
+        enum S: Equatable {
+            case s(v: String, Int)
+        }
+        let inputTimeline   = "e"
+        let inputValues    = ["e": S.s(v: "x", 0)]
+        let expectedTimeline = "e"
+        let expectedValues = ["e": S.s(v: "x", 0)]
+        let expectations = [
+            "SensorTest must work properly": [0]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+
+        ]
+        """)
+    }
+
+    func testEnumDifferentSubvalues2() {
+        enum S: Equatable {
+            case s(v: String, Int)
+        }
+        let inputTimeline   = "e"
+        let inputValues    = ["e": S.s(v: "x", 0)]
+        let expectedTimeline = "e"
+        let expectedValues = ["e": S.s(v: "v", 0)]
+        let expectations = [
+            "SensorTest must work properly": [0]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: #"""
+        [
+          "Expected property 'v' of value 'e' to be 'v' at time 0, but got 'x'.",
+          "SensorTest must work properly"
+        ]
+        """#)
+    }
+
+    func testEnumSameComplexSubvalues() {
+        struct T: Equatable {
+            let a: Int
+            let b: String
+        }
+        enum S: Equatable {
+            case s(T)
+        }
+        let inputTimeline   = "e"
+        let inputValues    = ["e": S.s(T(a: 0, b: "0"))]
+        let expectedTimeline = "e"
+        let expectedValues = ["e": S.s(T(a: 0, b: "0"))]
+        let expectations = [
+            "SensorTest must work properly": [0]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: #"""
+        [
+
+        ]
+        """#)
+    }
+
+
+    func testEnumDifferentComplexSubvalues1() {
+        struct T: Equatable {
+            let a: Int
+            let b: String
+        }
+        enum S: Equatable {
+            case s(T)
+        }
+        let inputTimeline   = "e"
+        let inputValues    = ["e": S.s(T(a: 0, b: "0"))]
+        let expectedTimeline = "e"
+        let expectedValues = ["e": S.s(T(a: 1, b: "0"))]
+        let expectations = [
+            "SensorTest must work properly": [0]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected property 'a' of value 'e' to be '1' at time 0, but got '0'.",
+          "SensorTest must work properly"
+        ]
+        """)
+    }
+
+    func testEnumDifferentComplexSubvalues2() {
+        struct U: Equatable {
+            let a: Int
+            let b: Int
+        }
+        struct T: Equatable {
+            let a: Int
+            let b: U
+        }
+        enum S: Equatable {
+            case s(T)
+        }
+        let inputTimeline   = "e"
+        let inputValues    = ["e": S.s(T(a: 0, b: U(a: 0, b: 0)))]
+        let expectedTimeline = "e"
+        let expectedValues = ["e": S.s(T(a: 0, b: U(a: 0, b: 1)))]
+        let expectations = [
+            "SensorTest must work properly": [0]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "value 'e' is not equal to the expected value at time 0",
+          "SensorTest must work properly"
+        ]
+        """)
     }
 
     func testDifferentLengthTimeline() {
@@ -208,13 +503,176 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [1]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "-e is not equal to -",
-          "Expected [] at 1, but got [next(e)].",
+          "Recorded timeline '-e' is not equal to expected timeline '-'",
+          "Expected [] at time 1, but got [next(e)].",
           "SensorTest must work properly"
+        ]
+        """)
+    }
+
+    func testArraySingleElementTimeline() {
+        let values: [String: [Int]] = ["a": [1], "b": [2]]
+        let inputTimeline    = "a"
+        let expectedTimeline = "b"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected property '0' of value 'b' to be '2' at time 0, but got '1'."
+        ]
+        """)
+    }
+
+    func testSetSingleElementTimeline() {
+        let values: [String: Set<Int>] = ["a": [1], "b": [2]]
+        let inputTimeline    = "a"
+        let expectedTimeline = "b"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected property '0' of value 'b' to be '2' at time 0, but got '1'."
+        ]
+        """)
+    }
+
+    func testArraySeveralElementsTimeline() {
+        let values: [String: [Int]] = ["a": [1, 2], "b": [1, 3]]
+        let inputTimeline    = "a"
+        let expectedTimeline = "b"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected property '1' of value 'b' to be '3' at time 0, but got '2'."
+        ]
+        """)
+    }
+
+    func testSetSeveralElementsTimeline() {
+        let values: [String: Set<Int>] = ["a": [1, 2], "b": [1, 3]]
+        let inputTimeline    = "a"
+        let expectedTimeline = "b"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected property '1' of value 'b' to be '3' at time 0, but got '2'."
+        ]
+        """)
+    }
+
+    func testSetSeveralElementsTimelineAssertionSuccessful() {
+        let values: [String: Set<Int>] = ["a": [1, 2], "b": [2, 1]]
+        let inputTimeline    = "a"
+        let expectedTimeline = "b"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+
+        ]
+        """)
+    }
+
+    func testOptionalTimeline() {
+        let values = ["i": 1, "n": nil]
+        let inputTimeline    = "i"
+        let expectedTimeline = "n"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+          "Expected value 'n' to be 'nil' at time 0, but got 'Optional(1)'."
+        ]
+        """)
+    }
+
+    func testOptionalNilTimelineAssertionSuccessful() {
+        let values = ["i": 1, "n": nil]
+        let inputTimeline    = "n"
+        let expectedTimeline = "n"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+
+        ]
+        """)
+    }
+
+    func testOptionalValueTimelineAssertionSuccessful() {
+        let values = ["i": 1, "n": nil]
+        let inputTimeline    = "i"
+        let expectedTimeline = "i"
+        let expectations = [
+            "SensorTest must work properly": [1]
+        ]
+
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
+
+        _assertInlineSnapshot(matching: failures, as: .json, with: """
+        [
+
         ]
         """)
     }
@@ -228,7 +686,10 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [1]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: expectedValues, given: inputTimeline, withValues: inputValues, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
 
@@ -245,7 +706,10 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
@@ -263,12 +727,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: expectedValues, given: inputTimeline, withValues: inputValues, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "(ee) is not equal to e",
-          "Expected [next(e)] at 0, but got [next(e), next(e)].",
+          "Recorded timeline '(ee)' is not equal to expected timeline 'e'",
+          "Expected [next(e)] at time 0, but got [next(e), next(e)].",
           "SensorTest must work properly"
         ]
         """)
@@ -283,12 +750,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: expectedValues, given: inputTimeline, withValues: inputValues, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "e is not equal to (ee)",
-          "Expected [next(e), next(e)] at 0, but got [next(e)].",
+          "Recorded timeline 'e' is not equal to expected timeline '(ee)'",
+          "Expected [next(e), next(e)] at time 0, but got [next(e)].",
           "SensorTest must work properly"
         ]
         """)
@@ -303,12 +773,14 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: expectedValues, given: inputTimeline, withValues: inputValues, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "(¿¿) is not equal to (ee)",
-          "Expected [next(x), next(x)] at 0, but got [next(e), next(e)].",
+          "Expected [next(x), next(x)] at time 0, but got [next(e), next(e)].",
           "SensorTest must work properly"
         ]
         """)
@@ -324,7 +796,10 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: expectedValues, given: inputTimeline, withValues: inputValues, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
@@ -344,12 +819,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must be the best": [5]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: expectedValues, given: inputTimeline, withValues: inputValues, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: expectedValues, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: inputValues)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "(ee)--(eee)-| is not equal to (ee)--(ee)-|",
-          "Expected [next(e), next(e)] at 3, but got [next(e), next(e), next(e)]."
+          "Recorded timeline '(ee)--(eee)-|' is not equal to expected timeline '(ee)--(ee)-|'",
+          "Expected [next(e), next(e)] at time 3, but got [next(e), next(e), next(e)]."
         ]
         """)
     }
@@ -362,7 +840,10 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [1]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
@@ -380,7 +861,10 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [1]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, andInputErrors: errors, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values, errors: errors)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
@@ -398,7 +882,10 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [1]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, andInputErrors: errors, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values, errors: errors)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
@@ -415,12 +902,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "# is not equal to -",
-          "Expected [] at 0, but got [error(AnyError())].",
+          "Recorded timeline '#' is not equal to expected timeline '-'",
+          "Expected [] at time 0, but got [error(AnyError())].",
           "SensorTest must work properly"
         ]
         """)
@@ -434,12 +924,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "- is not equal to #",
-          "Expected [error(AnyError())] at 0, but got [].",
+          "Recorded timeline '-' is not equal to expected timeline '#'",
+          "Expected [error(AnyError())] at time 0, but got [].",
           "SensorTest must work properly"
         ]
         """)
@@ -453,7 +946,10 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
@@ -470,12 +966,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "(e#) is not equal to -",
-          "Expected [] at 0, but got [next(e), error(AnyError())].",
+          "Recorded timeline '(e#)' is not equal to expected timeline '-'",
+          "Expected [] at time 0, but got [next(e), error(AnyError())].",
           "SensorTest must work properly"
         ]
         """)
@@ -489,12 +988,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "- is not equal to (e#)",
-          "Expected [next(e), error(AnyError())] at 0, but got [].",
+          "Recorded timeline '-' is not equal to expected timeline '(e#)'",
+          "Expected [next(e), error(AnyError())] at time 0, but got [].",
           "SensorTest must work properly"
         ]
         """)
@@ -509,12 +1011,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, andExpectedErrors: errors, given: inputTimeline, withValues: values, andInputErrors: errors, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, errors: errors, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values, errors: errors)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: #"""
         [
-          "x is not equal to -",
-          "Expected [] at 0, but got [error(Error Domain=someError Code=9 \"(null)\")].",
+          "Recorded timeline 'x' is not equal to expected timeline '-'",
+          "Expected [] at time 0, but got [error(Error Domain=someError Code=9 \"(null)\")].",
           "SensorTest must work properly"
         ]
         """#)
@@ -529,12 +1034,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, andExpectedErrors: errors, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, errors: errors, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: #"""
         [
-          "- is not equal to x",
-          "Expected [error(Error Domain=someError Code=9 \"(null)\")] at 0, but got [].",
+          "Recorded timeline '-' is not equal to expected timeline 'x'",
+          "Expected [error(Error Domain=someError Code=9 \"(null)\")] at time 0, but got [].",
           "SensorTest must work properly"
         ]
         """#)
@@ -549,7 +1057,10 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, andExpectedErrors: errors, given: inputTimeline, withValues: values, andInputErrors: errors, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, errors: errors, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values, errors: errors)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
@@ -567,12 +1078,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, andExpectedErrors: errors, given: inputTimeline, withValues: values, andInputErrors: errors, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, errors: errors, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values, errors: errors)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: #"""
         [
-          "(ex) is not equal to -",
-          "Expected [] at 0, but got [next(e), error(Error Domain=someError Code=9 \"(null)\")].",
+          "Recorded timeline '(ex)' is not equal to expected timeline '-'",
+          "Expected [] at time 0, but got [next(e), error(Error Domain=someError Code=9 \"(null)\")].",
           "SensorTest must work properly"
         ]
         """#)
@@ -587,12 +1101,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, andExpectedErrors: errors, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, errors: errors, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: #"""
         [
-          "- is not equal to (ex)",
-          "Expected [next(e), error(Error Domain=someError Code=9 \"(null)\")] at 0, but got [].",
+          "Recorded timeline '-' is not equal to expected timeline '(ex)'",
+          "Expected [next(e), error(Error Domain=someError Code=9 \"(null)\")] at time 0, but got [].",
           "SensorTest must work properly"
         ]
         """#)
@@ -606,7 +1123,10 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
@@ -623,12 +1143,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "| is not equal to -",
-          "Expected [] at 0, but got [completed].",
+          "Recorded timeline '|' is not equal to expected timeline '-'",
+          "Expected [] at time 0, but got [completed].",
           "SensorTest must work properly"
         ]
         """)
@@ -642,12 +1165,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "- is not equal to |",
-          "Expected [completed] at 0, but got [].",
+          "Recorded timeline '-' is not equal to expected timeline '|'",
+          "Expected [completed] at time 0, but got [].",
           "SensorTest must work properly"
         ]
         """)
@@ -661,7 +1187,10 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
@@ -678,12 +1207,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "(e|) is not equal to -",
-          "Expected [] at 0, but got [next(e), completed].",
+          "Recorded timeline '(e|)' is not equal to expected timeline '-'",
+          "Expected [] at time 0, but got [next(e), completed].",
           "SensorTest must work properly"
         ]
         """)
@@ -697,12 +1229,15 @@ class AssertionTests: XCTestCase, SensorTestCase {
             "SensorTest must work properly": [0]
         ]
 
-        let failures = self.failures(forExpectedTimeline: expectedTimeline, withValues: values, given: inputTimeline, withValues: values, expectations: expectations)
+        let failures = self.failures(
+            forExpected: Definition(timeline: expectedTimeline, values: values, expectations: expectations),
+            given: Definition(timeline: inputTimeline, values: values)
+        )
 
         _assertInlineSnapshot(matching: failures, as: .json, with: """
         [
-          "- is not equal to (e|)",
-          "Expected [next(e), completed] at 0, but got [].",
+          "Recorded timeline '-' is not equal to expected timeline '(e|)'",
+          "Expected [next(e), completed] at time 0, but got [].",
           "SensorTest must work properly"
         ]
         """)

@@ -28,11 +28,11 @@ PODS:
   - RxSwift (5.0.0)
   - RxTest (5.0.0):
     - RxSwift (~> 5)
-  - Sensor (0.1.0):
+  - Sensor (0.1.1):
     - RxCocoa (~> 5.0.0)
     - RxFeedback (~> 3.0.0)
     - RxSwift (~> 5.0.0)
-  - SensorTest (0.1.0):
+  - SensorTest (0.1.1):
     - RxCocoa (~> 5.0.0)
     - RxSwift (~> 5.0.0)
     - RxTest (~> 5.0.0)
@@ -90,11 +90,11 @@ SPEC CHECKSUMS:
   RxRelay: 4f7409406a51a55cd88483f21ed898c234d60f18
   RxSwift: 8b0671caa829a763bbce7271095859121cbd895f
   RxTest: 4349afe98f564e0a9bc19063368904622d17d49a
-  Sensor: 34d6f3eb988d6ec63438334ad2c5ea972978d71d
-  SensorTest: a1c0172f1148720157b9f7586438a5befcb55bfa
+  Sensor: 73d898a2d7847ec3e14f471bd72d70558259951a
+  SensorTest: 79f0bc23a4f5fcf7ebd8f0d0ddefc0abb17e13ad
   SnapKit: fd22d10eb9aff484d79a8724eab922c1ddf89bcf
   Swinject: 48a96cda93633cf2860697b4ce76ab5db9ebaca2
 
 PODFILE CHECKSUM: 496f60915ce29447a9ff5b958a34fe6adb90d6a3
 
-COCOAPODS: 1.7.3
+COCOAPODS: 1.7.5

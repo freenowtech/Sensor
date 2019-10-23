@@ -77,16 +77,16 @@ extension SharedSequence {
     public func debugTest(_ identifier: String = "", scheduler: TestScheduler) -> SharedSequence {
         return self.do(
             onNext: { (value) in
-                print("\(identifier) -> value: \(value) @ \(scheduler.clock)")
+                print("\(identifier) @ \(scheduler.clock) -> value: \(value)")
         },
             onCompleted: {
-                print("\(identifier) -> completed @ \(scheduler.clock)")
+                print("\(identifier) @ \(scheduler.clock) -> completed")
         },
             onSubscribed: {
-                print("\(identifier) -> subscribed @ \(scheduler.clock)")
+                print("\(identifier) @ \(scheduler.clock) -> subscribed")
         },
             onDispose: {
-                print("\(identifier) -> disposed @ \(scheduler.clock)")
+                print("\(identifier) @ \(scheduler.clock) -> disposed")
         })
     }
 }

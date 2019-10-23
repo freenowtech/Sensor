@@ -34,13 +34,7 @@ class RandomAssertionTests: XCTestCase, SensorTestCase {
             print("timeline: \(timelineString)")
             print("values: \(values)")
 
-            failures = self.failures(
-                forExpectedTimeline: timelineString,
-                withValues: values,
-                given: timelineString,
-                withValues: values,
-                expectations: [:]
-            )
+            failures = self.failures(forExpected: Definition(timeline: timelineString, values: values), given: Definition(timeline: timelineString, values: values))
 
             if failures.isEmpty {
                 print("ok\n")

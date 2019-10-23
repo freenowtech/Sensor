@@ -24,30 +24,30 @@ class TimelineTests: XCTestCase {
     }
 
     func testValues() {
-        _test(inputTimeline: "-t-f", values: ["t": true, "f": false])
+        executeTest(inputTimeline: "-t-f", values: ["t": true, "f": false])
     }
 
     func testValuesAtSameTime() {
-        _test(inputTimeline: "-(tf)-", values: ["t": true, "f": false])
+        executeTest(inputTimeline: "-(tf)-", values: ["t": true, "f": false])
     }
 
     func testCompleted() {
-        _test(inputTimeline: "-|-", values: ["t": true, "f": false])
+        executeTest(inputTimeline: "-|-", values: ["t": true, "f": false])
     }
 
     func testUnkownError() {
-        _test(inputTimeline: "-#-", values: ["t": true, "f": false])
+        executeTest(inputTimeline: "-#-", values: ["t": true, "f": false])
     }
 
     func testError() {
-        _test(inputTimeline: "-x-", values: [String: Bool](), errors: ["x": NSError(domain: "error", code: 6, userInfo: nil)])
+        executeTest(inputTimeline: "-x-", values: [String: Bool](), errors: ["x": NSError(domain: "error", code: 6, userInfo: nil)])
     }
 
     func testValuesAtSameTimeWithCompletion() {
-        _test(inputTimeline: "-(tf|)-", values: ["t": true, "f": false])
+        executeTest(inputTimeline: "-(tf|)-", values: ["t": true, "f": false])
     }
 
-    func _test<Element: Equatable>(
+    func executeTest<Element: Equatable>(
         inputTimeline: String,
         values: [String: Element],
         errors: [String: Error] = [:],

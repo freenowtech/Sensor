@@ -18,7 +18,10 @@ import Swinject
 
 @testable import LoginDemo
 
-class LoginDemoTests: XCTestCase {
+class LoginDemoTests: XCTestCase, SensorTestCase {
+
+    var scheduler: TestScheduler!
+
     
     private let loginView = LoginView()
     let initialModel = LoginView.Model(isLoginButtonEnabled: false, isPasswordHidden: true, isSpinning: false, state: .loggedOut)
@@ -40,34 +43,26 @@ class LoginDemoTests: XCTestCase {
     func testEmptyPassword() {
         typealias RecEvent = Event<LoginView.Model>
 
-        let scheduler = TestScheduler(initialClock: 0)
+        let expectations = [
+            "The initial model is right" : [1]
+        ]
 
-        let usernameEvent = scheduler.parseEventsAndTimes(timeline: "-a", values: [ /* Input Events */
-            "a": "abcdefgh"
-            ])
+        scheduler = TestScheduler(initialClock: 0, resolution: 1, simulateProcessingDelay: true)
+        let usernameSignal = hotSignal((timeline: "-a", values: ["a": "abcdefgh"]))
+        let passwordSignal = hotSignal((timeline: "-a", values: ["a": ""]))
 
-        let passwordEvents = scheduler.parseEventsAndTimes(timeline: "-a", values: [ /* Input Events */
-            "a": ""
-            ])
-
-        let usernameSignal: Signal<String> = scheduler.createHotObservable(usernameEvent).asSignal(onErrorJustReturn: "")
-        let passwordSignal: Signal<String> = scheduler.createHotObservable(passwordEvents).asSignal(onErrorJustReturn: "")
-
-        let recorded = scheduler.record(source: LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
-                                                                                            passwordField: passwordSignal,
-                                                                                            loginButton: .empty(),
-                                                                                            registerButton: .empty(),
-                                                                                            showPasswordButton: .empty()),
-                                                                  alertInput: .empty()).viewDriver)
+        let output = LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
+                                                                      passwordField: passwordSignal,
+                                                                      loginButton: .empty(),
+                                                                      registerButton: .empty(),
+                                                                      showPasswordButton: .empty()),
+                                            alertInput: .empty()).viewDriver
 
 
+        let xxx = LoginView.Model(isLoginButtonEnabled: false, isPasswordHidden: false, isSpinning: false, state: .loggedOut)
 
-        let expectedEventModels = ["a": initialModel]
-        let expectedEvents = scheduler.parseEventsAndTimes(timeline: "a", values: expectedEventModels)
-
-        scheduler.start()
-
-        XCTAssertEqual(recorded.events, expectedEvents)
+        assert(output, isEqualTo: (timeline: "a", values: ["(ab)": xxx], expectations: expectations))
+            .runTest()
     }
 
     func testCorrectPassword() {

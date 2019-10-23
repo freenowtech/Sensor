@@ -12,17 +12,31 @@ import RxTest
 @testable import Sensor
 import SensorTest
 
-enum NoEffects: TriggerableEffect {
-    func trigger(context: Void) -> Signal<Void> {
+struct Context {
+    let triggeredEffects = PublishSubject<Effects>()
+
+    init() {
+        triggeredEffects.debug("R").subscribe().disposed(by: disposeBag)
+    }
+
+    private let disposeBag = DisposeBag()
+}
+
+enum Effects: TriggerableEffect {
+    case effect
+
+    func trigger(context: Context) -> Signal<Void> {
+        context.triggeredEffects.onNext(self)
         return Signal.never()
     }
 }
 
 enum SingleState: ReducibleStateWithEffects {
-    func reduce(event: NoEffects.Event) -> (state: SingleState, effects: Set<NoEffects>) {
-        return (state: self, effects: Set())
-    }
     case theOneState
+
+    func reduce(event: Effects.Event) -> (state: SingleState, effects: Set<Effects>) {
+        return (state: self, effects: [.effect])
+    }
 }
 
 class SingleStateStateMachineTests: XCTestCase, SensorTestCase {
@@ -33,21 +47,31 @@ class SingleStateStateMachineTests: XCTestCase, SensorTestCase {
         scheduler = TestScheduler(initialClock: 0, resolution: 1, simulateProcessingDelay: false)
     }
 
-    func testInitialStateEmission() {
+    func testSingleStateStateMachine() {
         SharingScheduler.mock(scheduler: scheduler) {
-            let expectations = [
+            let expectationsOnState = [
                 "The initial state must be emited on subscription.": [0],
-                "The event must transition from .theOneState to .theOneState.": [2]
+                "The event must transition from .theOneState to .theOneState when input is received.": [2, 5],
+                // TODO: the expectation is not listed with the error on this failing case!
             ]
 
-            let inputDefinition            = (timeline: "--i", values: ["i": ()])
-            let expectedStatesDefinition   = (timeline: "s-s", values: ["s": SingleState.theOneState], expectations: expectations)
+            let expectationsOnEffects = [
+                "The event must trigger the effect when input is received.": [2, 5]
+            ]
 
+            let inputDefinition                    = Definition(timeline: "--i--", values: ["i": ()])
+            let expectedStatesDefinition           = Definition(timeline: "s-s--", values: ["s": SingleState.theOneState], expectations: expectationsOnState)
+            let expectedEffectsDefinition          = Definition(timeline: "e-f--", values: ["e": [], "f": Set([Effects.effect])], expectations: expectationsOnEffects)
+            let expectedTriggeredEffectsDefinition = Definition(timeline: "--f--", values: ["f": Effects.effect], expectations: expectationsOnEffects)
+
+            let context = Context()
             let input = hotSignal(inputDefinition)
-            let states = SingleState.outputStates(initialState: .theOneState, inputEvents: input, context: ())
-
-            assert(states, isEqualTo: expectedStatesDefinition)
-                .withScheduler(scheduler)
+            let outputs = SingleState.testOutputs(initialState: .theOneState, inputEvents: input, context: context)
+            
+            assert(outputs.states, isEqualTo: expectedStatesDefinition)
+                .assert(outputs.effects, isEqualTo: expectedEffectsDefinition)
+                .assert(context.triggeredEffects, isEqualTo: expectedTriggeredEffectsDefinition)
+                .runTest()
         }
     }
 }
