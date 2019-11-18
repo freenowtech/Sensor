@@ -112,11 +112,11 @@ extension ReducibleStateWithEffects {
     ///   - context: The context is passed to the effects and can be used to inject external dependencies to them.
     /// - Returns: Observables for the sequenced states, the received events and the triggered effects of the state machine.
     private static func outputs(initialState: Self, inputEvents: Signal<Event>, context: Context) -> EventsStatesAndEffects<Event, Self, Effect> {
-        let eventsRelay = PublishSubject<Signal<Event>>()
+        let eventsRelay = PublishRelay<Signal<Event>>()
         
         let inputFeedback: Feedback<StateAndEffects<Self>, Event> = { _ in
             let events = Signal<Event>.merge(inputEvents)
-            eventsRelay.onNext(events)
+            eventsRelay.accept(events)
             // `events` shares side effects because its a signal, thus it's safe to return it while also publish it to the relay.
             return events
         }
@@ -126,7 +126,7 @@ extension ReducibleStateWithEffects {
                   effects: { (stateAndEffect: StateAndEffect<Self>) -> Signal<Event> in
                 let events = stateAndEffect.effect.trigger(context: context)
                 // `events` shares side effects because its a signal, thus it's safe to return it while also publish it to the relay.
-                eventsRelay.onNext(events)
+                eventsRelay.accept(events)
                 return events
             })
 
