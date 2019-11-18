@@ -151,6 +151,13 @@ extension ReducibleStateWithEffects {
     
     private static func reducer(state: StateAndEffects<Self>, event: Event) -> StateAndEffects<Self> {
         let reduced = state.state.reduce(event: event)
+        
+        guard !reduced.effects.isEmpty else {
+            // if effects set is empty we will return the previous effects set to keep them alive
+            return StateAndEffects<Self>(state: reduced.state, effects: state.effects)
+        }
+        
+        // If a running effect is not in 'reduced.effects' it will be canceled
         return StateAndEffects<Self>(state: reduced.state, effects: reduced.effects)
     }
 }
