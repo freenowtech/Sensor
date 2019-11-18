@@ -113,36 +113,44 @@ extension ReducibleStateWithEffects {
     /// - Returns: Observables for the sequenced states, the received events and the triggered effects of the state machine.
     private static func outputs(initialState: Self, inputEvents: Signal<Event>, context: Context) -> EventsStatesAndEffects<Event, Self, Effect> {
         let eventsRelay = PublishSubject<Signal<Event>>()
+        
         let inputFeedback: Feedback<StateAndEffects<Self>, Event> = { _ in
             let events = Signal<Event>.merge(inputEvents)
             eventsRelay.onNext(events)
             // `events` shares side effects because its a signal, thus it's safe to return it while also publish it to the relay.
             return events
         }
+        
         let reactFeedback: Feedback<StateAndEffects<Self>, Event> =
-            react(requests: { (stateAndEffects: StateAndEffects<Self>) -> Set<StateAndEffect<Self>> in
-                let mappedStates = stateAndEffects.effects.map { (effect: Effect) -> StateAndEffect<Self> in
-                    return StateAndEffect<Self>(state: stateAndEffects.state, effect: effect)
-                }
-                return Set(mappedStates)
-            }, effects: { (stateAndEffect: StateAndEffect<Self>) -> Signal<Event> in
+            react(requests: requestsFromState,
+                  effects: { (stateAndEffect: StateAndEffect<Self>) -> Signal<Event> in
                 let events = stateAndEffect.effect.trigger(context: context)
                 // `events` shares side effects because its a signal, thus it's safe to return it while also publish it to the relay.
                 eventsRelay.onNext(events)
                 return events
             })
-        let reduce: (StateAndEffects<Self>, Event) -> StateAndEffects<Self> = { state, event in
-            let reduced = state.state.reduce(event: event)
-            return StateAndEffects<Self>(state: reduced.state, effects: reduced.effects)
-        }
-        let initial = StateAndEffects<Self>(state: initialState, effects: [])
 
-        let stateAndEffects: Driver<StateAndEffects<Self>> = Driver.system(initialState: initial, reduce: reduce, feedback: inputFeedback, reactFeedback)
+        let initial = StateAndEffects<Self>(state: initialState, effects: [])
+        
+        let stateAndEffects = Driver.system(initialState: initial,
+                                            reduce: reducer,
+                                            feedback: inputFeedback, reactFeedback)
 
         return EventsStatesAndEffects(
-            events: eventsRelay.flatMap({ $0 }).asSignal(onErrorSignalWith: Signal.never()),
+            events: eventsRelay.flatMap { $0 }.asSignal(onErrorSignalWith: Signal.never()),
             states: stateAndEffects.map { $0.state },
             effects: stateAndEffects.map { $0.effects }.asSignal(onErrorSignalWith: Signal.never())
         )
+    }
+
+    private static func requestsFromState(stateAndEffects: StateAndEffects<Self>) -> Set<StateAndEffect<Self>> {
+        let mappedStates = stateAndEffects.effects
+            .map { StateAndEffect<Self>(state: stateAndEffects.state, effect: $0)}
+        return Set(mappedStates)
+    }
+    
+    private static func reducer(state: StateAndEffects<Self>, event: Event) -> StateAndEffects<Self> {
+        let reduced = state.state.reduce(event: event)
+        return StateAndEffects<Self>(state: reduced.state, effects: reduced.effects)
     }
 }
