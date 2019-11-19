@@ -15,8 +15,6 @@ jobs:
         os:
           - macOS-latest
           - macOS-10.14
-          - ubuntu-latest
-          - ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v1
