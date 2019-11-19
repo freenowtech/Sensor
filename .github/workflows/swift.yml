@@ -2,20 +2,21 @@ name: Swift
 
 on:
   push:
-    branches: 
-      - master
+    branches: master
   pull_request:
-    branches: 
-      - master
+    branches: master
 
 jobs:
   build:
 
-    runs-on: 
-      - macOS-latest
-      - macOS-10.14
-      - ubuntu-latest
-      - ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - macOS-latest
+          - macOS-10.14
+          - ubuntu-latest
+          - ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v1
