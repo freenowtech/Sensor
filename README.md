@@ -85,3 +85,14 @@ let package = Package(
 * Carlos Nuñez
 * Ferran Pujol [<img src="Docs/images/SocialIcons/GitHub-Mark-32px.png" width="15" height="15">](https://github.com/ferranpujolcamins) [<img src="Docs/images/SocialIcons/Twitter_Social_Icon_Circle_Color.png" width="15" height="15">](https://twitter.com/ferranpujolca)
 * Adrian Zdanowicz
+
+### Project milestones
+* David Cortés & Stefan Bieschewski: First version of a reactive state management without feedback loop.
+* Stefan Bieschewski: First version of Driver+Reducible using RxFeedback.
+* Mounir Dellagi: First example using Sensor with a login app.
+* Stefan Bieschewski: Added Context and TriggerableEffects as enums to make the reducer testable.
+* Lluís Gómez: Preparing examples with a real app feature.
+* David Cortés: Make SensorTest show a diff for unequal values.
+* Ferran: SensorTest improvements and Sensor unit tests.
+* Ferran Pujol: Add unique ID to effects so they can be triggered more than once.
+* Ferran Pujol: Sensor DSL & Sensor 0.2.0 changes.
