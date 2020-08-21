@@ -87,7 +87,8 @@ let package = Package(
 * Adrian Zdanowicz
 
 
-### Project milestones
+Project milestones:
+
 * David Cortés & Stefan Bieschewski
     * First version of a reactive state management without feedback loop.
 * Stefan Bieschewski
