@@ -29,20 +29,6 @@ internal func eraseType<V>(_ assertion: @escaping Assertion<V>) -> TypeErasedAss
     }
 }
 
-public struct Definition<Value> {
-    let timeline: String
-    let values: [String: Value]
-    let errors: [String: Error]
-    let expectations: Expectations
-
-    public init(timeline: String, values: [String: Value] = [:], errors: [String: Error] = [:], expectations: Expectations = [:]) {
-        self.timeline = timeline
-        self.values = values
-        self.errors = errors
-        self.expectations = expectations
-    }
-}
-
 extension SensorTestCase {
 
     public func assert<V>(preassertion: @escaping PreAssertion<V>, assertion: @escaping Assertion<V>) -> TestMethod {

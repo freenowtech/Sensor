@@ -11,7 +11,9 @@ import RxSwift
 import RxTest
 import SnapshotTesting
 
+@available(iOS 11.0, *)
 class AssertionTests: XCTestCase, SensorTestCase {
+
 
     var scheduler: TestScheduler!
 

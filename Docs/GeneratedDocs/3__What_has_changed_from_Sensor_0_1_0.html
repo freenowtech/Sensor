@@ -1,0 +1,169 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.0/styles/xcode.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.0/highlight.min.js"></script>
+    <script charset="UTF-8"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.0/languages/swift.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+    <div class="main">
+        <div class="sidebar">
+<div class="sidebarElement"><a href="1__Introduction.html" class="link inverted">1. Introduction</a></div>
+<div class="sidebarElement"><a href="2__The_Sensor_DSL.html" class="link inverted">2. The Sensor DSL</a></div>
+<div class="sidebarElement"><a href="3__What_has_changed_from_Sensor_0_1_0.html" class="link inverted">3. What has changed from Sensor 0.1.0</a></div>
+<div class="sidebarElement"><a href="4__Migrating_from_Sensor_0_1_0.html" class="link inverted">4. Migrating from Sensor 0.1.0</a></div>
+</div>
+        <div class="content">
+            <div>
+            <h1 class="headline">3. What has changed from Sensor 0.1.0</h1>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            import Foundation
+            import RxCocoa
+            import SensorV2
+                </pre></code></span>
+                </div>
+            </div>
+            </div>
+            <div>
+            <h2 class="headline">New Sensor DSL</h2>
+            <div class="row">
+                <div class="comments text">
+                    <p>The Sensor DSL allows to express new ways to trigger and cancel effects that were not possible before:</p><ul><li>When you trigger new effects, the ongoing effects are not cancelled.</li><li>You can cancel specific effects by storing an effect handle on the state.</li></ul><p>For more information read <em>The Sensor DSL section</em>.</p>
+                </div>
+            </div>
+            </div>
+            <div>
+            <h2 class="headline">New SensorFeature, Reducer and EffectsImplementation types</h2>
+            <div class="row">
+                <div class="comments text">
+                    <p>We added theses types to help developers remember what they need to implement in order to create a Sensor feature and improve code readability.</p><p>The specific types also open the door to composition of reducers and features in the future, as seen in Pointfree's Composable Architecture and Bow Arch.</p>
+                </div>
+            </div>
+            </div>
+            <div>
+            <h2 class="headline">Context is gone</h2>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>When building the outputs of a Sensor 0.1.0 feature we used to provide a Context object that was then passed to the effects <code class="inlineCode">trigger</code> method.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             MyState.outputStates(initialState: .initialState, inputEvents: input, context: context)
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>We used the context to inject use-cases into the effects <code class="inlineCode">trigger</code> method, so side-effects were isolated from the logic of our feature and we could mock them in unit tests.</p><p>This means that we needed to define the <code class="inlineCode">Context</code> object with all the use-cases we needed,</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             struct Context {
+                 let useCase: () -> Void
+             }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>and then write the effects <code class="inlineCode">trigger</code> method to call those use-cases.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             enum Effect: TriggerableEffect {
+                 case effect
+                 func trigger(context: Context) -> Signal<Event> {
+                     context.useCase()
+                     return .empty()
+                 }
+             }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>But, why don't we merge both things? Why don't we unify the <code class="inlineCode">Context</code> and the <code class="inlineCode">trigger</code> method. This is where Sensor 0.2.0 <code class="inlineCode">EffectsImplementation</code> comes from.</p><p>The <code class="inlineCode">Effects</code> type now does not require a <code class="inlineCode">trigger</code> method, instead, a feature now is required to have an <code class="inlineCode">EffectsImplementation</code>, which is nothing else than a closure. Converting <code class="inlineCode">trigger</code> into an <code class="inlineCode">EffectsImplementation</code> closure allows it to capture the use-cases it needs, thus the <code class="inlineCode">Context</code> object is no longer needed.</p><p>Now it's up the feature to decide how to build an <code class="inlineCode">EffectsImplementation</code>. It can provide a fixed <code class="inlineCode">EffectsImplementation</code> like this one:</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            enum MyEffect {
+                case effect
+            }
+            enum Event {}
+            struct MyFeatureWithFixedEffects {
+                var effectsImplementation: EffectsImplementation<MyEffect, Event> {
+                    EffectsImplementation { effect in
+                        switch effect {
+                        case .effect:
+                            print("Hello")
+                            return .empty()
+                        }
+                    }
+                }
+            }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Or maybe it's up the client code that uses the feature to provide an <code class="inlineCode">EffectsImplementation</code></p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            struct MyFeatureWithInjectedEffects2 {
+                init(_ effectsImplementation: EffectsImplementation<MyEffect, Event>) {
+                    self.effectsImplementation = effectsImplementation
+                }
+                let effectsImplementation: EffectsImplementation<MyEffect, Event>
+            }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Or maybe the feature still requires a Context object to its clients, and internally transforms it into the <code class="inlineCode">EffectsImplementation</code>.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            struct MyFeatureWithInjectedEffects3 {
+                struct Context {
+                    let useCase: () -> Void
+                }
+                init(_ context: Context) {
+                    self.context = context
+                }
+                let context: Context
+                    var effectsImplementation: EffectsImplementation<MyEffect, Event> {
+                    EffectsImplementation { [context] effect in
+                        switch effect {
+                        case .effect:
+                            context.useCase()
+                            return .empty()
+                        }
+                    }
+                }
+            }
+                </pre></code></span>
+                </div>
+            </div>
+            </div>
+            <div>
+            <h2 class="headline">ReducibleState is gone</h2>
+            <div class="row">
+                <div class="comments text">
+                    <p>We used to have <code class="inlineCode">ReducibleState</code>, a simpler version of <code class="inlineCode">ReducibleStateWithEffects</code> that had no support for effects.</p><p>If you wanted to implement a feature where you need no effects,</p><p><code class="inlineCode">ReducibleStateWithEffects</code> was a bit verbose, because you still needed to specify an empty set of effects on the return value of each reducer case. <code class="inlineCode">ReducibleState</code> solved this issue because it hasn't support for effects, so on each reducer case you only needed to return the next state.</p><p>However, with the new Sensor DSL you are no longer required to specify an empty set of effects. When you don't want to trigger any effects, you just omit calls the <code class="inlineCode">trigger</code> method. Thus, <code class="inlineCode">ReducibleState</code> is no longer needed and it was removed.</p><p><code class="inlineCode">ReducibleState</code> is still available as part of Sensor 0.1.0 in the <code class="inlineCode">Sensor</code> framework.</p>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

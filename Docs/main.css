@@ -1,0 +1,239 @@
+.main {
+  display: flex;
+}
+
+.sidebar {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 200px; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: var(--colors-AUTHENTIC_BLUE_900);
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: var(--space-3);
+}
+
+.sidebarElement {
+  margin: 0px var(--space-2) var(--space-2) var(--space-2);
+}
+
+.content {
+  margin-left: 200px;
+  padding: 0px var(--space-2);
+}
+
+.row {  
+  display: flex;
+  border-width: 1px;
+  border-bottom-style: solid;
+  border-color: var(--colors-AUTHENTIC_BLUE_50);
+}
+
+.column {
+  flex: 50%;
+}
+
+.comments {
+  padding-top: var(--space-1);
+  padding-bottom: var(--space-1);
+  padding-left: var(--space-1);
+  padding-right: var(--space-2);
+  max-width: 600px;
+}
+
+code {
+  max-width: 120ch;
+}
+
+.inlineCode {
+  background-color: #EFEFF4;
+}
+
+.sidebarLink {
+  color: white;
+  text-decoration: none;
+}
+
+/*** Wave Component Styles ***/
+
+/* Headline */
+/* TODO: styled-system */
+
+.headline {
+  color: var(--colors-AUTHENTIC_BLUE_900);
+  font-family: var(--fonts-normal);
+  font-weight: var(--fontWeights-bold);
+  margin: 0;
+
+  /* h1 styles */
+  font-size: var(--fontSizes-7);
+  line-height: 3.75rem;
+}
+
+.headline.inverted {
+  color: var(--colors-WHITE);
+}
+
+h2.headline {
+  font-size: var(--fontSizes-5);
+  line-height: 2.5rem;
+}
+
+h3.headline {
+  font-size: var(--fontSizes-4);
+  line-height: 2rem;
+}
+
+h4.headline {
+  font-size: var(--fontSizes-2);
+  line-height: 1.375rem;
+}
+
+h5.headline {
+  font-size: var(--fontSizes-1);
+  line-height: 1.25rem;
+}
+
+h6.headline {
+  font-size: var(--fontSizes-0);
+  line-height: 1.125rem;
+}
+
+/* Text */
+/* TODO: styled-system */
+
+.text {
+  color: var(--colors-AUTHENTIC_BLUE_900);
+  font-size: var(--fontSizes-2);
+  font-family: var(--fonts-normal);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.text.weak, .text.weak.inverted {
+  color: var(--colors-AUTHENTIC_BLUE_550)
+}
+
+.text.inverted {
+  color: var(--colors-WHITE)
+}
+
+/* Link */
+/* TODO: styled-system */
+
+.link {
+  display: inline-block;
+  color: var(--colors-ACTION_BLUE_900);
+  cursor: pointer;
+  line-height: 1.4;
+  font-family: var(--fonts-normal);
+  font-size: var(--fontSizes-2);
+  font-weight: var(--fontWeights-semibold);
+  text-decoration: none;
+}
+
+.link:link, .link:visited {
+  color: var(--colors-ACTION_BLUE_900);
+}
+
+.link:hover, .link:active {
+  color: var(--colors-ACTION_BLUE_1000);
+  text-decoration: underline;
+}
+
+.link.inverted {
+  color: var(--colors-WHITE);
+}
+
+.link.inverted:link, .link.inverted:visited {
+  color: var(--colors-WHITE);
+}
+
+.link:hover, .link:active {
+  color: var(--colors-ACTION_BLUE_350);
+  text-decoration: underline;
+}
+
+/* Theme */
+
+:root {
+  --breakpoints-small: 30rem;
+  --breakpoints-medium: 48rem;
+  --breakpoints-large: 62rem;
+  --breakpoints-xlarge: 75rem;
+
+  --colors-WHITE: #FFFFFF;
+  --colors-AUTHENTIC_BLUE_1100: #000F1F;
+  --colors-AUTHENTIC_BLUE_900: #001E3E;
+  --colors-AUTHENTIC_BLUE_550: #637689;
+  --colors-AUTHENTIC_BLUE_350: #9CA7B4;
+  --colors-AUTHENTIC_BLUE_200: #C6CDD4;
+  --colors-AUTHENTIC_BLUE_50: #F1F2F4;
+  --colors-FREEDOM_RED_1000: #BF0820;
+  --colors-FREEDOM_RED_900: #FF0A2B;
+  --colors-ACTION_BLUE_1000: #0750A4;
+  --colors-ACTION_BLUE_900: #096BDB;
+  --colors-ACTION_BLUE_350: #9FC5F1;
+  --colors-ACTION_BLUE_150: #D6E6F9;
+  --colors-ACTION_BLUE_100: #E4EFFB;
+  --colors-ACTION_BLUE_50: #F1F7FD;
+  --colors-BUMPY_MAGENTA_1000: #BF00B9;
+  --colors-BUMPY_MAGENTA_900: #FF00F7;
+  --colors-BUMPY_MAGENTA_350: #FF9CFC;
+  --colors-BUMPY_MAGENTA_50: #FFF1FF;
+  --colors-POSITIVE_GREEN_1000: #05763B;
+  --colors-POSITIVE_GREEN_900: #069D4F;
+  --colors-POSITIVE_GREEN_350: #9ED9BB;
+  --colors-POSITIVE_GREEN_50: #F1FAF5;
+  --colors-ATTENTION_YELLOW_900: #FFCC00;
+  --colors-ATTENTION_YELLOW_350: #FFEB9C;
+  --colors-ATTENTION_YELLOW_50: #FFFCF1;
+  --colors-NEGATIVE_ORANGE_1000: #BF4704;
+  --colors-NEGATIVE_ORANGE_900: #FF5E05;
+  --colors-NEGATIVE_ORANGE_350: #FFC09E;
+  --colors-NEGATIVE_ORANGE_50: #FFF6F1;
+
+  --fontSizes-0: 0.75rem;
+  --fontSizes-1: 0.875rem;
+  --fontSizes-2: 1rem;
+  --fontSizes-3: 1.25rem;
+  --fontSizes-4: 1.5rem;
+  --fontSizes-5: 2rem;
+  --fontSizes-6: 2.5rem;
+  --fontSizes-7: 3rem;
+
+  --fontWeights-normal: 400;
+  --fontWeights-semibold: 600;
+  --fontWeights-bold: 700;
+
+  --fonts-normal: "Open Sans", sans-serif;
+  --fonts-monospace: Hack, monospace;
+
+  --space-baseScale: 0.5rem;
+  --space-0: 0rem;
+  --space-1: calc(1 * var(--space-baseScale));
+  --space-2: calc(2 * var(--space-baseScale));
+  --space-3: calc(3 * var(--space-baseScale));
+  --space-4: calc(4 * var(--space-baseScale));
+  --space-5: calc(5 * var(--space-baseScale));
+  --space-6: calc(6 * var(--space-baseScale));
+  --space-7: calc(7 * var(--space-baseScale));
+  --space-8: calc(8 * var(--space-baseScale));
+  --space-9: calc(9 * var(--space-baseScale));
+  --space-10: calc(10 * var(--space-baseScale));
+  --space-11: calc(11 * var(--space-baseScale));
+
+  --radii-0: 0rem;
+  --radii-1: 0.125rem;
+  --radii-1: 0.25rem;
+  --radii-1: 0.5rem;
+
+  --iconSizes-small: 12;
+  --iconSizes-medium: 24;
+  --iconSizes-large: 28;
+
+  --shadows-small: 0 0.0625rem 0.25rem 0 rgba(0,0,0,0.1);
+  --shadows-medium: 0 0 1rem 0.1875rem rgba(0,0,0,0.08);
+  --shadows-large: 0 0 0.75rem 0.25rem rgba(0,0,0,0.12);
+}
