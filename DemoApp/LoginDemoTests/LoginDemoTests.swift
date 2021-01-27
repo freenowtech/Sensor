@@ -48,8 +48,8 @@ class LoginDemoTests: XCTestCase, SensorTestCase {
         ]
 
         scheduler = TestScheduler(initialClock: 0, resolution: 1, simulateProcessingDelay: true)
-        let usernameSignal = hotSignal((timeline: "-a", values: ["a": "abcdefgh"]))
-        let passwordSignal = hotSignal((timeline: "-a", values: ["a": ""]))
+        let usernameSignal = hotSignal(Definition(timeline: "-a", values: ["a": "abcdefgh"]))
+        let passwordSignal = hotSignal(Definition(timeline: "-a", values: ["a": ""]))
 
         let output = LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
                                                                       passwordField: passwordSignal,
@@ -59,9 +59,9 @@ class LoginDemoTests: XCTestCase, SensorTestCase {
                                             alertInput: .empty()).viewDriver
 
 
-        let xxx = LoginView.Model(isLoginButtonEnabled: false, isPasswordHidden: false, isSpinning: false, state: .loggedOut)
+        let xxx = LoginView.Model(isLoginButtonEnabled: false, isPasswordHidden: true, isSpinning: false, state: .loggedOut)
 
-        assert(output, isEqualTo: (timeline: "a", values: ["(ab)": xxx], expectations: expectations))
+        assert(output, isEqualTo: Definition(timeline: "a", values: ["a": xxx], expectations: expectations))
             .runTest()
     }
 
