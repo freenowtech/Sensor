@@ -19,7 +19,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/ReactiveX/RxSwift.git", from: "5.0.0"),
+        .package(url: "https://github.com/ReactiveX/RxSwift.git", from: "5.1.1"),
         .package(url: "https://github.com/NoTests/RxFeedback.swift.git", from: "3.0.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.6.0"),
     ],
