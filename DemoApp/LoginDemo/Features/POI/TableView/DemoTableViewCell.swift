@@ -89,7 +89,7 @@ final class DemoTableViewCell: UITableViewCell {
         descriptionTextLabel.text = model.description
         if let imageURL = model.imagePath,
             let url = URL(string: "https://api.got.show" + imageURL) {
-            cellImageView.af_setImage(withURL: url)
+            cellImageView.af.setImage(withURL: url)
         }
         updateConstraints()
     }
