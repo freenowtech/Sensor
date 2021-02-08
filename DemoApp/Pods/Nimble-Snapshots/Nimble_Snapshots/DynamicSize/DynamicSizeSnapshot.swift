@@ -150,6 +150,7 @@ public func haveValidDynamicSizeSnapshot(named name: String? = nil,
                                          sizes: [String: CGSize],
                                          isDeviceAgnostic: Bool = false,
                                          usesDrawRect: Bool = false,
+                                         pixelTolerance: CGFloat? = nil,
                                          tolerance: CGFloat? = nil,
                                          resizeMode: ResizeMode = .frame) -> Predicate<Snapshotable> {
     return Predicate.fromDeprecatedClosure { actualExpression, failureMessage in
@@ -161,6 +162,7 @@ public func haveValidDynamicSizeSnapshot(named name: String? = nil,
                                               actualExpression: actualExpression,
                                               failureMessage: failureMessage,
                                               tolerance: tolerance,
+                                              pixelTolerance: pixelTolerance,
                                               isRecord: false,
                                               resizeMode: resizeMode)
     }
@@ -175,6 +177,7 @@ func performDynamicSizeSnapshotTest(_ name: String?,
                                     actualExpression: Expression<Snapshotable>,
                                     failureMessage: FailureMessage,
                                     tolerance: CGFloat? = nil,
+                                    pixelTolerance: CGFloat? = nil,
                                     isRecord: Bool,
                                     resizeMode: ResizeMode) -> Bool {
     // swiftlint:disable:next force_try force_unwrapping
@@ -183,6 +186,7 @@ func performDynamicSizeSnapshotTest(_ name: String?,
     let referenceImageDirectory = getDefaultReferenceDirectory(testFileLocation)
     let snapshotName = sanitizedTestName(name)
     let tolerance = tolerance ?? getTolerance()
+    let pixelTolerance = pixelTolerance ?? getPixelTolerance()
 
     let resizer = resizeMode.viewResizer()
 
@@ -202,6 +206,7 @@ func performDynamicSizeSnapshotTest(_ name: String?,
         return FBSnapshotTest.compareSnapshot(instance, isDeviceAgnostic: isDeviceAgnostic, usesDrawRect: usesDrawRect,
                                               snapshot: finalSnapshotName, record: isRecord,
                                               referenceDirectory: referenceImageDirectory, tolerance: tolerance,
+                                              perPixelTolerance: pixelTolerance,
                                               filename: actualExpression.location.file, identifier: nil)
     }
 

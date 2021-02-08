@@ -15,23 +15,24 @@ protocol POIServiceProtocol {
 }
 
 final class POIService: POIServiceProtocol {
-    
+
     private let url = "https://poi-api.mytaxi.com/PoiService/poi/v1"
     func getAllPois(completion: @escaping (APIResult<[POI]>) -> Void) {
-        Alamofire.request(url, method: .get, parameters: ["p1Lat":53.694865, "p1Lon":9.757589, "p2Lat":53.394655, "p2Lon":10.099891]).responseData { (response) in
-            if let data = response.result.value {
-                do {
-                    let decoder = JSONDecoder()
-                    let pois = try decoder.decode([String: [POI]].self, from: data)
-                    completion(APIResult.success(POIService.randomArray(from: pois.values.joined())))
-                } catch {
-                    let result: APIResult<[POI]> = .error(.serverError)
-                    completion(result)
+        AF.request(url, parameters: ["p1Lat":53.694865, "p1Lon":9.757589, "p2Lat":53.394655, "p2Lon":10.099891])
+            .responseData { (response) in
+                if let data = response.data {
+                    do {
+                        let decoder = JSONDecoder()
+                        let pois = try decoder.decode([String: [POI]].self, from: data)
+                        completion(APIResult.success(POIService.randomArray(from: pois.values.joined())))
+                    } catch {
+                        let result: APIResult<[POI]> = .error(.serverError)
+                        completion(result)
+                    }
                 }
             }
-        }
     }
-    
+
     func getAllPois() -> Single<[POI]> {
         return Single
             .create { [weak self] observer in
@@ -52,5 +53,5 @@ final class POIService: POIServiceProtocol {
         let n = Int.random(in: 1...50)
         return Array(shuffled[..<n])
     }
-    
+
 }
