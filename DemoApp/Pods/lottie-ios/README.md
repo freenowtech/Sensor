@@ -69,7 +69,7 @@ let package = Package(
        .iOS(.v12),
   ],
   dependencies: [
-    .package(url: "https://github.com/airbnb/lottie-ios.git", from: "3.1.2")
+    .package(name: "Lottie", url: "https://github.com/airbnb/lottie-ios.git", from: "3.2.1")
   ],
   targets: [
     .target(name: "YourTestProject", dependencies: ["Lottie"])
@@ -84,8 +84,6 @@ And then import wherever needed: ```import Lottie```
 2. Paste the project URL: https://github.com/airbnb/lottie-ios
 3. Click on next and select the project target
 4. Don't forget to set `DEAD_CODE_STRIPPING = NO` in your `Build Settings` (https://bugs.swift.org/plugins/servlet/mobile#issue/SR-11564)
-  **NOTE: For MacOS you must set the `Branch` field to `lottie/macos-spm`
-  ![Example](_Gifs/spm-branch.png)
 
 If you have doubts, please, check the following links:
 
@@ -94,6 +92,8 @@ If you have doubts, please, check the following links:
 [Creating Swift Packages](https://developer.apple.com/videos/play/wwdc2019/410/)
 
 After successfully retrieved the package and added it to your project, just import `Lottie` and you can get the full benefits of it.
+
+-----
 
 ### Objective-C Support
 
@@ -108,3 +108,7 @@ The official objective c branch can be found here:
 Also check out the documentation regarding it here: 
 
 [iOS Migration](http://airbnb.io/lottie/#/ios-migration)
+
+### Data collection
+
+The Lottie SDK does not collect any data. We provide this notice to help you fill out [App Privacy Details](https://developer.apple.com/app-store/app-privacy-details/).

@@ -360,7 +360,7 @@ extension AlamofireExtension where ExtendedType: UIImageView {
                                                           strongSelf.activeRequestReceipt = nil
 
                                                           completion?(response)
-            })
+                                                      })
 
         activeRequestReceipt = requestReceipt
     }
@@ -398,7 +398,7 @@ extension AlamofireExtension where ExtendedType: UIImageView {
     private func urlRequest(with url: URL) -> URLRequest {
         var urlRequest = URLRequest(url: url)
 
-        for mimeType in ImageResponseSerializer.acceptableImageContentTypes {
+        for mimeType in ImageResponseSerializer.acceptableImageContentTypes.sorted() {
             urlRequest.addValue(mimeType, forHTTPHeaderField: "Accept")
         }
 
@@ -491,7 +491,7 @@ extension UIImageView {
 
 // MARK: -
 
-private struct AssociatedKeys {
+private enum AssociatedKeys {
     static var imageDownloader = "UIImageView.af.imageDownloader"
     static var sharedImageDownloader = "UIImageView.af.sharedImageDownloader"
     static var activeRequestReceipt = "UIImageView.af.activeRequestReceipt"

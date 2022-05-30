@@ -79,7 +79,7 @@ open class ImageDownloader {
         case fifo, lifo
     }
 
-    class ResponseHandler {
+    final class ResponseHandler {
         let urlID: String
         let handlerID: String
         let request: DataRequest
@@ -169,7 +169,7 @@ open class ImageDownloader {
         #if os(macOS)
         return URLCache(memoryCapacity: memoryCapacity,
                         diskCapacity: diskCapacity,
-                        diskPath: cacheDirectory?.appendingPathComponent(imageDownloaderPath).absoluteString)
+                        diskPath: cacheDirectory?.appendingPathComponent(imageDownloaderPath).path)
         #else
         return URLCache(memoryCapacity: memoryCapacity,
                         diskCapacity: diskCapacity,
@@ -399,7 +399,7 @@ open class ImageDownloader {
                                          DispatchQueue.main.async { completion?(response.mapError { AFIError.alamofireError($0) }) }
                                      }
                                  }
-                })
+                             })
 
             // 4) Store the response handler for use when the request completes
             let responseHandler = ResponseHandler(request: request,
