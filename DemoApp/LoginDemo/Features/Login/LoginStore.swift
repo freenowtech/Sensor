@@ -12,13 +12,19 @@ import RxFeedback
 import RxSwift
 import RxCocoa
 
-enum LoginStore {
+struct LoginStore: SensorFeature {
     struct Outputs<ViewModel, Navigation> {
         let viewDriver: Driver<ViewModel>
         let navigationDriver: Signal<Navigation>
     }
-    
-    static func makeOutputs(inputs: LoginView.Outputs, alertInput: Signal<RxAlertResult>) -> Outputs<LoginView.Model, Navigation> {
+
+    public let effectsImplementation: EffectsImplementation<Effect, Event>
+
+    init(context: Context) {
+        self.effectsImplementation = Self.effectsImplementation(context: context)
+    }
+
+    func makeOutputs(inputs: LoginView.Outputs, alertInput: Signal<RxAlertResult>) -> Outputs<LoginView.Model, Navigation> {
         let inputEvents: Signal<Event> = Signal.merge(
             inputs.usernameField.map { .usernameChanged($0) },
             inputs.passwordField.map { .passwordChanged($0) },
@@ -26,16 +32,14 @@ enum LoginStore {
             inputs.showPasswordButton.map { .passwordToggled },
             alertInput.map { _ in .errorMessageDismissed }
         )
-        
-        let initalStateModel = StateModel(credentials: Credentials(username: "", password: ""), isPasswordHidden: true, state: .loggedOut)
-        let context = Context(login: UseCase.defaultLogin)
-        
-        let viewOutput = StateModel.outputStates(initialState: initalStateModel,
-                                       inputEvents: inputEvents,
-                                       context: context)
+
+        let initalStateModel = State(credentials: Credentials(username: "", password: ""), isPasswordHidden: true, state: .loggedOut)
+
+        let viewOutput = outputStates(initialState: initalStateModel,
+                                 inputEvents: inputEvents)
             .map { stateModel in LoginView.Model(stateModel: stateModel) }
             .distinctUntilChanged()
-        
+
         let navigationOutput = viewOutput.flatMap { model -> Signal<Navigation> in
             switch model.state {
             case .loggedIn:
@@ -49,12 +53,12 @@ enum LoginStore {
         return Outputs(viewDriver: viewOutput, navigationDriver: navigationOutput)
     }
 
-    fileprivate struct Context { // Will be done by David or/and Stefan in Interactor/Use Case Refactor
+    struct Context { // Will be done by David or/and Stefan in Interactor/Use Case Refactor
         let login: UseCase.Login
     }
 
     /// The actions that can be performed on the view model
-    fileprivate enum Event: Equatable {
+    enum Event: Equatable {
         case usernameChanged(String)
         case passwordChanged(String)
         case loginButtonTapped
@@ -65,11 +69,9 @@ enum LoginStore {
         case loginRequestFailed(APIError) // Asynchronous Feedback Event
     }
 
-    fileprivate enum Effect: TriggerableEffect {
-        case loginRequest(username: String, password: String)
-
-        fileprivate func trigger(context: Context) -> Signal<Event> {
-            switch self {
+    static private func effectsImplementation(context: Context) -> EffectsImplementation<Effect, Event> {
+        EffectsImplementation { effect in
+            switch effect {
             case .loginRequest(let username, let password):
                 return context
                     .login(username, password)
@@ -77,55 +79,30 @@ enum LoginStore {
                     .asSignal { error in
                         return Signal.just(Event.loginRequestFailed((error as? APIError)!))
                     }
+                // TODO: MR: Fix this.
                     .delay(1)
+            return .empty()
             }
         }
     }
 
-    fileprivate struct Credentials: Hashable {
+    enum Effect: Hashable {
+        case loginRequest(username: String, password: String)
+    }
+
+    struct Credentials: Hashable {
         let username: String
         let password: String
     }
 
-    enum State: Hashable {
+    enum StateInternal: Hashable {
         case loggedOut, loggedIn(User), loginFailed(APIError), performingLogin
     }
 
-    fileprivate struct StateModel: ReducibleStateWithEffects {
+    struct State {
         let credentials: Credentials
         let isPasswordHidden: Bool
-        let state: State
-
-        fileprivate func reduce(event: Event) -> (state: StateModel, effects: Set<Effect>) {
-            switch (state, event) {
-            case (.loggedOut, .passwordToggled):
-                return (StateModel(credentials: credentials, isPasswordHidden: !isPasswordHidden, state: .loggedOut), [])
-
-            case (.loggedOut, .usernameChanged(let username)):
-                let newCredentials = Credentials(username: username, password: credentials.password)
-                return (StateModel(credentials: newCredentials, isPasswordHidden: isPasswordHidden, state: .loggedOut), [])
-
-            case (.loggedOut, .passwordChanged(let password)):
-                let newCredentials = Credentials(username: credentials.username, password: password)
-                return (StateModel(credentials: newCredentials, isPasswordHidden: isPasswordHidden, state: .loggedOut), [])
-
-            case (.loggedOut, .loginButtonTapped):
-                return (StateModel(credentials: credentials, isPasswordHidden: isPasswordHidden, state: .performingLogin),
-                        [.loginRequest(username: credentials.username, password: credentials.password)])
-
-            case (.performingLogin, .loginRequestSucceeded(let user)):
-                return (StateModel(credentials: credentials, isPasswordHidden: isPasswordHidden, state: .loggedIn(user)), [])
-
-            case (.performingLogin, .loginRequestFailed(let error)):
-                return (StateModel(credentials: credentials, isPasswordHidden: isPasswordHidden, state: .loginFailed(error)), [])
-
-            case (.loginFailed, .errorMessageDismissed):
-                return (StateModel(credentials: credentials, isPasswordHidden: isPasswordHidden, state: .loggedOut), [])
-            default:
-                return (self, [])
-
-            }
-        }
+        let state: StateInternal
     }
 }
 
@@ -140,7 +117,7 @@ private extension LoginStore.Credentials {
 }
 
 private extension LoginView.Model {
-    init(stateModel: LoginStore.StateModel) {
+    init(stateModel: LoginStore.State) {
         self.isSpinning = stateModel.state == .performingLogin
         self.isLoginButtonEnabled = stateModel.credentials.valid && stateModel.state != .performingLogin
         self.isPasswordHidden = stateModel.isPasswordHidden

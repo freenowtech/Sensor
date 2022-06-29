@@ -57,6 +57,9 @@
 		B5D3BEC4217F17C9003B6903 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B006CC3620DD055700492055 /* RxCocoa.framework */; };
 		D78907782236BB370094671A /* UseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78907772236BB370094671A /* UseCase.swift */; };
 		D789077A2236BB600094671A /* LoginUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78907792236BB600094671A /* LoginUseCase.swift */; };
+		DA943F0A286C98BC009AF4B3 /* LoginStore+reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA943F09286C98BC009AF4B3 /* LoginStore+reducer.swift */; };
+		DA943F0C286C9914009AF4B3 /* DetailStore+reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA943F0B286C9914009AF4B3 /* DetailStore+reducer.swift */; };
+		DA943F0E286C9983009AF4B3 /* DemoTableStore+reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA943F0D286C9983009AF4B3 /* DemoTableStore+reducer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,6 +132,9 @@
 		CE8AE6FE9FF6DED529FEFE92 /* Pods_LoginDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LoginDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D78907772236BB370094671A /* UseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UseCase.swift; sourceTree = "<group>"; };
 		D78907792236BB600094671A /* LoginUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginUseCase.swift; sourceTree = "<group>"; };
+		DA943F09286C98BC009AF4B3 /* LoginStore+reducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginStore+reducer.swift"; sourceTree = "<group>"; };
+		DA943F0B286C9914009AF4B3 /* DetailStore+reducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DetailStore+reducer.swift"; sourceTree = "<group>"; };
+		DA943F0D286C9983009AF4B3 /* DemoTableStore+reducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DemoTableStore+reducer.swift"; sourceTree = "<group>"; };
 		FCF159F1481C165D208D6DEB /* Pods-LoginDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LoginDemo.debug.xcconfig"; path = "Target Support Files/Pods-LoginDemo/Pods-LoginDemo.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -274,6 +280,7 @@
 				B07785132033045700976A2F /* LoginViewController.swift */,
 				B09FA2CA20E289FB002BF342 /* LoginStore.swift */,
 				34A19BAD224A3A73009594F3 /* LoginCoordinator.swift */,
+				DA943F09286C98BC009AF4B3 /* LoginStore+reducer.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -311,6 +318,7 @@
 				B521A0AA2191C2C000BF1C6E /* DemoTableStore.swift */,
 				59B50F482199C7E0001286B1 /* DemoTableViewCell.swift */,
 				59B50F5A219B31D6001286B1 /* DemoTableView.swift */,
+				DA943F0D286C9983009AF4B3 /* DemoTableStore+reducer.swift */,
 			);
 			path = TableView;
 			sourceTree = "<group>";
@@ -322,6 +330,7 @@
 				B53ABFDF226F262F00445ECE /* DetailView.swift */,
 				34887934228189270030E3AB /* DetailStore.swift */,
 				348879382281899A0030E3AB /* DetailCoordinator.swift */,
+				DA943F0B286C9914009AF4B3 /* DetailStore+reducer.swift */,
 			);
 			path = DetailView;
 			sourceTree = "<group>";
@@ -615,14 +624,17 @@
 				59B50F4D2199D38E001286B1 /* DemoCellModel.swift in Sources */,
 				34887935228189270030E3AB /* DetailStore.swift in Sources */,
 				34A19BAE224A3A73009594F3 /* LoginCoordinator.swift in Sources */,
+				DA943F0A286C98BC009AF4B3 /* LoginStore+reducer.swift in Sources */,
 				348879392281899A0030E3AB /* DetailCoordinator.swift in Sources */,
 				34FCDA372282DEA90082EE98 /* AuthenticationService.swift in Sources */,
 				59B50F55219AC1D6001286B1 /* POIService.swift in Sources */,
 				B0B0A12821809974005F1441 /* DependencyRetriever.swift in Sources */,
 				B521A0A72191C26100BF1C6E /* DemoTableViewController.swift in Sources */,
+				DA943F0E286C9983009AF4B3 /* DemoTableStore+reducer.swift in Sources */,
 				342633ED2268BABD00504FBD /* LoginFactoryUseCase.swift in Sources */,
 				34FCDA352282DCC60082EE98 /* AppCoordinatorFactory.swift in Sources */,
 				34A19BAC224A39CA009594F3 /* AppCoordinator.swift in Sources */,
+				DA943F0C286C9914009AF4B3 /* DetailStore+reducer.swift in Sources */,
 				34F149592296CB1800BC8ACB /* AppDelegate.swift in Sources */,
 				B085630E2042DB5A00F9C606 /* LoginAPI.swift in Sources */,
 				34A19BB2224A3C35009594F3 /* BaseCoordinator.swift in Sources */,
