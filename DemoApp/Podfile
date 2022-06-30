@@ -9,8 +9,6 @@ target 'LoginDemo' do
 
   # Pods for LoginDemo
   pod 'Sensor', :path => '..'
-  pod "Alamofire"
-  pod "AlamofireImage"
   pod "lottie-ios"
   pod "RxSwift"
   pod "RxCocoa"

@@ -1,7 +1,4 @@
 PODS:
-  - Alamofire (5.6.1)
-  - AlamofireImage (4.2.0):
-    - Alamofire (~> 5.4)
   - iOSSnapshotTestCase (8.0.0):
     - iOSSnapshotTestCase/SwiftSupport (= 8.0.0)
   - iOSSnapshotTestCase/Core (8.0.0)
@@ -40,8 +37,6 @@ PODS:
   - Swinject (2.8.1)
 
 DEPENDENCIES:
-  - Alamofire
-  - AlamofireImage
   - iOSSnapshotTestCase
   - lottie-ios
   - Nimble
@@ -56,8 +51,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Alamofire
-    - AlamofireImage
     - iOSSnapshotTestCase
     - lottie-ios
     - Nimble
@@ -78,8 +71,6 @@ EXTERNAL SOURCES:
     :path: ".."
 
 SPEC CHECKSUMS:
-  Alamofire: 87bd8c952f9a4454320fce00d9cc3de57bcadaf5
-  AlamofireImage: 34a2d90b0e5fe6a5605f85ae4b7b01e784c60192
   iOSSnapshotTestCase: a670511f9ee3829c2b9c23e6e68f315fd7b6790f
   lottie-ios: 6ac74dcc09904798f59b18cb3075c089d76be9ae
   Nimble: 5316ef81a170ce87baf72dd961f22f89a602ff84
@@ -95,6 +86,6 @@ SPEC CHECKSUMS:
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
   Swinject: 97112918bd7e0785dc2df7036213f3c8cbba6586
 
-PODFILE CHECKSUM: 496f60915ce29447a9ff5b958a34fe6adb90d6a3
+PODFILE CHECKSUM: c512868acb8311eb3a7fdbcf068383ba5dc874a6
 
 COCOAPODS: 1.11.3

@@ -25,8 +25,6 @@
 		59B50F4D2199D38E001286B1 /* DemoCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B50F4C2199D38E001286B1 /* DemoCellModel.swift */; };
 		59B50F51219ABD19001286B1 /* RandomColorHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B50F50219ABD19001286B1 /* RandomColorHelper.swift */; };
 		59B50F55219AC1D6001286B1 /* POIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B50F54219AC1D6001286B1 /* POIService.swift */; };
-		59B50F57219AD2E8001286B1 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59B50F56219AD2E8001286B1 /* Alamofire.framework */; };
-		59B50F59219AF014001286B1 /* AlamofireImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59B50F58219AF014001286B1 /* AlamofireImage.framework */; };
 		59B50F5B219B31D6001286B1 /* DemoTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B50F5A219B31D6001286B1 /* DemoTableView.swift */; };
 		82EB1EEFD3E8598A7A8B76DC /* Pods_LoginDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07609A5392EA8BE7D35302E7 /* Pods_LoginDemo.framework */; };
 		8D64F6090C01EAA3FDF7870D /* Pods_LoginDemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8AE6FE9FF6DED529FEFE92 /* Pods_LoginDemoTests.framework */; };
@@ -57,6 +55,7 @@
 		B5D3BEC4217F17C9003B6903 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B006CC3620DD055700492055 /* RxCocoa.framework */; };
 		D78907782236BB370094671A /* UseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78907772236BB370094671A /* UseCase.swift */; };
 		D789077A2236BB600094671A /* LoginUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78907792236BB600094671A /* LoginUseCase.swift */; };
+		DA01B86E286DA0CD00D173E0 /* UIImageView+imageFromServerURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA01B86D286DA0CD00D173E0 /* UIImageView+imageFromServerURL.swift */; };
 		DA943F0A286C98BC009AF4B3 /* LoginStore+reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA943F09286C98BC009AF4B3 /* LoginStore+reducer.swift */; };
 		DA943F0C286C9914009AF4B3 /* DetailStore+reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA943F0B286C9914009AF4B3 /* DetailStore+reducer.swift */; };
 		DA943F0E286C9983009AF4B3 /* DemoTableStore+reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA943F0D286C9983009AF4B3 /* DemoTableStore+reducer.swift */; };
@@ -95,8 +94,6 @@
 		59B50F4C2199D38E001286B1 /* DemoCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCellModel.swift; sourceTree = "<group>"; };
 		59B50F50219ABD19001286B1 /* RandomColorHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomColorHelper.swift; sourceTree = "<group>"; };
 		59B50F54219AC1D6001286B1 /* POIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POIService.swift; sourceTree = "<group>"; };
-		59B50F56219AD2E8001286B1 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
-		59B50F58219AF014001286B1 /* AlamofireImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlamofireImage.framework; path = Carthage/Build/iOS/AlamofireImage.framework; sourceTree = "<group>"; };
 		59B50F5A219B31D6001286B1 /* DemoTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoTableView.swift; sourceTree = "<group>"; };
 		A373092D3359393381EF27F5 /* Pods-LoginDemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LoginDemoTests.debug.xcconfig"; path = "Target Support Files/Pods-LoginDemoTests/Pods-LoginDemoTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B006CC3520DD055700492055 /* RxAutomaton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxAutomaton.framework; path = Carthage/Build/iOS/RxAutomaton.framework; sourceTree = "<group>"; };
@@ -132,6 +129,7 @@
 		CE8AE6FE9FF6DED529FEFE92 /* Pods_LoginDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LoginDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D78907772236BB370094671A /* UseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UseCase.swift; sourceTree = "<group>"; };
 		D78907792236BB600094671A /* LoginUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginUseCase.swift; sourceTree = "<group>"; };
+		DA01B86D286DA0CD00D173E0 /* UIImageView+imageFromServerURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+imageFromServerURL.swift"; sourceTree = "<group>"; };
 		DA943F09286C98BC009AF4B3 /* LoginStore+reducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginStore+reducer.swift"; sourceTree = "<group>"; };
 		DA943F0B286C9914009AF4B3 /* DetailStore+reducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DetailStore+reducer.swift"; sourceTree = "<group>"; };
 		DA943F0D286C9983009AF4B3 /* DemoTableStore+reducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DemoTableStore+reducer.swift"; sourceTree = "<group>"; };
@@ -143,7 +141,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59B50F57219AD2E8001286B1 /* Alamofire.framework in Frameworks */,
 				B0149AF72180A28D0049B4CA /* SnapKit.framework in Frameworks */,
 				B0149AF52180A2880049B4CA /* Swinject.framework in Frameworks */,
 				B0149AF32180A2840049B4CA /* Lottie.framework in Frameworks */,
@@ -151,7 +148,6 @@
 				B006CC3A20DD055700492055 /* RxCocoa.framework in Frameworks */,
 				B006CC3B20DD055700492055 /* RxGesture.framework in Frameworks */,
 				B006CC3C20DD055700492055 /* RxSwift.framework in Frameworks */,
-				59B50F59219AF014001286B1 /* AlamofireImage.framework in Frameworks */,
 				82EB1EEFD3E8598A7A8B76DC /* Pods_LoginDemo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -215,6 +211,7 @@
 				59B50F50219ABD19001286B1 /* RandomColorHelper.swift */,
 				34A19BB1224A3C35009594F3 /* BaseCoordinator.swift */,
 				34651862226912590029CAAD /* Navigation.swift */,
+				DA01B86D286DA0CD00D173E0 /* UIImageView+imageFromServerURL.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -288,8 +285,6 @@
 		B3AC00998A9BB04A6A48DAFF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				59B50F58219AF014001286B1 /* AlamofireImage.framework */,
-				59B50F56219AD2E8001286B1 /* Alamofire.framework */,
 				59B50F4A2199D1DA001286B1 /* RxDataSources.framework */,
 				B0149AF62180A28D0049B4CA /* SnapKit.framework */,
 				B0149AF42180A2880049B4CA /* Swinject.framework */,
@@ -572,8 +567,6 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-LoginDemo/Pods-LoginDemo-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxFeedback/RxFeedback.framework",
 				"${BUILT_PRODUCTS_DIR}/RxGesture/RxGesture.framework",
@@ -586,8 +579,6 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxFeedback.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxGesture.framework",
@@ -639,6 +630,7 @@
 				B085630E2042DB5A00F9C606 /* LoginAPI.swift in Sources */,
 				34A19BB2224A3C35009594F3 /* BaseCoordinator.swift in Sources */,
 				B07785142033045700976A2F /* LoginViewController.swift in Sources */,
+				DA01B86E286DA0CD00D173E0 /* UIImageView+imageFromServerURL.swift in Sources */,
 				597E2FC921A323130011D2B9 /* UIAlertController+Rx.swift in Sources */,
 				34F1495B2296CB4100BC8ACB /* PoisUseCase.swift in Sources */,
 				34A1ADF72281B3F40010E14B /* DetailFactoryUseCase.swift in Sources */,
