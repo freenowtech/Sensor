@@ -43,26 +43,41 @@ class LoginDemoTests: XCTestCase, SensorTestCase {
     func testEmptyPassword() {
         typealias RecEvent = Event<LoginView.Model>
 
-        let expectations = [
-            "The initial model is right" : [1]
-        ]
-
         scheduler = TestScheduler(initialClock: 0, resolution: 1, simulateProcessingDelay: true)
-        let usernameSignal = hotSignal((timeline: "-a", values: ["a": "abcdefgh"]))
-        let passwordSignal = hotSignal((timeline: "-a", values: ["a": ""]))
 
-        let output = LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
-                                                                      passwordField: passwordSignal,
-                                                                      loginButton: .empty(),
-                                                                      registerButton: .empty(),
-                                                                      showPasswordButton: .empty()),
-                                            alertInput: .empty()).viewDriver
+        let usernameEvent = scheduler.parseEventsAndTimes(timeline: "-a", values: [ /* Input Events */
+            "a": "abcdefgh"
+                                                                                  ])
 
+        let passwordEvents = scheduler.parseEventsAndTimes(timeline: "--a", values: [ /* Input Events */
+            "a": ""
+                                                                                    ])
+        let usernameSignal: Signal<String> = scheduler.createHotObservable(usernameEvent).asSignal(onErrorJustReturn: "")
+        let passwordSignal: Signal<String> = scheduler.createHotObservable(passwordEvents).asSignal(onErrorJustReturn: "")
+        
+        let recorded = scheduler.record(
+            source: LoginStore(
+                context: LoginStore.Context(login: UseCase.defaultLogin
+                                           )
+            ).makeOutputs(
+                inputs: LoginView.Outputs(
+                    usernameField: usernameSignal,
+                    passwordField: passwordSignal,
+                    loginButton: .empty(),
+                    registerButton: .empty(),
+                    showPasswordButton: .empty()
+                ),
+                alertInput: .empty()).viewDriver
+        )
 
         let xxx = LoginView.Model(isLoginButtonEnabled: false, isPasswordHidden: false, isSpinning: false, state: .loggedOut)
 
-        assert(output, isEqualTo: (timeline: "a", values: ["(ab)": xxx], expectations: expectations))
-            .runTest()
+        let expectedEventModels = ["a": initialModel, "b": xxx]
+        let expectedEvents = scheduler.parseEventsAndTimes(timeline: "a", values: expectedEventModels)
+
+        scheduler.start()
+
+        XCTAssertEqual(recorded.events, expectedEvents)
     }
 
     func testCorrectPassword() {
@@ -72,21 +87,29 @@ class LoginDemoTests: XCTestCase, SensorTestCase {
 
         let usernameEvent = scheduler.parseEventsAndTimes(timeline: "-a", values: [ /* Input Events */
             "a": "abcdefgh"
-            ])
+                                                                                  ])
 
         let passwordEvents = scheduler.parseEventsAndTimes(timeline: "--a", values: [ /* Input Events */
             "a": "12345678"
-            ])
+                                                                                    ])
 
         let usernameSignal: Signal<String> = scheduler.createHotObservable(usernameEvent).asSignal(onErrorJustReturn: "")
         let passwordSignal: Signal<String> = scheduler.createHotObservable(passwordEvents).asSignal(onErrorJustReturn: "")
 
-        let recorded = scheduler.record(source: LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
-                                                                                                           passwordField: passwordSignal,
-                                                                                                           loginButton: .empty(),
-                                                                                                           registerButton: .empty(),
-                                                                                                           showPasswordButton: .empty()),
-                                                                  alertInput: .empty()).viewDriver)
+        let recorded = scheduler.record(
+            source: LoginStore(
+                context: LoginStore.Context(login: UseCase.defaultLogin
+                                           )
+            ).makeOutputs(
+                inputs: LoginView.Outputs(
+                    usernameField: usernameSignal,
+                    passwordField: passwordSignal,
+                    loginButton: .empty(),
+                    registerButton: .empty(),
+                    showPasswordButton: .empty()
+                ),
+                alertInput: .empty()).viewDriver
+        )
 
         let correctUsernameAndPWModel = LoginView.Model(isLoginButtonEnabled: true, isPasswordHidden: true, isSpinning: false, state: .loggedOut)
 
@@ -114,12 +137,20 @@ class LoginDemoTests: XCTestCase, SensorTestCase {
         let usernameSignal: Signal<String> = scheduler.createHotObservable(usernameEvent).asSignal(onErrorJustReturn: "")
         let passwordSignal: Signal<String> = scheduler.createHotObservable(passwordEvents).asSignal(onErrorJustReturn: "")
 
-        let recorded = scheduler.record(source: LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
-                                                                                            passwordField: passwordSignal,
-                                                                                            loginButton: .empty(),
-                                                                                            registerButton: .empty(),
-                                                                                            showPasswordButton: .empty()),
-                                                                  alertInput: .empty()).viewDriver)
+        let recorded = scheduler.record(
+            source: LoginStore(
+                context: LoginStore.Context(login: UseCase.defaultLogin
+                                           )
+            ).makeOutputs(
+                inputs: LoginView.Outputs(
+                    usernameField: usernameSignal,
+                    passwordField: passwordSignal,
+                    loginButton: .empty(),
+                    registerButton: .empty(),
+                    showPasswordButton: .empty()
+                ),
+                alertInput: .empty()).viewDriver
+        )
 
         let expectedEventModels = ["a": initialModel]
         let expectedEvents = scheduler.parseEventsAndTimes(timeline: "a", values: expectedEventModels)
@@ -166,7 +197,7 @@ class LoginDemoTests: XCTestCase, SensorTestCase {
 
             let loggedInModel = LoginView.Model(isLoginButtonEnabled: true, isPasswordHidden: true, isSpinning: false, state: .loggedIn(User(username: "Hans", age: 1)))
 
-            let recorded = scheduler.record(source: LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
+            let recorded = scheduler.record(source: LoginStore(context: LoginStore.Context(login: UseCase.defaultLogin)).makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
                                                                                          passwordField: passwordSignal,
                                                                                          loginButton: buttonClickSignal,
                                                                                          registerButton: .empty(),
@@ -215,7 +246,7 @@ class LoginDemoTests: XCTestCase, SensorTestCase {
             let usernameSignal: Signal<String> = scheduler.createHotObservable(usernameEvent).asSignal(onErrorJustReturn: "")
             let passwordSignal: Signal<String> = scheduler.createHotObservable(passwordEvents).asSignal(onErrorJustReturn: "")
 
-            let recorded = scheduler.record(source: LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
+            let recorded = scheduler.record(source: LoginStore(context: LoginStore.Context(login: UseCase.defaultLogin)).makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
                                                                                          passwordField: passwordSignal,
                                                                                          loginButton: .empty(),
                                                                                          registerButton: .empty(),
@@ -257,21 +288,28 @@ class LoginDemoTests: XCTestCase, SensorTestCase {
 
             let passwordEvents = scheduler.parseEventsAndTimes(timeline: "--a", values: [ /* Input Events */
                 "a": "12345678"
-                ])
+                                                                                        ])
 
             let buttonEvent = scheduler.parseEventsAndTimes(timeline: "---a", values: [ /* Input Events */
                 "a": ()
-                ])
+                                                                                      ])
 
             let buttonClickSignal: Signal<Void> = scheduler.createHotObservable(buttonEvent).asSignal(onErrorJustReturn: ())
             let usernameSignal: Signal<String> = scheduler.createHotObservable(usernameEvent).asSignal(onErrorJustReturn: "")
             let passwordSignal: Signal<String> = scheduler.createHotObservable(passwordEvents).asSignal(onErrorJustReturn: "")
 
-            let recorded = scheduler.record(source: LoginStore.makeOutputs(inputs: LoginView.Outputs(usernameField: usernameSignal,
-                                                                                         passwordField: passwordSignal,
-                                                                                         loginButton: buttonClickSignal,
-                                                                                         registerButton: .empty(),
-                                                                                         showPasswordButton: .empty()), alertInput:.empty()).viewDriver)
+            let recorded = scheduler.record(
+                source: LoginStore(context: LoginStore.Context(
+                    login: UseCase.defaultLogin
+                )).makeOutputs(
+                    inputs: LoginView.Outputs(
+                        usernameField: usernameSignal,
+                        passwordField: passwordSignal,
+                        loginButton: buttonClickSignal,
+                        registerButton: .empty(),
+                        showPasswordButton: .empty()), alertInput:.empty()
+                ).viewDriver
+            )
 
             let correctUsernameAndPWModel = LoginView.Model(isLoginButtonEnabled: true, isPasswordHidden: true, isSpinning: false, state: .loggedOut)
 
