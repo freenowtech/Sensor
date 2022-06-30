@@ -1,9 +1,5 @@
 //
-//  ServiceEntry.swift
-//  Swinject
-//
-//  Created by Yoichi Tagaya on 7/24/15.
-//  Copyright © 2015 Swinject Contributors. All rights reserved.
+//  Copyright © 2019 Swinject Contributors. All rights reserved.
 //
 
 import Foundation
@@ -18,8 +14,8 @@ internal protocol ServiceEntryProtocol: AnyObject {
     var serviceType: Any.Type { get }
 }
 
-/// The `ServiceEntry<Service>` class represents an entry of a registered service type.
-/// As a returned instance from a `register` method of a `Container`, some configurations can be added.
+/// Represents an entry of a registered service type.
+/// As a returned instance from ``Container/register(_:name:factory:)-8gy9r``, some configurations can be added.
 public final class ServiceEntry<Service>: ServiceEntryProtocol {
     fileprivate var initCompletedActions: [(Resolver, Service) -> Void] = []
     internal let serviceType: Any.Type
@@ -36,7 +32,7 @@ public final class ServiceEntry<Service>: ServiceEntryProtocol {
     internal var initCompleted: FunctionType? {
         guard !initCompletedActions.isEmpty else { return nil }
 
-        return {[weak self] (resolver: Resolver, service: Any) -> Void in
+        return { [weak self] (resolver: Resolver, service: Any) -> Void in
             guard let strongSelf = self else { return }
             strongSelf.initCompletedActions.forEach { $0(resolver, service as! Service) }
         }
@@ -48,7 +44,7 @@ public final class ServiceEntry<Service>: ServiceEntryProtocol {
         self.factory = factory
     }
 
-    convenience internal init(
+    internal convenience init(
         serviceType: Service.Type,
         argumentsType: Any.Type,
         factory: FunctionType,
@@ -60,7 +56,7 @@ public final class ServiceEntry<Service>: ServiceEntryProtocol {
 
     /// Specifies the object scope to resolve the service.
     ///
-    /// - Parameter scope: The `ObjectScopeProtocol` value.
+    /// - Parameter scope: The ``ObjectScopeProtocol`` value.
     ///
     /// - Returns: `self` to add another configuration fluently.
     @discardableResult
@@ -70,10 +66,10 @@ public final class ServiceEntry<Service>: ServiceEntryProtocol {
     }
 
     /// Specifies the object scope to resolve the service.
-    /// Performs the same functionality as `inObjectScope(_: ObjectScopeProtocol) -> Self`,
+    /// Performs the same functionality as ``inObjectScope(_:)-2xeke``,
     /// but provides more convenient usage syntax.
     ///
-    /// - Parameter scope: The `ObjectScope` value.
+    /// - Parameter scope: The ``ObjectScope`` value.
     ///
     /// - Returns: `self` to add another configuration fluently.
     @discardableResult

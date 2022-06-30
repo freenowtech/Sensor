@@ -1,9 +1,5 @@
 //
-//  Lazy.swift
-//  Swinject
-//
-//  Created by Jakub Vaňo on 07/03/2018.
-//  Copyright © 2018 Swinject Contributors. All rights reserved.
+//  Copyright © 2019 Swinject Contributors. All rights reserved.
 //
 
 protocol InstanceWrapper {
@@ -12,7 +8,7 @@ protocol InstanceWrapper {
 }
 
 /// Wrapper to enable delayed dependency instantiation.
-/// `Lazy<Type>` does not need to be explicitly registered into the `Container` - resolution will work
+/// `Lazy<Type>` does not need to be explicitly registered into the ``Container`` - resolution will work
 /// as long as there is a registration for the `Type`.
 public final class Lazy<Service>: InstanceWrapper {
     static var wrappedType: Any.Type { return Service.self }
@@ -21,17 +17,17 @@ public final class Lazy<Service>: InstanceWrapper {
     private let graphIdentifier: GraphIdentifier?
     private weak var container: Container?
 
-     init?(inContainer container: Container, withInstanceFactory factory: (() -> Any?)?) {
+    init?(inContainer container: Container, withInstanceFactory factory: (() -> Any?)?) {
         guard let factory = factory else { return nil }
         self.factory = factory
-        self.graphIdentifier = container.currentObjectGraph
+        graphIdentifier = container.currentObjectGraph
         self.container = container
     }
 
     private var _instance: Service?
 
     /// Getter for the wrapped object.
-    /// It will be resolved from the `Container` when first accessed, all other calls will return the same instance.
+    /// It will be resolved from the ``Container`` when first accessed, all other calls will return the same instance.
     public var instance: Service {
         if let instance = _instance {
             return instance
@@ -53,20 +49,20 @@ public final class Lazy<Service>: InstanceWrapper {
 }
 
 /// Wrapper to enable delayed dependency instantiation.
-/// `Provider<Type>` does not need to be explicitly registered into the `Container` - resolution will work
+/// `Provider<Type>` does not need to be explicitly registered into the ``Container`` - resolution will work
 /// as long as there is a registration for the `Type`.
 public final class Provider<Service>: InstanceWrapper {
     static var wrappedType: Any.Type { return Service.self }
 
     private let factory: () -> Any?
 
-     init?(inContainer container: Container, withInstanceFactory factory: (() -> Any?)?) {
+    init?(inContainer _: Container, withInstanceFactory factory: (() -> Any?)?) {
         guard let factory = factory else { return nil }
         self.factory = factory
     }
 
     /// Getter for the wrapped object.
-    /// New instance will be resolved from the `Container` every time it is accessed.
+    /// New instance will be resolved from the ``Container`` every time it is accessed.
     public var instance: Service {
         return factory() as! Service
     }
@@ -75,7 +71,7 @@ public final class Provider<Service>: InstanceWrapper {
 extension Optional: InstanceWrapper {
     static var wrappedType: Any.Type { return Wrapped.self }
 
-    init?(inContainer container: Container, withInstanceFactory factory: (() -> Any?)?) {
+    init?(inContainer _: Container, withInstanceFactory factory: (() -> Any?)?) {
         self = factory?() as? Wrapped
     }
 }
