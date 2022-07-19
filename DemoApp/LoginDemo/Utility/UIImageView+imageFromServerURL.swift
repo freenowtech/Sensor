@@ -28,10 +28,11 @@ extension UIImageView {
                 return
             }
             DispatchQueue.main.async {
-                if let data = data {
-                    if let downloadedImage = UIImage(data: data) {
-                        self.image = downloadedImage
-                    }
+                if
+                    let data = data,
+                    let downloadedImage = UIImage(data: data)
+                {
+                    self.image = downloadedImage
                 }
             }
         }).resume()

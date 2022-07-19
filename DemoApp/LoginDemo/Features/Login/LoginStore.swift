@@ -53,7 +53,7 @@ struct LoginStore: SensorFeature {
         return Outputs(viewDriver: viewOutput, navigationDriver: navigationOutput)
     }
 
-    struct Context { // Will be done by David or/and Stefan in Interactor/Use Case Refactor
+    struct Context {
         let login: UseCase.Login
     }
 
