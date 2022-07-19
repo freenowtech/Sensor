@@ -16,7 +16,13 @@ extension UseCase {
     static func createLoginCoordinatorPayload(parent: BaseCoordinator?) -> (payload: CoordinatorPayload, alert: RxAlert) {
         let rootView = LoginView()
         let errorAlert = createErrorAlert()
-        let outputs = LoginStore.makeOutputs(inputs: rootView.outputs, alertInput: errorAlert.signal)
+        let outputs = LoginStore(
+            context: LoginStore.Context(
+                login: UseCase.defaultLogin
+            )).makeOutputs(
+                inputs: rootView.outputs,
+                alertInput: errorAlert.signal
+            )
         let viewController = LoginViewController(output: outputs.viewDriver, rootView: rootView)
         return (CoordinatorPayload(viewController: viewController, navigationOutput: outputs.navigationDriver, path: Identifier.login, parent: parent),
                 errorAlert)

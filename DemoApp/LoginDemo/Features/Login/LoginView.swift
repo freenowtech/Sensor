@@ -17,7 +17,7 @@ final class LoginView: UIView {
         let isPasswordHidden: Bool
         let isSpinning: Bool
 
-        let state: LoginStore.State
+        let state: LoginStore.StateInternal
     }
 
     struct Outputs {

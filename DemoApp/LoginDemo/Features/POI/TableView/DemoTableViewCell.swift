@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import AlamofireImage
 
 final class DemoTableViewCell: UITableViewCell {
     
@@ -87,9 +86,8 @@ final class DemoTableViewCell: UITableViewCell {
     func configure(with model: DemoCellModel) {
         titleTextLabel.text = model.title
         descriptionTextLabel.text = model.description
-        if let imageURL = model.imagePath,
-            let url = URL(string: "https://api.got.show" + imageURL) {
-            cellImageView.af_setImage(withURL: url)
+        if let imageURL = model.imagePath {
+            cellImageView.imageFromServerURL(imageURL, placeHolder: nil)
         }
         updateConstraints()
     }
