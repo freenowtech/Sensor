@@ -14,7 +14,7 @@ protocol POIServiceProtocol {
 }
 
 final class POIService: POIServiceProtocol {
-    
+
     private let url = "https://poi-api.mytaxi.com/PoiService/poi/v1"
 
     private var getPOIURLRequest: URLRequest? {
@@ -51,7 +51,7 @@ final class POIService: POIServiceProtocol {
             }
         }.resume()
     }
-    
+
     func getAllPois() -> Single<[POI]> {
         return Single
             .create { [weak self] observer in
@@ -72,5 +72,5 @@ final class POIService: POIServiceProtocol {
         let n = Int.random(in: 1...50)
         return Array(shuffled[..<n])
     }
-    
+
 }
