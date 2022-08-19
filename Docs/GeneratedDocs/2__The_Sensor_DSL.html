@@ -1,0 +1,521 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.0/styles/xcode.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.0/highlight.min.js"></script>
+    <script charset="UTF-8"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.0/languages/swift.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+    <div class="main">
+        <div class="sidebar">
+<div class="sidebarElement"><a href="1__Introduction.html" class="link inverted">1. Introduction</a></div>
+<div class="sidebarElement"><a href="2__The_Sensor_DSL.html" class="link inverted">2. The Sensor DSL</a></div>
+<div class="sidebarElement"><a href="3__What_has_changed_from_Sensor_0_1_0.html" class="link inverted">3. What has changed from Sensor 0.1.0</a></div>
+<div class="sidebarElement"><a href="4__Migrating_from_Sensor_0_1_0.html" class="link inverted">4. Migrating from Sensor 0.1.0</a></div>
+</div>
+        <div class="content">
+            <div>
+            <h1 class="headline">2. The Sensor DSL</h1>
+            <div class="row">
+                <div class="comments text">
+                </div>
+            </div>
+            </div>
+            <div>
+            <h2 class="headline">DSL Examples</h2>
+            <div class="row">
+                <div class="comments text">
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Here we give examples of how to use the Sensor DSL for the most common use cases.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            import Foundation
+            import SensorV2
+            enum Effect {
+                case effect1
+                case effect2
+            }
+            struct State {
+                let value: Int
+                let effectHandle1: EffectHandle<Effect>?
+                let effectHandle2: EffectHandle<Effect>?
+            }
+            enum Event {
+                case event1
+                case event2
+                case event3
+                case event4
+                case event5
+                case event6
+                case event7
+                case event8
+            }
+            let reducer = Reducer<State, Effect, Event> { state, event in
+                switch event {
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Trigger one effect and transition to a new state:</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                case .event1:
+                    return then()
+                        .trigger(.effect1)
+                        .goTo(State(value: 1, effectHandle1: nil, effectHandle2: nil))
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Trigger several effects and transition to a new state:</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                case .event2:
+                    return then()
+                        .trigger(.effect1, .effect2)
+                        .goTo(State(value: 2, effectHandle1: nil, effectHandle2: nil))
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Trigger one effect without changing the state:</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                case .event3:
+                    return then()
+                        .trigger(.effect1)
+                        .stayOnCurrentState()
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Trigger an effect and save its handle, so we can cancel it later.</p><p>The <code class="inlineCode">trigger</code> method accepts a closure as second parameter. The code inside the closure can use the passed <code class="inlineCode">handle</code> parameter, which is a reference to the effect triggered by the</p><p><code class="inlineCode">trigger</code> method. This handle can be used to cancel the effect. In order to do so, we need to save it somewhere in our state.</p><p>Inside the closure we can use the <code class="inlineCode">then()</code> function and the Sensor DSL again to define the next state. To define the new state we now use the <code class="inlineCode">handle</code>, so we can access it later.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                case .event4:
+                    return then()
+                        .trigger(.effect1) { handle in
+                            then()
+                                .goTo(State(
+                                        value: 4,
+                                        effectHandle1: handle,
+                                        effectHandle2: nil
+                                ))
+                        }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Trigger several effect and save their handles, so we can cancel them later.</p><p>If we need to save handles for several effects, we can just nest calls to <code class="inlineCode">trigger</code> and use both handles in the inner-most closure.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                case .event5:
+                    return then()
+                        .trigger(.effect1) { handle1 in
+                            then()
+                                .trigger(.effect2) { handle2 in
+                                    then()
+                                    .goTo(State(
+                                        value: 5,
+                                        effectHandle1: handle1,
+                                        effectHandle2: handle2
+                                    ))
+                                }
+                        }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Cancel a specific effect:</p><p>Notice how we can pass an optional handle to the <code class="inlineCode">cancel</code> method. Sensor will cancel the effect if the handle is not nil and will safely ignore nil values.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                case .event6:
+                    return then()
+                        .cancel(state.effectHandle1)
+                        .goTo(State(value: state.value, effectHandle1: nil, effectHandle2: nil))
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Cancel all ongoing effects:</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                case .event7:
+                    return then()
+                        .cancelAllEffects()
+                        .goTo(State(value: state.value, effectHandle1: nil, effectHandle2: nil))
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Whenever you don't need to trigger any effect nor go to a new state, you can omit <code class="inlineCode">then()</code> and just call <code class="inlineCode">stayOnCurrentState()</code>. It's a shorthand for <code class="inlineCode">then().goTo(state)</code></p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                case .event8:
+                    return
+                        stayOnCurrentState()
+                }
+            }
+                </pre></code></span>
+                </div>
+            </div>
+            </div>
+            <div>
+            <h2 class="headline">Troubleshooting, common mistakes and pitfalls.</h2>
+            <div class="row">
+                <div class="comments text">
+                </div>
+            </div>
+            </div>
+            <div>
+            <h3 class="headline">Effect trigger order is not guaranteed</h3>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>The order in which effects of the same reducer case are triggered is not guaranteed. This means that when we trigger several effects we don't know in which order they will actually be triggered. and thus our code must not rely in any particular order. For example, if we have the following code it is possible that sometimes <code class="inlineCode">effect2</code> is triggered before <code class="inlineCode">effect1</code>.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             case .event:
+                 return then()
+                     .trigger(.effect1)
+                     .trigger(.effect2)
+                     .stayOnCurrentState()
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>This is also true even if one effect depends on the handle of the other effect. In this situation <code class="inlineCode">effect2</code> might sill be called before <code class="inlineCode">effect1</code>. So, for example, we cannot use <code class="inlineCode">effect2</code> to perform any work that depends on <code class="inlineCode">effect1</code> being already triggered.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             case .event:
+                 return then()
+                     .trigger(.effect1) { handle in
+                         then()
+                             .trigger(.effect2(handle))
+                             .stayOnCurrentState()
+                     }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments text">
+                </div>
+            </div>
+            </div>
+            <div>
+            <h4 class="headline">Workaround 1: Use intermediate states</h4>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>One way to enforce the order of two effects is to trigger them at different reducer calls. To do so, we must add an intermediate state (I). Then, when we transition from state A to I, we can trigger the first effect. After, we transition from I to B and trigger the second effect.</p><p>Let's see an example. Suppose that we want to trigger effects 1 and 2 as we transition from state1 to <code class="inlineCode">state2</code>.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            enum W1Effect {
+                case effect1
+                case effect2
+            }
+            enum W1State {
+                case state1
+                case state2
+            }
+            enum W1Event {
+                case event1
+            }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>If we naively write our reducer like this, we don't have any guarantee that <code class="inlineCode">effect1</code> will actually be triggered before <code class="inlineCode">effect2</code></p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            let w1Reducer = Reducer<W1State, W1Effect, W1Event> { state, event in
+                switch (state, event) {
+                case (.state1, .event1):
+                    return then()
+                        .trigger(.effect1, .effect2)
+                        .goTo(.state2)
+                default:
+                    return stayOnCurrentState()
+                }
+            }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>We can add an intermediate state, event and effect to make the reducer execute two times, and trigger one effect each time. This will guarantee the order of the effects.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            enum W1Effect2 {
+                case effect1
+                case effect2
+                case goToState2
+            }
+            enum W1State2 {
+                case state1
+                case intermediateState
+                case state2
+            }
+            enum W1Event2 {
+                case event1
+                case continueToState2
+            }
+            let w1Reducer2 = Reducer<W1State2, W1Effect2, W1Event2> { state, event in
+                switch (state, event) {
+                case (.state1, .event1):
+                    return then()
+                        .trigger(.effect1, .goToState2)
+                        .goTo(.intermediateState)
+                case (.intermediateState, .continueToState2):
+                    return then()
+                        .trigger(.effect2)
+                        .goTo(.state2)
+                default:
+                    return stayOnCurrentState()
+                }
+            }
+            let w1EffectsImplementation2: EffectsImplementation<W1Effect2, W1Event2> =
+                EffectsImplementation { effect in
+                    switch effect {
+                    case .effect1, .effect2:
+                        return .just(.event1) // Do whatever
+                    case .goToState2:
+                        return .just(.continueToState2)
+                    }
+                }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments text">
+                    <p>TODO: add a more detailed explanation.</p>
+                </div>
+            </div>
+            </div>
+            <div>
+            <h4 class="headline">Workaround 2: Combine all effects into a single effect</h4>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>If your effects implementation looks like this:</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            enum W2Effect {
+                case effect1
+                case effect2
+            }
+            enum W2State {
+                case state1
+                case state2
+            }
+            enum W2Event {}
+            let w2EffectsImplementation: EffectsImplementation<W2Effect, W2Event> =
+                EffectsImplementation { effect in
+                    switch effect {
+                    case .effect1:
+                        print("Print1")
+                        return .empty()
+                    case .effect2:
+                        print("Print2")
+                        return .empty()
+                    }
+                }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>You can add an additional effect that sequentially executes the instructions of <code class="inlineCode">effect1</code> and <code class="inlineCode">effect2</code>. This way you can guarantee that the work of <code class="inlineCode">effect1</code> is executed before the work of <code class="inlineCode">effect2</code>.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            enum W2Effect2 {
+                case effect1
+                case effect2
+                case effect1Then2
+            }
+            let w2EffectsImplementation2: EffectsImplementation<W2Effect2, W2Event> =
+                EffectsImplementation { effect in
+                    switch effect {
+                    case .effect1:
+                        print("Print1")
+                        return .empty()
+                    case .effect2:
+                        print("Print2")
+                        return .empty()
+                    case .effect1Then2:
+                        print("Print1")
+                        print("Print2")
+                        return .empty()
+                    }
+                }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments text">
+                    <p>TODO: add a more detailed example of this.</p>
+                </div>
+            </div>
+            </div>
+            <div>
+            <h3 class="headline">Forgetting to add return before then()</h3>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>If you forget to add the return before the call to <code class="inlineCode">then()</code></p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             case .event:
+                 then()
+                     .trigger(.effect)
+                     .stayOnCurrentState()
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>You will get an error similar to this one</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             error: missing return in a closure expected to return 'ValidEffectsDSL<State, Effect>'
+             }
+             ^
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>To fix it just add <code class="inlineCode">return</code> before the <code class="inlineCode">then</code> call:</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             case .event:
+                 return then()
+                     .trigger(.effect)
+                     .stayOnCurrentState()
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments text">
+                </div>
+            </div>
+            </div>
+            <div>
+            <h3 class="headline">Forgetting to call then() before other effect commands</h3>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>If you forget to call <code class="inlineCode">then</code> before calling other effects commands</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             case .event:
+                 return trigger(.effect)
+                     .stayOnCurrentState()
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>You will get an error similar to this one</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             error: use of unresolved identifier 'trigger'
+             return trigger(.effect1)
+                    ^~~~~~~
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>To fix it just call <code class="inlineCode">then</code> before the other effects commands</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             case .event:
+                 return then()
+                     .trigger(.effect)
+                     .stayOnCurrentState()
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments text">
+                </div>
+            </div>
+            </div>
+            <div>
+            <h3 class="headline">Forgetting to call goTo or stayOnCurrentState</h3>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>If you forget to call <code class="inlineCode">goTo</code> or <code class="inlineCode">stayOnCurrentState</code></p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             case .event:
+                 return then()
+                     .trigger(.effect)
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>You will get an error similar to this one</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             error: type of expression is ambiguous without more context
+             .trigger(.effect1)
+                      ~^~~~~~~
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>To fix it just call <code class="inlineCode">goTo</code> or <code class="inlineCode">stayOnCurrentState</code> after the other effects commands</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+             case .event:
+                 return then()
+                     .trigger(.effect)
+                     .stayOnCurrentState()
+                </pre></code></span>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

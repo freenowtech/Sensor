@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = "Sensor"
-  spec.version      = "0.1.1"
+  spec.version      = "0.2.0"
   spec.summary      = "The Sensor framework comes with batteries included so you can start writing safe apps straight away."
 
   # This description is used to generate tags and improve search results.
@@ -18,13 +18,19 @@ Pod::Spec.new do |spec|
   spec.license      = { :type => "Apache License", :file => "LICENSE" }
   spec.author    = "Intelligent Apps GmbH."
 
-  spec.swift_version = '5.0'
-  spec.platform     = :ios, "10.0"
+  spec.swift_version = '5.2'
+  spec.ios.deployment_target = "10.3"
+  spec.osx.deployment_target = "10.13"
   spec.source       = { :git => "https://github.com/freenowtech/Sensor.git", :tag => "#{spec.version}" }
 
-  spec.source_files = "Sensor/Sources"
+  spec.source_files = "Sensor/Sources/**/*.swift"
+  spec.test_spec 'SensorUnitTests' do |test_spec|
+    test_spec.source_files = 'Sensor/UnitTests/**/*.{h,m,swift}'
+    test_spec.dependency "SensorTest"
+    test_spec.dependency "SnapshotTesting", "~> 1.7.2"
+  end
   spec.frameworks = "Foundation"
-  spec.dependency "RxSwift",  "~> 5.0.0"
-  spec.dependency "RxCocoa", "~> 5.0.0"
+  spec.dependency "RxSwift",  "~> 5"
+  spec.dependency "RxCocoa", "~> 5"
   spec.dependency "RxFeedback", "~> 3.0.0"
 end

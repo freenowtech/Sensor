@@ -1,4 +1,9 @@
+#if SWIFT_PACKAGE
+import iOSSnapshotTestCase
+#else
 import FBSnapshotTestCase
+#endif
+
 import Foundation
 import Nimble
 import QuartzCore
@@ -45,13 +50,16 @@ public class FBSnapshotTest: NSObject {
                                tolerance: CGFloat,
                                perPixelTolerance: CGFloat,
                                filename: String,
-                               identifier: String? = nil) -> Bool {
+                               identifier: String? = nil,
+                               shouldIgnoreScale: Bool = false) -> Bool {
 
         let testName = parseFilename(filename: filename)
         let snapshotController: FBSnapshotTestController = FBSnapshotTestController(test: self)
         snapshotController.folderName = testName
         if isDeviceAgnostic {
             snapshotController.fileNameOptions = [.device, .OS, .screenSize, .screenScale]
+        } else if shouldIgnoreScale {
+            snapshotController.fileNameOptions = .none
         } else {
             snapshotController.fileNameOptions = .screenScale
         }
@@ -121,7 +129,7 @@ public func recordAllSnapshots() {
     switchChecksWithRecords = true
 }
 
-func getDefaultReferenceDirectory(_ sourceFileName: String) -> String {
+func getDefaultReferenceDirectory(_ sourceFileName: FileString) -> String {
     if let globalReference = FBSnapshotTest.sharedInstance.referenceImagesDirectory {
         return globalReference
     }
@@ -134,7 +142,8 @@ func getDefaultReferenceDirectory(_ sourceFileName: String) -> String {
     // then append "/ReferenceImages" and use that.
 
     // Grab the file's path
-    let pathComponents = (sourceFileName as NSString).pathComponents as NSArray
+    let fileName = NSString(string: "\(sourceFileName)")
+    let pathComponents = fileName.pathComponents as NSArray
 
     // Find the directory in the path that ends with a test suffix.
     let testPath = pathComponents.first { component -> Bool in
@@ -193,21 +202,14 @@ func getTolerance() -> CGFloat {
     return FBSnapshotTest.sharedInstance.tolerance
 }
 
-func clearFailureMessage(_ failureMessage: FailureMessage) {
-    failureMessage.actualValue = nil
-    failureMessage.expected = ""
-    failureMessage.postfixMessage = ""
-    failureMessage.to = ""
-}
-
 private func performSnapshotTest(_ name: String?,
                                  identifier: String? = nil,
                                  isDeviceAgnostic: Bool = false,
                                  usesDrawRect: Bool = false,
                                  actualExpression: Expression<Snapshotable>,
-                                 failureMessage: FailureMessage,
                                  pixelTolerance: CGFloat? = nil,
-                                 tolerance: CGFloat?) -> Bool {
+                                 tolerance: CGFloat?,
+                                 shouldIgnoreScale: Bool) -> PredicateResult {
     // swiftlint:disable:next force_try force_unwrapping
     let instance = try! actualExpression.evaluate()!
     let testFileLocation = actualExpression.location.file
@@ -215,19 +217,17 @@ private func performSnapshotTest(_ name: String?,
     let snapshotName = sanitizedTestName(name)
     let tolerance = tolerance ?? getTolerance()
     let pixelTolerance = pixelTolerance ?? getPixelTolerance()
+    let filename = "\(actualExpression.location.file)"
 
     let result = FBSnapshotTest.compareSnapshot(instance, isDeviceAgnostic: isDeviceAgnostic,
                                                 usesDrawRect: usesDrawRect, snapshot: snapshotName, record: false,
                                                 referenceDirectory: referenceImageDirectory, tolerance: tolerance,
                                                 perPixelTolerance: pixelTolerance,
-                                                filename: actualExpression.location.file, identifier: identifier)
+                                                filename: filename, identifier: identifier,
+                                                shouldIgnoreScale: shouldIgnoreScale)
 
-    if !result {
-        clearFailureMessage(failureMessage)
-        failureMessage.expected = "expected a matching snapshot in \(snapshotName)"
-    }
-
-    return result
+    return PredicateResult(status: PredicateStatus(bool: result),
+                           message: .fail("expected a matching snapshot in \(snapshotName)"))
 }
 
 private func recordSnapshot(_ name: String?,
@@ -235,7 +235,7 @@ private func recordSnapshot(_ name: String?,
                             isDeviceAgnostic: Bool = false,
                             usesDrawRect: Bool = false,
                             actualExpression: Expression<Snapshotable>,
-                            failureMessage: FailureMessage) -> Bool {
+                            shouldIgnoreScale: Bool) -> PredicateResult {
     // swiftlint:disable:next force_try force_unwrapping
     let instance = try! actualExpression.evaluate()!
     let testFileLocation = actualExpression.location.file
@@ -243,8 +243,8 @@ private func recordSnapshot(_ name: String?,
     let snapshotName = sanitizedTestName(name)
     let tolerance = getTolerance()
     let pixelTolerance = getPixelTolerance()
-
-    clearFailureMessage(failureMessage)
+    let filename = "\(actualExpression.location.file)"
+    var message: String = ""
 
     if FBSnapshotTest.compareSnapshot(instance,
                                       isDeviceAgnostic: isDeviceAgnostic,
@@ -254,21 +254,19 @@ private func recordSnapshot(_ name: String?,
                                       referenceDirectory: referenceImageDirectory,
                                       tolerance: tolerance,
                                       perPixelTolerance: pixelTolerance,
-                                      filename: actualExpression.location.file,
-                                      identifier: identifier) {
+                                      filename: filename,
+                                      identifier: identifier,
+                                      shouldIgnoreScale: shouldIgnoreScale) {
         let name = name ?? snapshotName
-        failureMessage.expected = "snapshot \(name) successfully recorded, replace recordSnapshot with a check"
+        message = "snapshot \(name) successfully recorded, replace recordSnapshot with a check"
+    } else if let name = name {
+        message = "expected to record a snapshot in \(name)"
     } else {
-        let expectedMessage: String
-        if let name = name {
-            expectedMessage = "expected to record a snapshot in \(name)"
-        } else {
-            expectedMessage = "expected to record a snapshot"
-        }
-        failureMessage.expected = expectedMessage
+        message = "expected to record a snapshot"
     }
 
-    return false
+    return PredicateResult(status: PredicateStatus(bool: false),
+                           message: .fail(message))
 }
 
 private func currentTestName() -> String? {
@@ -281,24 +279,25 @@ public func haveValidSnapshot(named name: String? = nil,
                               identifier: String? = nil,
                               usesDrawRect: Bool = false,
                               pixelTolerance: CGFloat? = nil,
-                              tolerance: CGFloat? = nil) -> Predicate<Snapshotable> {
+                              tolerance: CGFloat? = nil,
+                              shouldIgnoreScale: Bool = false) -> Predicate<Snapshotable> {
 
-    return Predicate.fromDeprecatedClosure { actualExpression, failureMessage in
+    return Predicate { actualExpression in
         if switchChecksWithRecords {
             return recordSnapshot(name,
                                   identifier: identifier,
                                   usesDrawRect: usesDrawRect,
                                   actualExpression: actualExpression,
-                                  failureMessage: failureMessage)
+                                  shouldIgnoreScale: shouldIgnoreScale)
         }
 
         return performSnapshotTest(name,
                                    identifier: identifier,
                                    usesDrawRect: usesDrawRect,
                                    actualExpression: actualExpression,
-                                   failureMessage: failureMessage,
                                    pixelTolerance: pixelTolerance,
-                                   tolerance: tolerance)
+                                   tolerance: tolerance,
+                                   shouldIgnoreScale: shouldIgnoreScale)
     }
 }
 
@@ -306,36 +305,50 @@ public func haveValidDeviceAgnosticSnapshot(named name: String? = nil,
                                             identifier: String? = nil,
                                             usesDrawRect: Bool = false,
                                             pixelTolerance: CGFloat? = nil,
-                                            tolerance: CGFloat? = nil) -> Predicate<Snapshotable> {
+                                            tolerance: CGFloat? = nil,
+                                            shouldIgnoreScale: Bool = false) -> Predicate<Snapshotable> {
 
-    return Predicate.fromDeprecatedClosure { actualExpression, failureMessage in
+    return Predicate { actualExpression in
         if switchChecksWithRecords {
-            return recordSnapshot(name, identifier: identifier, isDeviceAgnostic: true, usesDrawRect: usesDrawRect,
-                                  actualExpression: actualExpression, failureMessage: failureMessage)
+            return recordSnapshot(name,
+                                  identifier: identifier,
+                                  isDeviceAgnostic: true,
+                                  usesDrawRect: usesDrawRect,
+                                  actualExpression: actualExpression,
+                                  shouldIgnoreScale: shouldIgnoreScale)
         }
 
-        return performSnapshotTest(name, identifier: identifier, isDeviceAgnostic: true, usesDrawRect: usesDrawRect,
-                                   actualExpression: actualExpression, failureMessage: failureMessage,
-                                   pixelTolerance: pixelTolerance, tolerance: tolerance)
+        return performSnapshotTest(name,
+                                   identifier: identifier,
+                                   isDeviceAgnostic: true,
+                                   usesDrawRect: usesDrawRect,
+                                   actualExpression: actualExpression,
+                                   pixelTolerance: pixelTolerance,
+                                   tolerance: tolerance,
+                                   shouldIgnoreScale: shouldIgnoreScale)
     }
 }
 
 public func recordSnapshot(named name: String? = nil,
                            identifier: String? = nil,
-                           usesDrawRect: Bool = false) -> Predicate<Snapshotable> {
+                           usesDrawRect: Bool = false,
+                           shouldIgnoreScale: Bool = false) -> Predicate<Snapshotable> {
 
-    return Predicate.fromDeprecatedClosure { actualExpression, failureMessage in
+    return Predicate { actualExpression in
         return recordSnapshot(name, identifier: identifier, usesDrawRect: usesDrawRect,
-                              actualExpression: actualExpression, failureMessage: failureMessage)
+                              actualExpression: actualExpression,
+                              shouldIgnoreScale: shouldIgnoreScale)
     }
 }
 
 public func recordDeviceAgnosticSnapshot(named name: String? = nil,
                                          identifier: String? = nil,
-                                         usesDrawRect: Bool = false) -> Predicate<Snapshotable> {
+                                         usesDrawRect: Bool = false,
+                                         shouldIgnoreScale: Bool = false) -> Predicate<Snapshotable> {
 
-    return Predicate.fromDeprecatedClosure { actualExpression, failureMessage in
+    return Predicate { actualExpression in
         return recordSnapshot(name, identifier: identifier, isDeviceAgnostic: true, usesDrawRect: usesDrawRect,
-                              actualExpression: actualExpression, failureMessage: failureMessage)
+                              actualExpression: actualExpression,
+                              shouldIgnoreScale: shouldIgnoreScale)
     }
 }

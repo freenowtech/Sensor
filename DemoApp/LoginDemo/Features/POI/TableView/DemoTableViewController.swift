@@ -27,10 +27,13 @@ class DemoTableViewController: UIViewController {
         self.view = rootView
     }
 
-    private lazy var storeOutputs = DemoTableStore.makeOutputs(inputs: (
-        refreshTapped: refreshButton.rx.tap.asSignal(),
-        cellSelected: rootView.outputs
-    ))
+    private lazy var storeOutputs = DemoTableStore(
+        context: DemoTableStore.Context(
+            getAllPois: UseCase.defaultGetAllPois
+        )).makeOutputs(inputs: (
+            refreshTapped: refreshButton.rx.tap.asSignal(),
+            cellSelected: rootView.outputs
+        ))
     
     override func viewDidLoad() {
         super.viewDidLoad()

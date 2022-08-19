@@ -51,16 +51,16 @@ public extension PrimitiveSequenceType where Trait == SingleTrait {
     func debugTest(_ identifier: String = "", scheduler: TestScheduler) -> Single<Element> {
         return self.do(
             onSuccess: { (value) in
-                print("\(identifier) -> Event next(\(value)) @ \(scheduler.clock)")
+                print("\(identifier) @ \(scheduler.clock) -> Event next(\(value))")
         },
             onError: { (error) in
-                print("\(identifier) -> Event error(\(error)) @ \(scheduler.clock)")
+                print("\(identifier) @ \(scheduler.clock) -> Event error(\(error))")
         },
             onSubscribed: {
-                print("\(identifier) -> subscribed @ \(scheduler.clock)")
+                print("\(identifier) @ \(scheduler.clock) -> subscribed")
         },
             onDispose: {
-                print("\(identifier) -> disposed @ \(scheduler.clock)")
+                print("\(identifier) @ \(scheduler.clock) -> disposed")
         })
     }
 }

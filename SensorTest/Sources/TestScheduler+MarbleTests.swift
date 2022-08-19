@@ -105,7 +105,7 @@ public extension TestScheduler {
                     
                     guard let next = values[sameTimeEvent] else {
                         guard let error = errors[sameTimeEvent] else {
-                            fatalError("Value with key \(event) not registered as value:\n\(values)\nor error:\n\(errors)")
+                            fatalError("Value with key \(sameTimeEvent) not registered as value:\n\(values)\nor error:\n\(errors)")
                         }
                         
                         let nextEvent = RecordedEvent(time: indexOfSegment, value: Event<T>.error(error))

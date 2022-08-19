@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Alamofire
 import RxSwift
 
 protocol POIServiceProtocol {
@@ -17,20 +16,40 @@ protocol POIServiceProtocol {
 final class POIService: POIServiceProtocol {
 
     private let url = "https://poi-api.mytaxi.com/PoiService/poi/v1"
+
+    private var getPOIURLRequest: URLRequest? {
+        var urlComponents = URLComponents(string: url)
+        urlComponents?.queryItems = [
+            URLQueryItem(name: "p1Lat", value: "53.694865"),
+            URLQueryItem(name: "p1Lon", value: "9.757589"),
+            URLQueryItem(name: "p2Lat", value: "53.394655"),
+            URLQueryItem(name: "p2Lon", value: "10.099891")
+        ]
+
+        guard let url = urlComponents?.url else {
+            return nil
+        }
+
+        return URLRequest(url: url)
+    }
+
     func getAllPois(completion: @escaping (APIResult<[POI]>) -> Void) {
-        AF.request(url, parameters: ["p1Lat":53.694865, "p1Lon":9.757589, "p2Lat":53.394655, "p2Lon":10.099891])
-            .responseData { (response) in
-                if let data = response.data {
-                    do {
-                        let decoder = JSONDecoder()
-                        let pois = try decoder.decode([String: [POI]].self, from: data)
-                        completion(APIResult.success(POIService.randomArray(from: pois.values.joined())))
-                    } catch {
-                        let result: APIResult<[POI]> = .error(.serverError)
-                        completion(result)
-                    }
+        guard let getPOIURLRequest = getPOIURLRequest else {
+            return
+        }
+
+        URLSession.shared.dataTask(with: getPOIURLRequest) { data, urlResponse, error in
+            if let data = data {
+                do {
+                    let decoder = JSONDecoder()
+                    let pois = try decoder.decode([String: [POI]].self, from: data)
+                    completion(APIResult.success(POIService.randomArray(from: pois.values.joined())))
+                } catch {
+                    let result: APIResult<[POI]> = .error(.serverError)
+                    completion(result)
                 }
             }
+        }.resume()
     }
 
     func getAllPois() -> Single<[POI]> {

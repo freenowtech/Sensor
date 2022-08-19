@@ -6,7 +6,10 @@ extension SingleStateStateMachineTests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__SingleStateStateMachineTests = [
+        ("testCancelAllEffects", testCancelAllEffects),
+        ("testEffectCanTriggerItself", testEffectCanTriggerItself),
         ("testSingleStateStateMachine", testSingleStateStateMachine),
+        ("testTriggerEffectTwiceAtSameTime", testTriggerEffectTwiceAtSameTime),
     ]
 }
 

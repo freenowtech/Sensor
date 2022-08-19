@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<playground version='6.0' target-platform='macos' display-mode='raw'>
+    <pages>
+        <page name='1. Introduction'/>
+        <page name='2. The Sensor DSL'/>
+        <page name='3. What has changed from Sensor 0.1.0'/>
+    </pages>
+</playground>

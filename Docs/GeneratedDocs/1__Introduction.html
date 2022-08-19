@@ -1,0 +1,250 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.0/styles/xcode.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.0/highlight.min.js"></script>
+    <script charset="UTF-8"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.0/languages/swift.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+    <div class="main">
+        <div class="sidebar">
+<div class="sidebarElement"><a href="1__Introduction.html" class="link inverted">1. Introduction</a></div>
+<div class="sidebarElement"><a href="2__The_Sensor_DSL.html" class="link inverted">2. The Sensor DSL</a></div>
+<div class="sidebarElement"><a href="3__What_has_changed_from_Sensor_0_1_0.html" class="link inverted">3. What has changed from Sensor 0.1.0</a></div>
+<div class="sidebarElement"><a href="4__Migrating_from_Sensor_0_1_0.html" class="link inverted">4. Migrating from Sensor 0.1.0</a></div>
+</div>
+        <div class="content">
+            <div>
+            <h1 class="headline">1. Introduction</h1>
+            <div class="row">
+                <div class="comments text">
+                </div>
+            </div>
+            </div>
+            <div>
+            <h2 class="headline">How to write a feature with Sensor 0.2.0</h2>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>In order to use Sensor 0.2.0 you need to import the <code class="inlineCode">SensorV2</code> framework. Sensor 0.1.0 is still available as the <code class="inlineCode">Sensor</code> framework.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            import Foundation
+            import RxCocoa
+            import SensorV2
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>We start by creating a Sensor Feature. A Sensor Feature groups all the code artifacts we need to write our feature. Our feature must conform to the <code class="inlineCode">SensorFeature</code> protocol. The requirements of the protocol give us a blueprint of the code elements that compose our feature.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            struct MyFeature: SensorFeature {
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>First we need to define the possible states of our feature in a type named <code class="inlineCode">State</code>. Notice how we didn't have to conform to any protocol. Any type can model our state.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                enum State {
+                    case idle
+                    case performingNetworkRequest
+                    case dataSent
+                }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Next step: define the input events of our feature in a type named <code class="inlineCode">Event</code>. Again, notice how we didn't have to conform to any protocol. Any type can model our events.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                enum Event {
+                    case buttonPressed
+                    case requestSuccessful
+                }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Next step: define the effects of our feature in a type named <code class="inlineCode">Effect</code>. We have a requirement for our <code class="inlineCode">Effect</code> type: it must be <code class="inlineCode">Hashable</code>.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                enum Effect: Hashable {
+                    case logSomething
+                    case performNetworkRequest
+                }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Now we have all we need to define the Reducer, which contains the logic of our feature.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                let reducer: Reducer<State, Effect, Event>
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>The <code class="inlineCode">Reducer</code> type is just a wrapper over a <code class="inlineCode">(State, Event) -&gt; ValidEffectsDSL&lt;State, Effect&gt;</code> function. We'll see what this <code class="inlineCode">ValidEffectsDSL</code> type is in a bit. Just think about this as a function that given the current state and the received event decides what's the next state and what effects should be triggered.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                    = Reducer { state, event in
+                        switch (state, event) {
+                        case (.idle, .buttonPressed):
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>In each switch case, we want to specify what the next state should be and what effects should be triggered. To do so, we use an <a href="https://en.wikipedia.org/wiki/Domain-specific_language#External_and_Embedded_Domain_Specific_Languages" class="link">Embedded Domain Specific Language</a> that Sensor defines (or in less-fancy words: a bunch of functions that allow us to express something in a nice way, in this case we have a bunch of functions that help us define the next state and the effects that should be triggered).</p><p>We always have to start calling the function <code class="inlineCode">then()</code>. The <code class="inlineCode">then</code> function is the 'entry-point' to the Sensor DSL.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                        return then()
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Next, we specify what effects we want to trigger. We do so with the <code class="inlineCode">trigger</code> method. Notice that this is a function that we have to call on the result of <code class="inlineCode">then()</code>, hence the leading dot.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                            .trigger(.logSomething, .performNetworkRequest)
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Last, we specify our next state. We do so with the <code class="inlineCode">goTo</code> method.</p><p>Notice above that we must return the object crated by <code class="inlineCode">then</code> and the following <code class="inlineCode">trigger</code> and <code class="inlineCode">goTo</code> calls. This object is of type <code class="inlineCode">ValidEffectsDSL&lt;State, Effect&gt;</code> (hence the <code class="inlineCode">Reducer</code> has this return type) and is used internally by Sensor to know what effects to trigger, etc.</p><p>The <code class="inlineCode">then</code> function is needed for technical reasons, but it also improves code readability. For example, you can read this switch case like: <em>When state is idle and we receive the buttonPressed event, <strong>then</strong> we'll trigger the logSomething and performNetworkRequest effects and the next state will be performingNetworkRequest.</em></p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                            .goTo(.performingNetworkRequest)
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                        case (.performingNetworkRequest, .requestSuccessful):
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>We can omit calls to <code class="inlineCode">trigger</code> if we don't want to trigger any effect. However, we must always specify the next state by calling <code class="inlineCode">goTo</code>. The only exception is when we use <code class="inlineCode">stayOnCurrentState</code>, as described below.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                            return then()
+                                .goTo(.dataSent)
+                        default:
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>When we don't want to change the current state nor trigger any effects, we can use the <code class="inlineCode">stayOnCurrentState</code> function. It's a shorthand for <code class="inlineCode">then().goTo(state)</code></p><p>Read <em>The Sensor DSL</em> section to know more details about the Sensor DSL and what things it allows you to do, such as triggering several effects or cancelling ongoing effects.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                            return stayOnCurrentState()
+                        }
+                    }
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>The last piece of our feature is the effects implementation. The effects implementation is were we tell Sensor what to do when a specific effect is triggered.</p><p>For each effect we must execute the appropriate actions and return a <code class="inlineCode">Signal</code>.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                var effectsImplementation: EffectsImplementation<Effect, Event> {
+                    EffectsImplementation { [useCase] effect in
+                        switch effect {
+                        case .logSomething:
+                            print("Performing network request")
+                            return Signal.empty()
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>We can of course use injected dependencies to implement a particular effect. Here, for example, we call a use case that has been provided to our feature and then map it to the appropriate event.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+                        case .performNetworkRequest:
+                            return useCase().map { _ in .requestSuccessful }
+                        }
+                    }
+                }
+                let useCase: () -> Signal<Void>
+            }
+                </pre></code></span>
+                </div>
+            </div>
+            </div>
+            <div>
+            <h2 class="headline">Using a Sensor 0.2.0 feature</h2>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>In order to use a Feature, we first need to create an instance of it providing the needed dependencies.</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            let myFeature = MyFeature(
+                useCase: {
+                    print("Network Request")
+                    return Signal.just(())
+                }
+            )
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments column">
+                    <span class="text"><p>Now we can call the <code class="inlineCode">outputStates</code> method of our feature to get the <code class="inlineCode">Driver</code> of states. In order to do so, we need to specify the initial state and pass a <code class="inlineCode">Signal</code> with the input events (in this example, it's just an empty signal).</p></span>
+                </div>
+                <div class="code column">
+                    <span class="text">    <pre><code class="swift">
+            let states = myFeature.outputStates(initialState: .idle, inputEvents: .empty())
+                </pre></code></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments text">
+                    <p>Now we can bind our view to the <code class="inlineCode">states</code> <code class="inlineCode">Driver</code>.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="comments text">
+                    <p>TODO: complete this tutorial with a view bond to the state</p>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
